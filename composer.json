@@ -33,11 +33,8 @@
     "extra": {
         "laravel": {
             "providers": [
-                "WendellAdriel\\ValidatedDTO\\ValidatedDTO"
-            ],
-            "aliases": {
-                "ValidatedDTO": "WendellAdriel\\ValidatedDTO\\Facades\\ValidatedDTO"
-            }
+                "WendellAdriel\\ValidatedDTO\\Providers\\ValidatedDTOServiceProvider"
+            ]
         }
     }
 }

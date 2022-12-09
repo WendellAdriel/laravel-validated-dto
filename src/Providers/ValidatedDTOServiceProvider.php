@@ -1,6 +1,6 @@
 <?php
 
-namespace WendellAdriel\ValidatedDTO;
+namespace WendellAdriel\ValidatedDTO\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use WendellAdriel\ValidatedDTO\Console\Commands\MakeDTOCommand;
