@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  app:
+    image: wendelladriel/laravel-validated-dto
+    container_name: laravel-validated-dto
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    volumes:
+      - .:/usr/src/app
