@@ -1,0 +1,6 @@
+.DS_Store
+/vendor
+/.idea
+/.vagrant
+/.phpstorm.*
+composer.lock
