@@ -2,6 +2,7 @@
 
 namespace WendellAdriel\ValidatedDTO;
 
+use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -46,7 +47,14 @@ abstract class ValidatedDTO
      */
     public function __get(string $name): mixed
     {
-        return $this->{$name};
+        if (property_exists($this, $name)) {
+            return $this->{$name};
+        }
+
+        $defaultValues = $this->defaults();
+        return array_key_exists($name, $defaultValues)
+            ? $defaultValues[$name]
+            : null;
     }
 
     /**
@@ -55,6 +63,13 @@ abstract class ValidatedDTO
      * @return array
      */
     abstract protected function rules(): array;
+
+    /**
+     * Defines the default values for the properties of the DTO.
+     *
+     * @return array
+     */
+    abstract protected function defaults(): array;
 
     /**
      * Creates a DTO instance from a valid JSON string.
@@ -98,6 +113,45 @@ abstract class ValidatedDTO
     public static function fromModel(Model $model): ValidatedDTO
     {
         return new static($model->toArray());
+    }
+
+    /**
+     * Creates a DTO instance from the given command arguments.
+     *
+     * @param  Command  $command
+     * @return ValidatedDTO
+     *
+     * @throws ValidationException
+     */
+    public static function fromCommandArguments(Command $command): ValidatedDTO
+    {
+        return new static($command->arguments());
+    }
+
+    /**
+     * Creates a DTO instance from the given command options.
+     *
+     * @param  Command  $command
+     * @return ValidatedDTO
+     *
+     * @throws ValidationException
+     */
+    public static function fromCommandOptions(Command $command): ValidatedDTO
+    {
+        return new static($command->options());
+    }
+
+    /**
+     * Creates a DTO instance from the given command arguments and options.
+     *
+     * @param  Command  $command
+     * @return ValidatedDTO
+     *
+     * @throws ValidationException
+     */
+    public static function fromCommand(Command $command): ValidatedDTO
+    {
+        return new static(array_merge($command->arguments(), $command->options()));
     }
 
     /**

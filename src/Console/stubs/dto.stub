@@ -17,6 +17,16 @@ class {{ class }} extends ValidatedDTO
     }
 
     /**
+     * Defines the default values for the properties of the DTO.
+     *
+     * @return array
+     */
+    protected function defaults(): array
+    {
+        return [];
+    }
+
+    /**
      * Defines the custom messages for validator errors.
      *
      * @return array
