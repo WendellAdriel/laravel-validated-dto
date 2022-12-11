@@ -9,6 +9,11 @@
             "WendellAdriel\\ValidatedDTO\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "WendellAdriel\\ValidatedDTO\\Tests\\": "tests/"
+        }
+    },
     "support": {
         "issues": "https://github.com/WendellAdriel/laravel-validated-dto/issues",
         "source": "https://github.com/WendellAdriel/laravel-validated-dto"
