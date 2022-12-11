@@ -47,14 +47,7 @@ abstract class ValidatedDTO
      */
     public function __get(string $name): mixed
     {
-        if (property_exists($this, $name)) {
-            return $this->{$name};
-        }
-
-        $defaultValues = $this->defaults();
-        return array_key_exists($name, $defaultValues)
-            ? $defaultValues[$name]
-            : null;
+        return $this->{$name} ?? null;
     }
 
     /**
@@ -219,6 +212,13 @@ abstract class ValidatedDTO
 
         foreach ($this->validatedData as $key => $value) {
             $this->{$key} = $value;
+        }
+
+        foreach ($this->defaults() as $key => $value) {
+            if (! property_exists($this, $key)) {
+                $this->{$key} = $value;
+                $this->validatedData[$key] = $value;
+            }
         }
     }
 
