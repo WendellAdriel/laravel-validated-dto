@@ -224,16 +224,7 @@ abstract class ValidatedDTO
         $casts = $this->casts();
 
         foreach ($this->validatedData as $key => $value) {
-            if (! array_key_exists($key, $casts)) {
-                $this->{$key} = $value;
-                continue;
-            }
-
-            if (! ($casts[$key] instanceof Castable)) {
-                throw new InvalidCastableException($key);
-            }
-
-            $this->{$key} = $casts[$key]->cast($value);
+            $this->{$key} = $value;
         }
 
         foreach ($this->defaults() as $key => $value) {
@@ -288,15 +279,29 @@ abstract class ValidatedDTO
      * Builds the validated data from the given data and the rules.
      *
      * @return array
+     *
+     * @throws InvalidCastableException
      */
     private function validatedData(): array
     {
         $acceptedKeys = array_keys($this->rules());
         $result = [];
 
+        /** @var array<Castable> $casts */
+        $casts = $this->casts();
+
         foreach ($this->data as $key => $value) {
             if (in_array($key, $acceptedKeys)) {
-                $result[$key] = $value;
+                if (! array_key_exists($key, $casts)) {
+                    $result[$key] = $value;
+                    continue;
+                }
+
+                if (! ($casts[$key] instanceof Castable)) {
+                    throw new InvalidCastableException($key);
+                }
+
+                $result[$key] = $casts[$key]->cast($value);
             }
         }
 
