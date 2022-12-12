@@ -4,6 +4,8 @@ services:
   app:
     image: wendelladriel/laravel-validated-dto
     container_name: laravel-validated-dto
+    stdin_open: true
+    tty: true
     build:
       context: .
       dockerfile: docker/Dockerfile
