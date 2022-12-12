@@ -390,9 +390,9 @@ protected function failedValidation(): void
 }
 ```
 
-## TO DO
+## Future changes (in development)
 
-- Create tests
+- Casting for the DTO properties
 
 ## Credits
 
