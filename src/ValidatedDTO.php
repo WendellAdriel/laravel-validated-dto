@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use WendellAdriel\ValidatedDTO\Casting\Castable;
-use WendellAdriel\ValidatedDTO\Exceptions\InvalidCastableException;
+use WendellAdriel\ValidatedDTO\Exceptions\CastTargetException;
 use WendellAdriel\ValidatedDTO\Exceptions\InvalidJsonException;
 
 abstract class ValidatedDTO
@@ -22,7 +22,7 @@ abstract class ValidatedDTO
     /**
      * @param  array  $data
      *
-     * @throws ValidationException|InvalidCastableException
+     * @throws ValidationException|CastTargetException
      */
     public function __construct(array $data)
     {
@@ -79,7 +79,7 @@ abstract class ValidatedDTO
      * @param  string  $json
      * @return ValidatedDTO
      *
-     * @throws InvalidJsonException|ValidationException|InvalidCastableException
+     * @throws InvalidJsonException|ValidationException|CastTargetException
      */
     public static function fromJson(string $json): ValidatedDTO
     {
@@ -97,7 +97,7 @@ abstract class ValidatedDTO
      * @param  Request  $request
      * @return ValidatedDTO
      *
-     * @throws ValidationException|InvalidCastableException
+     * @throws ValidationException|CastTargetException
      */
     public static function fromRequest(Request $request): ValidatedDTO
     {
@@ -110,7 +110,7 @@ abstract class ValidatedDTO
      * @param  Model  $model
      * @return ValidatedDTO
      *
-     * @throws ValidationException|InvalidCastableException
+     * @throws ValidationException|CastTargetException
      */
     public static function fromModel(Model $model): ValidatedDTO
     {
@@ -123,7 +123,7 @@ abstract class ValidatedDTO
      * @param  Command  $command
      * @return ValidatedDTO
      *
-     * @throws ValidationException|InvalidCastableException
+     * @throws ValidationException|CastTargetException
      */
     public static function fromCommandArguments(Command $command): ValidatedDTO
     {
@@ -136,7 +136,7 @@ abstract class ValidatedDTO
      * @param  Command  $command
      * @return ValidatedDTO
      *
-     * @throws ValidationException|InvalidCastableException
+     * @throws ValidationException|CastTargetException
      */
     public static function fromCommandOptions(Command $command): ValidatedDTO
     {
@@ -149,7 +149,7 @@ abstract class ValidatedDTO
      * @param  Command  $command
      * @return ValidatedDTO
      *
-     * @throws ValidationException|InvalidCastableException
+     * @throws ValidationException|CastTargetException
      */
     public static function fromCommand(Command $command): ValidatedDTO
     {
@@ -215,7 +215,7 @@ abstract class ValidatedDTO
      *
      * @return void
      *
-     * @throws InvalidCastableException
+     * @throws CastTargetException
      */
     protected function passedValidation(): void
     {
@@ -232,14 +232,15 @@ abstract class ValidatedDTO
                 if (! array_key_exists($key, $casts)) {
                     $this->{$key} = $value;
                     $this->validatedData[$key] = $value;
+
                     continue;
                 }
 
                 if (! ($casts[$key] instanceof Castable)) {
-                    throw new InvalidCastableException($key);
+                    throw new CastTargetException($key);
                 }
 
-                $formatted = $casts[$key]->cast($value);
+                $formatted = $casts[$key]->cast($key, $value);
                 $this->{$key} = $formatted;
                 $this->validatedData[$key] = $formatted;
             }
@@ -280,7 +281,7 @@ abstract class ValidatedDTO
      *
      * @return array
      *
-     * @throws InvalidCastableException
+     * @throws CastTargetException
      */
     private function validatedData(): array
     {
@@ -294,14 +295,15 @@ abstract class ValidatedDTO
             if (in_array($key, $acceptedKeys)) {
                 if (! array_key_exists($key, $casts)) {
                     $result[$key] = $value;
+
                     continue;
                 }
 
                 if (! ($casts[$key] instanceof Castable)) {
-                    throw new InvalidCastableException($key);
+                    throw new CastTargetException($key);
                 }
 
-                $result[$key] = $casts[$key]->cast($value);
+                $result[$key] = $casts[$key]->cast($key, $value);
             }
         }
 

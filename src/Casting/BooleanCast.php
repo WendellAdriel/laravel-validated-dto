@@ -5,10 +5,11 @@ namespace WendellAdriel\ValidatedDTO\Casting;
 class BooleanCast implements Castable
 {
     /**
-     * @param mixed $value
+     * @param  string  $property
+     * @param  mixed  $value
      * @return bool
      */
-    public function cast(mixed $value): bool
+    public function cast(string $property, mixed $value): bool
     {
         if (is_numeric($value)) {
             return $value > 0;

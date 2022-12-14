@@ -5,13 +5,13 @@ namespace WendellAdriel\ValidatedDTO\Exceptions;
 use Exception;
 use Symfony\Component\HttpFoundation\Response;
 
-class InvalidCastableException extends Exception
+class CastTargetException extends Exception
 {
     /**
      * @param  string  $property
      */
     public function __construct(string $property)
     {
-        parent::__construct("Property {$property} has an invalid cast configuration", Response::HTTP_UNPROCESSABLE_ENTITY);
+        parent::__construct("The property: {$property} has an invalid cast configuration", Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 }
