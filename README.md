@@ -403,7 +403,7 @@ protected function failedValidation(): void
 
 ## Type Casting
 
-You can easily cast your DTO properties defining a casts method in your DTO:
+You can easily cast your DTO properties by defining a casts method in your DTO:
 
 ```php
 /**
@@ -501,7 +501,7 @@ protected function casts(): array
 
 ### Collection
 
-For JSON strings, it will convert into an array first, before wrapping into a `Collection` object.
+For JSON strings, it will convert into an array first, before wrapping it into a `Collection` object.
 
 ```php
 protected function casts(): array
@@ -656,7 +656,7 @@ class URLCast implements Castable
 }
 ```
 
-Then you could apply this into your DTO:
+Then you could apply this to your DTO:
 
 ```php
 class CustomDTO extends ValidatedDTO
