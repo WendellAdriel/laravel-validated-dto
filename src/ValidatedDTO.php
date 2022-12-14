@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use WendellAdriel\ValidatedDTO\Casting\Castable;
+use WendellAdriel\ValidatedDTO\Exceptions\CastTargetException;
 use WendellAdriel\ValidatedDTO\Exceptions\InvalidJsonException;
 
 abstract class ValidatedDTO
@@ -20,7 +22,7 @@ abstract class ValidatedDTO
     /**
      * @param  array  $data
      *
-     * @throws ValidationException
+     * @throws ValidationException|CastTargetException
      */
     public function __construct(array $data)
     {
@@ -65,12 +67,19 @@ abstract class ValidatedDTO
     abstract protected function defaults(): array;
 
     /**
+     * Defines the type casting for the properties of the DTO.
+     *
+     * @return array
+     */
+    abstract protected function casts(): array;
+
+    /**
      * Creates a DTO instance from a valid JSON string.
      *
      * @param  string  $json
      * @return ValidatedDTO
      *
-     * @throws InvalidJsonException|ValidationException
+     * @throws InvalidJsonException|ValidationException|CastTargetException
      */
     public static function fromJson(string $json): ValidatedDTO
     {
@@ -88,7 +97,7 @@ abstract class ValidatedDTO
      * @param  Request  $request
      * @return ValidatedDTO
      *
-     * @throws ValidationException
+     * @throws ValidationException|CastTargetException
      */
     public static function fromRequest(Request $request): ValidatedDTO
     {
@@ -101,7 +110,7 @@ abstract class ValidatedDTO
      * @param  Model  $model
      * @return ValidatedDTO
      *
-     * @throws ValidationException
+     * @throws ValidationException|CastTargetException
      */
     public static function fromModel(Model $model): ValidatedDTO
     {
@@ -114,7 +123,7 @@ abstract class ValidatedDTO
      * @param  Command  $command
      * @return ValidatedDTO
      *
-     * @throws ValidationException
+     * @throws ValidationException|CastTargetException
      */
     public static function fromCommandArguments(Command $command): ValidatedDTO
     {
@@ -127,7 +136,7 @@ abstract class ValidatedDTO
      * @param  Command  $command
      * @return ValidatedDTO
      *
-     * @throws ValidationException
+     * @throws ValidationException|CastTargetException
      */
     public static function fromCommandOptions(Command $command): ValidatedDTO
     {
@@ -140,7 +149,7 @@ abstract class ValidatedDTO
      * @param  Command  $command
      * @return ValidatedDTO
      *
-     * @throws ValidationException
+     * @throws ValidationException|CastTargetException
      */
     public static function fromCommand(Command $command): ValidatedDTO
     {
@@ -205,10 +214,14 @@ abstract class ValidatedDTO
      * Handles a passed validation attempt.
      *
      * @return void
+     *
+     * @throws CastTargetException
      */
     protected function passedValidation(): void
     {
         $this->validatedData = $this->validatedData();
+        /** @var array<Castable> $casts */
+        $casts = $this->casts();
 
         foreach ($this->validatedData as $key => $value) {
             $this->{$key} = $value;
@@ -216,8 +229,20 @@ abstract class ValidatedDTO
 
         foreach ($this->defaults() as $key => $value) {
             if (! property_exists($this, $key)) {
-                $this->{$key} = $value;
-                $this->validatedData[$key] = $value;
+                if (! array_key_exists($key, $casts)) {
+                    $this->{$key} = $value;
+                    $this->validatedData[$key] = $value;
+
+                    continue;
+                }
+
+                if (! ($casts[$key] instanceof Castable)) {
+                    throw new CastTargetException($key);
+                }
+
+                $formatted = $casts[$key]->cast($key, $value);
+                $this->{$key} = $formatted;
+                $this->validatedData[$key] = $formatted;
             }
         }
     }
@@ -255,15 +280,30 @@ abstract class ValidatedDTO
      * Builds the validated data from the given data and the rules.
      *
      * @return array
+     *
+     * @throws CastTargetException
      */
     private function validatedData(): array
     {
         $acceptedKeys = array_keys($this->rules());
         $result = [];
 
+        /** @var array<Castable> $casts */
+        $casts = $this->casts();
+
         foreach ($this->data as $key => $value) {
             if (in_array($key, $acceptedKeys)) {
-                $result[$key] = $value;
+                if (! array_key_exists($key, $casts)) {
+                    $result[$key] = $value;
+
+                    continue;
+                }
+
+                if (! ($casts[$key] instanceof Castable)) {
+                    throw new CastTargetException($key);
+                }
+
+                $result[$key] = $casts[$key]->cast($key, $value);
             }
         }
 

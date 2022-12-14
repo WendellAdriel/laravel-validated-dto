@@ -27,6 +27,16 @@ class {{ class }} extends ValidatedDTO
     }
 
     /**
+     * Defines the type casting for the properties of the DTO.
+     *
+     * @return array
+     */
+    abstract protected function casts(): array
+    {
+        return [];
+    }
+
+    /**
      * Defines the custom messages for validator errors.
      *
      * @return array

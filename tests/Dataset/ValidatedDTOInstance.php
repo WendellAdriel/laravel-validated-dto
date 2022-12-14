@@ -18,4 +18,9 @@ class ValidatedDTOInstance extends ValidatedDTO
     {
         return [];
     }
+
+    protected function casts(): array
+    {
+        return [];
+    }
 }
