@@ -109,6 +109,16 @@ class CastableTest extends TestCase
 
         $this->expectException(CastException::class);
         $castable->cast($this->testProperty, 'TEST');
+
+        $castable = new CarbonCast('Europe/Lisbon', 'Y-m-d');
+
+        $date = date('Y-m-d');
+        $result = $castable->cast($this->testProperty, $date);
+        $this->assertInstanceOf(Carbon::class, $result);
+        $this->assertTrue($date === $result->format('Y-m-d'));
+
+        $this->expectException(CastException::class);
+        $castable->cast($this->testProperty, 'TEST');
     }
 
     public function testCastToCarbonImmutable()
@@ -138,6 +148,16 @@ class CastableTest extends TestCase
         $date = date('Y-m-d', strtotime('-1 days'));
         $result = $castable->cast($this->testProperty, '-1 days');
         $this->assertInstanceOf(CarbonImmutable::class, $result);
+        $this->assertTrue($date === $result->format('Y-m-d'));
+
+        $this->expectException(CastException::class);
+        $castable->cast($this->testProperty, 'TEST');
+
+        $castable = new CarbonImmutableCast('Europe/Lisbon', 'Y-m-d');
+
+        $date = date('Y-m-d');
+        $result = $castable->cast($this->testProperty, $date);
+        $this->assertInstanceOf(Carbon::class, $result);
         $this->assertTrue($date === $result->format('Y-m-d'));
 
         $this->expectException(CastException::class);

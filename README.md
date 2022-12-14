@@ -474,6 +474,17 @@ protected function casts(): array
 }
 ```
 
+You can also pass a format when defining the cast to be used to cast the value:
+
+```php
+protected function casts(): array
+{
+    return [
+        'property' => new CarbonCast('Europe/Lisbon', 'Y-m-d'),
+    ];
+}
+```
+
 ### CarbonImmutable
 
 This accepts any value accepted by the `CarbonImmutable` constructor. If an invalid value is found it will throw a
@@ -495,6 +506,17 @@ protected function casts(): array
 {
     return [
         'property' => new CarbonImmutableCast('Europe/Lisbon'),
+    ];
+}
+```
+
+You can also pass a format when defining the cast to be used to cast the value:
+
+```php
+protected function casts(): array
+{
+    return [
+        'property' => new CarbonImmutableCast('Europe/Lisbon', 'Y-m-d'),
     ];
 }
 ```

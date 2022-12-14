@@ -10,9 +10,12 @@ class CarbonImmutableCast implements Castable
 {
     /**
      * @param  string|null  $timezone
+     * @param  string|null  $format
      */
-    public function __construct(private ?string $timezone = null)
-    {
+    public function __construct(
+        private ?string $timezone = null,
+        private ?string $format = null
+    ) {
     }
 
     /**
@@ -25,7 +28,9 @@ class CarbonImmutableCast implements Castable
     public function cast(string $property, mixed $value): CarbonImmutable
     {
         try {
-            return new CarbonImmutable($value, $this->timezone);
+            return is_null($this->format)
+                ? CarbonImmutable::parse($value, $this->timezone)
+                : CarbonImmutable::createFromFormat($this->format, $value, $this->timezone);
         } catch (Throwable) {
             throw new CastException($property);
         }
