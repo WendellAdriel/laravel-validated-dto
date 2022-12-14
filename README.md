@@ -401,9 +401,286 @@ protected function failedValidation(): void
 }
 ```
 
-## Future changes (in development)
+## Type Casting
 
-- Casting for the DTO properties
+You can easily cast your DTO properties defining a casts method in your DTO:
+
+```php
+/**
+ * Defines the type casting for the properties of the DTO.
+ *
+ * @return array
+ */
+protected function casts(): array
+{
+    return [
+        'name' => new StringCast(),
+        'age'  => new IntegerCast(),
+        'created_at' => new CarbonImmutableCast(),
+    ];
+}
+```
+
+## Available Types
+
+### Array
+
+For JSON strings, it will convert into an array, for other types, it will wrap them in an array.
+
+```php
+protected function casts(): array
+{
+    return [
+        'property' => new ArrayCast(),
+    ];
+}
+```
+
+### Boolean
+
+For string values, this uses the `filter_var` function with the `FILTER_VALIDATE_BOOLEAN` flag.
+
+```php
+protected function casts(): array
+{
+    return [
+        'property' => new BooleanCast(),
+    ];
+}
+```
+
+### Carbon
+
+This accepts any value accepted by the `Carbon` constructor. If an invalid value is found it will throw a
+`\WendellAdriel\ValidatedDTO\Exceptions\CastException` exception.
+
+```php
+protected function casts(): array
+{
+    return [
+        'property' => new CarbonCast(),
+    ];
+}
+```
+
+You can also pass a timezone when defining the cast if you need that will be used when casting the value.
+
+```php
+protected function casts(): array
+{
+    return [
+        'property' => new CarbonCast('Europe/Lisbon'),
+    ];
+}
+```
+
+### CarbonImmutable
+
+This accepts any value accepted by the `CarbonImmutable` constructor. If an invalid value is found it will throw a
+`\WendellAdriel\ValidatedDTO\Exceptions\CastException` exception.
+
+```php
+protected function casts(): array
+{
+    return [
+        'property' => new CarbonImmutableCast(),
+    ];
+}
+```
+
+You can also pass a timezone when defining the cast if you need that will be used when casting the value.
+
+```php
+protected function casts(): array
+{
+    return [
+        'property' => new CarbonImmutableCast('Europe/Lisbon'),
+    ];
+}
+```
+
+### Collection
+
+For JSON strings, it will convert into an array first, before wrapping into a `Collection` object.
+
+```php
+protected function casts(): array
+{
+    return [
+        'property' => new CollectionCast(),
+    ];
+}
+```
+
+If you want to cast all the elements inside the `Collection`, you can pass a `Castable` to the `CollectionCast`
+constructor. Let's say that you want to convert all the items inside the `Collection` into integers:
+
+```php
+protected function casts(): array
+{
+    return [
+        'property' => new CollectionCast(new IntegerCast()),
+    ];
+}
+```
+
+This works with all `Castable`, including `DTOCast` and `ModelCast` for nested data.
+
+### DTO
+
+This works with arrays and JSON strings. This will validate the data and also cast the data for the given DTO.
+
+This will throw a `Illuminate\Validation\ValidationException` exception if the data is not valid for the DTO.
+
+This will throw a `WendellAdriel\ValidatedDTO\Exceptions\CastException` exception if the property is not a valid
+array or valid JSON string.
+
+This will throw a `WendellAdriel\ValidatedDTO\Exceptions\CastTargetException` exception if the class passed to the
+`DTOCast` constructor is not a `ValidatedDTO` instance.
+
+```php
+protected function casts(): array
+{
+    return [
+        'property' => new DTOCast(UserDTO::class),
+    ];
+}
+```
+
+### Float
+
+If a not numeric value is found, it will throw a `WendellAdriel\ValidatedDTO\Exceptions\CastException` exception.
+
+```php
+protected function casts(): array
+{
+    return [
+        'property' => new FloatCast(),
+    ];
+}
+```
+
+### Integer
+
+If a not numeric value is found, it will throw a `WendellAdriel\ValidatedDTO\Exceptions\CastException` exception.
+
+```php
+protected function casts(): array
+{
+    return [
+        'property' => new IntegerCast(),
+    ];
+}
+```
+
+### Model
+
+This works with arrays and JSON strings.
+
+This will throw a `WendellAdriel\ValidatedDTO\Exceptions\CastException` exception if the property is not a valid
+array or valid JSON string.
+
+This will throw a `WendellAdriel\ValidatedDTO\Exceptions\CastTargetException` exception if the class passed to the
+`ModelCast` constructor is not a `Model` instance.
+
+```php
+protected function casts(): array
+{
+    return [
+        'property' => new ModelCast(User::class),
+    ];
+}
+```
+
+### Object
+
+This works with arrays and JSON strings.
+
+This will throw a `WendellAdriel\ValidatedDTO\Exceptions\CastException` exception if the property is not a valid
+array or valid JSON string.
+
+```php
+protected function casts(): array
+{
+    return [
+        'property' => new ObjectCast(),
+    ];
+}
+```
+
+### String
+
+If the data can't be converted into a string, this will throw a `WendellAdriel\ValidatedDTO\Exceptions\CastException`
+exception.
+
+```php
+protected function casts(): array
+{
+    return [
+        'property' => new StringCast(),
+    ];
+}
+```
+
+## Create Your Own Type Cast
+
+You can easily create new `Castable` types for your project by implementing the `WendellAdriel\ValidatedDTO\Casting\Castable`
+interface. This interface has a single method that must be implemented:
+
+```php
+/**
+ * Casts the given value.
+ *
+ * @param  string  $property
+ * @param  mixed  $value
+ * @return mixed
+ */
+public function cast(string $property, mixed $value): mixed;
+```
+
+Let's say that you have a `URLWrapper` class in your project, and you want that when passing a URL into your
+`DTO` it will always return a `URLWrapper` instance instead of a simple string:
+
+```php
+class URLCast implements Castable
+{
+    /**
+     * @param  string  $property
+     * @param  mixed  $value
+     * @return URLWrapper
+     */
+    public function cast(string $property, mixed $value): URLWrapper
+    {
+        return new URLWrapper($value);
+    }
+}
+```
+
+Then you could apply this into your DTO:
+
+```php
+class CustomDTO extends ValidatedDTO
+{
+    protected function rules(): array
+    {
+        return [
+            'url' => ['required', 'url'],
+        ];
+    }
+
+    protected function defaults(): array
+    {
+        return [];
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'url' => new URLCast(),
+        ];
+    }
+}
+```
 
 ## Credits
 
