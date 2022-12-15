@@ -117,6 +117,10 @@ class CastableTest extends TestCase
         $this->assertInstanceOf(Carbon::class, $result);
         $this->assertTrue($date === $result->format('Y-m-d'));
 
+        $date = date('Y-m-d H:i:s');
+        $this->expectException(CastException::class);
+        $castable->cast($this->testProperty, $date);
+
         $this->expectException(CastException::class);
         $castable->cast($this->testProperty, 'TEST');
     }
@@ -159,6 +163,10 @@ class CastableTest extends TestCase
         $result = $castable->cast($this->testProperty, $date);
         $this->assertInstanceOf(Carbon::class, $result);
         $this->assertTrue($date === $result->format('Y-m-d'));
+
+        $date = date('Y-m-d H:i:s');
+        $this->expectException(CastException::class);
+        $castable->cast($this->testProperty, $date);
 
         $this->expectException(CastException::class);
         $castable->cast($this->testProperty, 'TEST');

@@ -474,7 +474,8 @@ protected function casts(): array
 }
 ```
 
-You can also pass a format when defining the cast to be used to cast the value:
+You can also pass a format when defining the cast to be used to cast the value. If the property has a different format than
+the specified it will throw a `\WendellAdriel\ValidatedDTO\Exceptions\CastException` exception.
 
 ```php
 protected function casts(): array
@@ -510,7 +511,8 @@ protected function casts(): array
 }
 ```
 
-You can also pass a format when defining the cast to be used to cast the value:
+You can also pass a format when defining the cast to be used to cast the value. If the property has a different format than
+the specified it will throw a `\WendellAdriel\ValidatedDTO\Exceptions\CastException` exception.
 
 ```php
 protected function casts(): array
