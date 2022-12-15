@@ -20,14 +20,12 @@ class CollectionCast implements Castable
      */
     public function cast(string $property, mixed $value): Collection
     {
-        if (is_string($value)) {
-            $jsonDecoded = json_decode($value, true);
-            if (is_array($jsonDecoded)) {
-                $value = $jsonDecoded;
-            }
-        }
+        $arrayCast = new ArrayCast();
+        $value = $arrayCast->cast($property, $value);
 
         return Collection::make($value)
-            ->map(fn ($item) => is_null($this->type) ? $item : $this->type->cast($property, $item));
+            ->when($this->type, function ($collection, $castable) use ($property) {
+                return $collection->map(fn ($item) => $castable->cast($property, $item));
+            });
     }
 }
