@@ -233,7 +233,10 @@ abstract class ValidatedDTO
         }
 
         foreach ($this->defaults() as $key => $value) {
-            if (! property_exists($this, $key)) {
+            if (
+                ! property_exists($this, $key) ||
+                empty($this->{$key})
+            ) {
                 if (! array_key_exists($key, $casts)) {
                     if ($this->requireCasting) {
                         throw new MissingCastTypeException($key);
