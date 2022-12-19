@@ -10,6 +10,7 @@ use Illuminate\Validation\ValidationException;
 use WendellAdriel\ValidatedDTO\Casting\Castable;
 use WendellAdriel\ValidatedDTO\Exceptions\CastTargetException;
 use WendellAdriel\ValidatedDTO\Exceptions\InvalidJsonException;
+use WendellAdriel\ValidatedDTO\Exceptions\MissingCastTypeException;
 
 abstract class ValidatedDTO
 {
@@ -17,16 +18,20 @@ abstract class ValidatedDTO
 
     protected array $validatedData = [];
 
+    protected bool $requireCasting = false;
+
     private \Illuminate\Contracts\Validation\Validator|\Illuminate\Validation\Validator $validator;
 
     /**
      * @param  array  $data
      *
-     * @throws ValidationException|CastTargetException
+     * @throws ValidationException|MissingCastTypeException|CastTargetException
      */
     public function __construct(array $data)
     {
         $this->data = $data;
+
+        $this->initConfig();
 
         $this->isValidData()
             ? $this->passedValidation()
@@ -79,7 +84,7 @@ abstract class ValidatedDTO
      * @param  string  $json
      * @return ValidatedDTO
      *
-     * @throws InvalidJsonException|ValidationException|CastTargetException
+     * @throws InvalidJsonException|ValidationException|MissingCastTypeException|CastTargetException
      */
     public static function fromJson(string $json): ValidatedDTO
     {
@@ -97,7 +102,7 @@ abstract class ValidatedDTO
      * @param  Request  $request
      * @return ValidatedDTO
      *
-     * @throws ValidationException|CastTargetException
+     * @throws ValidationException|MissingCastTypeException|CastTargetException
      */
     public static function fromRequest(Request $request): ValidatedDTO
     {
@@ -110,7 +115,7 @@ abstract class ValidatedDTO
      * @param  Model  $model
      * @return ValidatedDTO
      *
-     * @throws ValidationException|CastTargetException
+     * @throws ValidationException|MissingCastTypeException|CastTargetException
      */
     public static function fromModel(Model $model): ValidatedDTO
     {
@@ -123,7 +128,7 @@ abstract class ValidatedDTO
      * @param  Command  $command
      * @return ValidatedDTO
      *
-     * @throws ValidationException|CastTargetException
+     * @throws ValidationException|MissingCastTypeException|CastTargetException
      */
     public static function fromCommandArguments(Command $command): ValidatedDTO
     {
@@ -136,7 +141,7 @@ abstract class ValidatedDTO
      * @param  Command  $command
      * @return ValidatedDTO
      *
-     * @throws ValidationException|CastTargetException
+     * @throws ValidationException|MissingCastTypeException|CastTargetException
      */
     public static function fromCommandOptions(Command $command): ValidatedDTO
     {
@@ -149,7 +154,7 @@ abstract class ValidatedDTO
      * @param  Command  $command
      * @return ValidatedDTO
      *
-     * @throws ValidationException|CastTargetException
+     * @throws ValidationException|MissingCastTypeException|CastTargetException
      */
     public static function fromCommand(Command $command): ValidatedDTO
     {
@@ -215,7 +220,7 @@ abstract class ValidatedDTO
      *
      * @return void
      *
-     * @throws CastTargetException
+     * @throws MissingCastTypeException|CastTargetException
      */
     protected function passedValidation(): void
     {
@@ -230,6 +235,10 @@ abstract class ValidatedDTO
         foreach ($this->defaults() as $key => $value) {
             if (! property_exists($this, $key)) {
                 if (! array_key_exists($key, $casts)) {
+                    if ($this->requireCasting) {
+                        throw new MissingCastTypeException($key);
+                    }
+
                     $this->{$key} = $value;
                     $this->validatedData[$key] = $value;
 
@@ -260,6 +269,19 @@ abstract class ValidatedDTO
     }
 
     /**
+     * Inits the configuration for the DTOs.
+     *
+     * @return void
+     */
+    private function initConfig(): void
+    {
+        $config = config('dto');
+        if (! empty($config) && array_key_exists('require_casting', $config)) {
+            $this->requireCasting = $config['require_casting'];
+        }
+    }
+
+    /**
      * Checks if the data is valid for the DTO.
      *
      * @return bool
@@ -281,7 +303,7 @@ abstract class ValidatedDTO
      *
      * @return array
      *
-     * @throws CastTargetException
+     * @throws MissingCastTypeException|CastTargetException
      */
     private function validatedData(): array
     {
@@ -294,6 +316,9 @@ abstract class ValidatedDTO
         foreach ($this->data as $key => $value) {
             if (in_array($key, $acceptedKeys)) {
                 if (! array_key_exists($key, $casts)) {
+                    if ($this->requireCasting) {
+                        throw new MissingCastTypeException($key);
+                    }
                     $result[$key] = $value;
 
                     continue;

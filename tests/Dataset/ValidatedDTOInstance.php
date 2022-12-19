@@ -2,10 +2,16 @@
 
 namespace WendellAdriel\ValidatedDTO\Tests\Dataset;
 
+use WendellAdriel\ValidatedDTO\Casting\IntegerCast;
+use WendellAdriel\ValidatedDTO\Casting\StringCast;
 use WendellAdriel\ValidatedDTO\ValidatedDTO;
 
 class ValidatedDTOInstance extends ValidatedDTO
 {
+    public string $name;
+
+    public ?int $age = null;
+
     protected function rules(): array
     {
         return [
@@ -21,6 +27,9 @@ class ValidatedDTOInstance extends ValidatedDTO
 
     protected function casts(): array
     {
-        return [];
+        return [
+            'name' => new StringCast(),
+            'age' => new IntegerCast(),
+        ];
     }
 }

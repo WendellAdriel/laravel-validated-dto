@@ -5,21 +5,50 @@
 ## Documentation 
 [![Docs Button]][Docs Link]
 
+## Features
+
+- Easily integrate it with your current project
+- Data validation the same way you validate a **Request**
+- Easily define **custom validation messages**
+- Support for **typed properties**
+- **Type Casting** out-of-the-box for your DTOs properties
+- Easily create **custom Type Casters** for your own needs
+
 ## Installation
 
 ```
 composer require wendelladriel/laravel-validated-dto
 ```
 
-## Features
+## Configuration
 
-- Easily integrate it with your current project
-- Data validation the same way you validate a **Request**
-- Easily define **custom validation messages**
-- **Type Casting** out-of-the-box for your DTOs properties
-- Easily create **custom Type Casters** for your own needs
+Publish the config file:
 
-## Why to use this package
+```
+php artisan vendor:publish --provider="WendellAdriel\ValidatedDTO\Providers\ValidatedDTOServiceProvider" --tag=config
+```
+
+The configuration file will look like this:
+
+```php
+<?php
+
+return [
+    /*
+    |--------------------------------------------------------------------------
+    | REQUIRE CASTING
+    |--------------------------------------------------------------------------
+    |
+    | If this is set to true, you must configure a cast type for all properties of your DTOs.
+    | If a property doesn't have a cast type configured it will throw a
+    | \WendellAdriel\ValidatedDTO\Exceptions\MissingCastTypeException exception
+    |
+    */
+    'require_casting' => false,
+];
+```
+
+## Why use this package
 
 **Data Transfer Objects (DTOs)** are objects that are used to transfer data between systems. **DTOs** are typically used in applications to provide a simple, consistent format for transferring data between different parts of the application, such as **between the user interface and the business logic**.
 
@@ -39,17 +68,28 @@ php artisan make:dto UserDTO
 
 The `DTOs` are going to be created inside `app/DTOs`.
 
+## Defining DTO Properties
+
+You can define typed properties in your `DTO` outside the constructor:
+
+```php
+class UserDTO extends ValidatedDTO
+{
+    public string $name;
+
+    public string $email;
+
+    public string $password;
+}
+```
+
+Remind that the property types must be compatible with the **Cast Type** you define for them.
+
 ## Defining Validation Rules
 
 You can validate data in the same way you validate `Request` data:
 
 ```php
-<?php
-
-namespace App\DTOs;
-
-use Illuminate\Validation\Rules\Password;
-
 class UserDTO extends ValidatedDTO
 {
     /**
@@ -244,13 +284,6 @@ Sometimes we can have properties that are optional and that can have default val
 your `DTO` properties in the `defaults` function:
 
 ```php
-<?php
-
-namespace App\DTOs;
-
-use Illuminate\Support\Str;
-use Illuminate\Validation\Rules\Password;
-
 class UserDTO extends ValidatedDTO
 {
     /**
