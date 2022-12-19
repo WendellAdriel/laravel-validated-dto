@@ -2,6 +2,8 @@
 
 > Data Transfer Objects with validation for Laravel applications
 
+![Validated DTO class example](validated_dto.png)
+
 ## Documentation 
 [![Docs Button]][Docs Link]
 
