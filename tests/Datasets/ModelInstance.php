@@ -1,6 +1,6 @@
 <?php
 
-namespace WendellAdriel\ValidatedDTO\Tests\Dataset;
+namespace WendellAdriel\ValidatedDTO\Tests\Datasets;
 
 use Illuminate\Database\Eloquent\Model;
 

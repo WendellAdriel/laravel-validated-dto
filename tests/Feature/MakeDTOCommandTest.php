@@ -1,21 +1,7 @@
 <?php
 
-namespace WendellAdriel\ValidatedDTO\Tests\Feature;
-
-use WendellAdriel\ValidatedDTO\Tests\TestCase;
-
-class MakeDTOCommandTest extends TestCase
-{
-    public function testItCreatesANewValidatedDTOClass(): void
-    {
-        $dtoClass = app_path('DTOs/UserDTO.php');
-
-        $this->artisan('make:dto', ['name' => 'UserDTO'])
-            ->assertExitCode(0);
-
-        $this->assertTrue(file_exists($dtoClass));
-
-        $expectedContent = <<<CLASS
+it('validates that a new ValidatedDTO class is generated', function () {
+    $expectedContent = <<<CLASS
 <?php
 
 namespace App\DTOs;
@@ -67,6 +53,13 @@ class UserDTO extends ValidatedDTO
 
 CLASS;
 
-        $this->assertEquals($expectedContent, file_get_contents($dtoClass));
-    }
-}
+    $dtoClass = app_path('DTOs/UserDTO.php');
+
+    $this->artisan('make:dto', ['name' => 'UserDTO'])
+        ->assertExitCode(0);
+
+    $this->assertFileExists($dtoClass);
+
+    $contents = file_get_contents($dtoClass);
+    expect($contents)->toEqual($expectedContent);
+});

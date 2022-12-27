@@ -1,7 +1,5 @@
 <?php
 
-namespace WendellAdriel\ValidatedDTO\Tests\Unit;
-
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Model;
@@ -19,312 +17,333 @@ use WendellAdriel\ValidatedDTO\Casting\ObjectCast;
 use WendellAdriel\ValidatedDTO\Casting\StringCast;
 use WendellAdriel\ValidatedDTO\Exceptions\CastException;
 use WendellAdriel\ValidatedDTO\Exceptions\CastTargetException;
-use WendellAdriel\ValidatedDTO\Tests\Dataset\ModelInstance;
-use WendellAdriel\ValidatedDTO\Tests\Dataset\ValidatedDTOInstance;
-use WendellAdriel\ValidatedDTO\Tests\TestCase;
+use WendellAdriel\ValidatedDTO\Tests\Datasets\ModelInstance;
+use WendellAdriel\ValidatedDTO\Tests\Datasets\ValidatedDTOInstance;
 use WendellAdriel\ValidatedDTO\ValidatedDTO;
 
-class CastableTest extends TestCase
-{
-    private string $testProperty = 'test_property';
-
-    public function testCastToArray()
-    {
-        $castable = new ArrayCast();
-
-        $result = $castable->cast($this->testProperty, '{"name": "John Doe", "email": "john.doe@example.com"}');
-        $this->assertIsArray($result);
-        $this->assertEquals(['name' => 'John Doe', 'email' => 'john.doe@example.com'], $result);
-
-        $result = $castable->cast($this->testProperty, 'Test');
-        $this->assertIsArray($result);
-        $this->assertEquals(['Test'], $result);
-
-        $result = $castable->cast($this->testProperty, 1);
-        $this->assertIsArray($result);
-        $this->assertEquals([1], $result);
-
-        $result = $castable->cast($this->testProperty, ['A', 1]);
-        $this->assertIsArray($result);
-        $this->assertEquals(['A', 1], $result);
-    }
-
-    public function testCastToBoolean()
-    {
-        $castable = new BooleanCast();
-
-        $result = $castable->cast($this->testProperty, 1);
-        $this->assertIsBool($result);
-        $this->assertTrue($result);
-
-        $result = $castable->cast($this->testProperty, 'true');
-        $this->assertIsBool($result);
-        $this->assertTrue($result);
+const TEST_PROPERTY = 'test_property';
+
+it('casts to array', function () {
+    $castable = new ArrayCast();
+
+    $result = $castable->cast(TEST_PROPERTY, '{"name": "John Doe", "email": "john.doe@example.com"}');
+    expect($result)
+        ->toBeArray()
+        ->toEqual(['name' => 'John Doe', 'email' => 'john.doe@example.com']);
+
+    $result = $castable->cast(TEST_PROPERTY, 'Test');
+    expect($result)
+        ->toBeArray()
+        ->toEqual(['Test']);
+
+    $result = $castable->cast(TEST_PROPERTY, 1);
+    expect($result)
+        ->toBeArray()
+        ->toEqual([1]);
+
+    $result = $castable->cast(TEST_PROPERTY, ['A', 1]);
+    expect($result)
+        ->toBeArray()
+        ->toEqual(['A', 1]);
+});
+
+it('casts to boolean', function () {
+    $castable = new BooleanCast();
+
+    $result = $castable->cast(TEST_PROPERTY, 1);
+    expect($result)
+        ->toBeBool()
+        ->toBeTrue();
+
+    $result = $castable->cast(TEST_PROPERTY, 'true');
+    expect($result)
+        ->toBeBool()
+        ->toBeTrue();
+
+    $result = $castable->cast(TEST_PROPERTY, 'yes');
+    expect($result)
+        ->toBeBool()
+        ->toBeTrue();
+
+    $result = $castable->cast(TEST_PROPERTY, 0);
+    expect($result)
+        ->toBeBool()
+        ->toBeFalse();
+
+    $result = $castable->cast(TEST_PROPERTY, 'false');
+    expect($result)
+        ->toBeBool()
+        ->toBeFalse();
+
+    $result = $castable->cast(TEST_PROPERTY, 'no');
+    expect($result)
+        ->toBeBool()
+        ->toBeFalse();
+});
+
+it('casts to carbon', function () {
+    $castable = new CarbonCast();
+
+    $date = date('Y-m-d');
+    $result = $castable->cast(TEST_PROPERTY, $date);
+    expect($result)->toBeInstanceOf(Carbon::class);
+    $result = $result->format('Y-m-d');
+    expect($result)->toBe($date);
+
+    $date = date('Y-m-d', strtotime('-1 days'));
+    $result = $castable->cast(TEST_PROPERTY, '-1 days');
+    expect($result)->toBeInstanceOf(Carbon::class);
+    $result = $result->format('Y-m-d');
+    expect($result)->toBe($date);
+
+    $this->expectException(CastException::class);
+    $castable->cast(TEST_PROPERTY, 'TEST');
+
+    $castable = new CarbonCast('Europe/Lisbon');
+
+    $date = date('Y-m-d');
+    $result = $castable->cast(TEST_PROPERTY, $date);
+    expect($result)->toBeInstanceOf(Carbon::class);
+    $result = $result->format('Y-m-d');
+    expect($result)->toBe($date);
+
+    $date = date('Y-m-d', strtotime('-1 days'));
+    $result = $castable->cast(TEST_PROPERTY, '-1 days');
+    expect($result)->toBeInstanceOf(Carbon::class);
+    $result = $result->format('Y-m-d');
+    expect($result)->toBe($date);
+
+    $this->expectException(CastException::class);
+    $castable->cast(TEST_PROPERTY, 'TEST');
+
+    $castable = new CarbonCast('Europe/Lisbon', 'Y-m-d');
+
+    $date = date('Y-m-d');
+    $result = $castable->cast(TEST_PROPERTY, $date);
+    expect($result)->toBeInstanceOf(Carbon::class);
+    $result = $result->format('Y-m-d');
+    expect($result)->toBe($date);
+
+    $date = date('Y-m-d H:i:s');
+    $this->expectException(CastException::class);
+    $castable->cast(TEST_PROPERTY, $date);
+
+    $this->expectException(CastException::class);
+    $castable->cast(TEST_PROPERTY, 'TEST');
+});
+
+it('casts to carbon immutable', function () {
+    $castable = new CarbonImmutableCast();
+
+    $date = date('Y-m-d');
+    $result = $castable->cast(TEST_PROPERTY, $date);
+    expect($result)->toBeInstanceOf(CarbonImmutable::class);
+    $result = $result->format('Y-m-d');
+    expect($result)->toBe($date);
+
+    $date = date('Y-m-d', strtotime('-1 days'));
+    $result = $castable->cast(TEST_PROPERTY, '-1 days');
+    expect($result)->toBeInstanceOf(CarbonImmutable::class);
+    $result = $result->format('Y-m-d');
+    expect($result)->toBe($date);
+
+    $this->expectException(CastException::class);
+    $castable->cast(TEST_PROPERTY, 'TEST');
+
+    $castable = new CarbonImmutableCast('Europe/Lisbon');
+
+    $date = date('Y-m-d');
+    $result = $castable->cast(TEST_PROPERTY, $date);
+    expect($result)->toBeInstanceOf(CarbonImmutable::class);
+    $result = $result->format('Y-m-d');
+    expect($result)->toBe($date);
+
+    $date = date('Y-m-d', strtotime('-1 days'));
+    $result = $castable->cast(TEST_PROPERTY, '-1 days');
+    expect($result)->toBeInstanceOf(CarbonImmutable::class);
+    $result = $result->format('Y-m-d');
+    expect($result)->toBe($date);
+
+    $this->expectException(CastException::class);
+    $castable->cast(TEST_PROPERTY, 'TEST');
+
+    $castable = new CarbonImmutableCast('Europe/Lisbon', 'Y-m-d');
+
+    $date = date('Y-m-d');
+    $result = $castable->cast(TEST_PROPERTY, $date);
+    expect($result)->toBeInstanceOf(CarbonImmutable::class);
+    $result = $result->format('Y-m-d');
+    expect($result)->toBe($date);
+
+    $date = date('Y-m-d H:i:s');
+    $this->expectException(CastException::class);
+    $castable->cast(TEST_PROPERTY, $date);
+
+    $this->expectException(CastException::class);
+    $castable->cast(TEST_PROPERTY, 'TEST');
+});
+
+it('casts to collection', function () {
+    $castable = new CollectionCast();
 
-        $result = $castable->cast($this->testProperty, 'yes');
-        $this->assertIsBool($result);
-        $this->assertTrue($result);
+    $result = $castable->cast(TEST_PROPERTY, '{"name": "John Doe", "email": "john.doe@example.com"}');
+    expect($result)->toBeInstanceOf(Collection::class);
+    $result = $result->toArray();
+    expect($result)->toEqual(['name' => 'John Doe', 'email' => 'john.doe@example.com']);
+
+    $result = $castable->cast(TEST_PROPERTY, 'Test');
+    expect($result)->toBeInstanceOf(Collection::class);
+    $result = $result->toArray();
+    expect($result)->toEqual(['Test']);
+
+    $result = $castable->cast(TEST_PROPERTY, 1);
+    expect($result)->toBeInstanceOf(Collection::class);
+    $result = $result->toArray();
+    expect($result)->toEqual([1]);
 
-        $result = $castable->cast($this->testProperty, 0);
-        $this->assertIsBool($result);
-        $this->assertNotTrue($result);
+    $result = $castable->cast(TEST_PROPERTY, ['A', 1]);
+    expect($result)->toBeInstanceOf(Collection::class);
+    $result = $result->toArray();
+    expect($result)->toEqual(['A', 1]);
 
-        $result = $castable->cast($this->testProperty, 'false');
-        $this->assertIsBool($result);
-        $this->assertNotTrue($result);
+    $castable = new CollectionCast(new BooleanCast());
 
-        $result = $castable->cast($this->testProperty, 'no');
-        $this->assertIsBool($result);
-        $this->assertNotTrue($result);
-    }
-
-    public function testCastToCarbon()
-    {
-        $castable = new CarbonCast();
-
-        $date = date('Y-m-d');
-        $result = $castable->cast($this->testProperty, $date);
-        $this->assertInstanceOf(Carbon::class, $result);
-        $this->assertTrue($date === $result->format('Y-m-d'));
-
-        $date = date('Y-m-d', strtotime('-1 days'));
-        $result = $castable->cast($this->testProperty, '-1 days');
-        $this->assertInstanceOf(Carbon::class, $result);
-        $this->assertTrue($date === $result->format('Y-m-d'));
-
-        $this->expectException(CastException::class);
-        $castable->cast($this->testProperty, 'TEST');
+    $result = $castable->cast(TEST_PROPERTY, [1, 'true', 'yes']);
+    expect($result)->toBeInstanceOf(Collection::class);
+    $result = $result->toArray();
+    expect($result)->toEqual([true, true, true]);
 
-        $castable = new CarbonCast('Europe/Lisbon');
+    $castable = new CollectionCast(new IntegerCast());
+
+    $result = $castable->cast(TEST_PROPERTY, ['1', '5', '10']);
+    expect($result)->toBeInstanceOf(Collection::class);
+    $result = $result->toArray();
+    expect($result)->toEqual([1, 5, 10]);
+
+    $castable = new CollectionCast(new DTOCast(ValidatedDTOInstance::class));
 
-        $date = date('Y-m-d');
-        $result = $castable->cast($this->testProperty, $date);
-        $this->assertInstanceOf(Carbon::class, $result);
-        $this->assertTrue($date === $result->format('Y-m-d'));
+    $dataToCast = [
+        ['name' => 'John Doe', 'age' => 30],
+        ['name' => 'Mary Doe', 'age' => 25],
+    ];
+
+    $johnDto = new ValidatedDTOInstance(['name' => 'John Doe', 'age' => 30]);
+    $maryDto = new ValidatedDTOInstance(['name' => 'Mary Doe', 'age' => 25]);
 
-        $date = date('Y-m-d', strtotime('-1 days'));
-        $result = $castable->cast($this->testProperty, '-1 days');
-        $this->assertInstanceOf(Carbon::class, $result);
-        $this->assertTrue($date === $result->format('Y-m-d'));
-
-        $this->expectException(CastException::class);
-        $castable->cast($this->testProperty, 'TEST');
-
-        $castable = new CarbonCast('Europe/Lisbon', 'Y-m-d');
-
-        $date = date('Y-m-d');
-        $result = $castable->cast($this->testProperty, $date);
-        $this->assertInstanceOf(Carbon::class, $result);
-        $this->assertTrue($date === $result->format('Y-m-d'));
-
-        $date = date('Y-m-d H:i:s');
-        $this->expectException(CastException::class);
-        $castable->cast($this->testProperty, $date);
-
-        $this->expectException(CastException::class);
-        $castable->cast($this->testProperty, 'TEST');
-    }
-
-    public function testCastToCarbonImmutable()
-    {
-        $castable = new CarbonImmutableCast();
-
-        $date = date('Y-m-d');
-        $result = $castable->cast($this->testProperty, $date);
-        $this->assertInstanceOf(CarbonImmutable::class, $result);
-        $this->assertTrue($date === $result->format('Y-m-d'));
-
-        $date = date('Y-m-d', strtotime('-1 days'));
-        $result = $castable->cast($this->testProperty, '-1 days');
-        $this->assertInstanceOf(CarbonImmutable::class, $result);
-        $this->assertTrue($date === $result->format('Y-m-d'));
-
-        $this->expectException(CastException::class);
-        $castable->cast($this->testProperty, 'TEST');
-
-        $castable = new CarbonImmutableCast('Europe/Lisbon');
-
-        $date = date('Y-m-d');
-        $result = $castable->cast($this->testProperty, $date);
-        $this->assertInstanceOf(CarbonImmutable::class, $result);
-        $this->assertTrue($date === $result->format('Y-m-d'));
-
-        $date = date('Y-m-d', strtotime('-1 days'));
-        $result = $castable->cast($this->testProperty, '-1 days');
-        $this->assertInstanceOf(CarbonImmutable::class, $result);
-        $this->assertTrue($date === $result->format('Y-m-d'));
-
-        $this->expectException(CastException::class);
-        $castable->cast($this->testProperty, 'TEST');
-
-        $castable = new CarbonImmutableCast('Europe/Lisbon', 'Y-m-d');
-
-        $date = date('Y-m-d');
-        $result = $castable->cast($this->testProperty, $date);
-        $this->assertInstanceOf(Carbon::class, $result);
-        $this->assertTrue($date === $result->format('Y-m-d'));
-
-        $date = date('Y-m-d H:i:s');
-        $this->expectException(CastException::class);
-        $castable->cast($this->testProperty, $date);
-
-        $this->expectException(CastException::class);
-        $castable->cast($this->testProperty, 'TEST');
-    }
-
-    public function testCastToCollection()
-    {
-        $castable = new CollectionCast();
-
-        $result = $castable->cast($this->testProperty, '{"name": "John Doe", "email": "john.doe@example.com"}');
-        $this->assertInstanceOf(Collection::class, $result);
-        $this->assertEquals(['name' => 'John Doe', 'email' => 'john.doe@example.com'], $result->toArray());
-
-        $result = $castable->cast($this->testProperty, 'Test');
-        $this->assertInstanceOf(Collection::class, $result);
-        $this->assertEquals(['Test'], $result->toArray());
-
-        $result = $castable->cast($this->testProperty, 1);
-        $this->assertInstanceOf(Collection::class, $result);
-        $this->assertEquals([1], $result->toArray());
-
-        $result = $castable->cast($this->testProperty, ['A', 1]);
-        $this->assertInstanceOf(Collection::class, $result);
-        $this->assertEquals(['A', 1], $result->toArray());
-
-        $castable = new CollectionCast(new BooleanCast());
-
-        $result = $castable->cast($this->testProperty, [1, 'true', 'yes']);
-        $this->assertInstanceOf(Collection::class, $result);
-        $this->assertEquals([true, true, true], $result->toArray());
-
-        $castable = new CollectionCast(new IntegerCast());
-
-        $result = $castable->cast($this->testProperty, ['1', '5', '10']);
-        $this->assertInstanceOf(Collection::class, $result);
-        $this->assertEquals([1, 5, 10], $result->toArray());
-
-        $castable = new CollectionCast(new DTOCast(ValidatedDTOInstance::class));
-
-        $dataToCast = [
-            ['name' => 'John Doe', 'age' => 30],
-            ['name' => 'Mary Doe', 'age' => 25],
-        ];
-
-        $johnDto = new ValidatedDTOInstance(['name' => 'John Doe', 'age' => 30]);
-        $maryDto = new ValidatedDTOInstance(['name' => 'Mary Doe', 'age' => 25]);
-
-        $result = $castable->cast($this->testProperty, $dataToCast);
-        $this->assertInstanceOf(Collection::class, $result);
-        $this->assertEquals(
-            [$johnDto->toArray(), $maryDto->toArray()],
-            $result->map(fn (ValidatedDTO $dto) => $dto->toArray())->toArray()
-        );
-    }
-
-    public function testCastToDTO()
-    {
-        $castable = new DTOCast(ValidatedDTOInstance::class);
-
-        $result = $castable->cast($this->testProperty, '{"name": "John Doe", "age": 30}');
-        $this->assertInstanceOf(ValidatedDTO::class, $result);
-        $this->assertEquals(['name' => 'John Doe', 'age' => 30], $result->toArray());
-
-        $result = $castable->cast($this->testProperty, ['name' => 'John Doe', 'age' => 30]);
-        $this->assertInstanceOf(ValidatedDTO::class, $result);
-        $this->assertEquals(['name' => 'John Doe', 'age' => 30], $result->toArray());
-
-        $this->expectException(CastException::class);
-        $castable->cast($this->testProperty, 'TEST');
-
-        $castable = new DTOCast(Model::class);
-
-        $this->expectException(CastTargetException::class);
-        $castable->cast($this->testProperty, ['name' => 'John Doe', 'age' => 30]);
-    }
-
-    public function testCastToFloat()
-    {
-        $castable = new FloatCast();
-
-        $result = $castable->cast($this->testProperty, '10.5');
-        $this->assertIsFloat($result);
-        $this->assertEquals(10.5, $result);
-
-        $this->expectException(CastException::class);
-        $castable->cast($this->testProperty, 'TEST');
-    }
-
-    public function testCastToInteger()
-    {
-        $castable = new IntegerCast();
-
-        $result = $castable->cast($this->testProperty, '5');
-        $this->assertIsInt($result);
-        $this->assertEquals(5, $result);
-
-        $this->expectException(CastException::class);
-        $castable->cast($this->testProperty, 'TEST');
-    }
-
-    public function testCastToModel()
-    {
-        $castable = new ModelCast(ModelInstance::class);
-
-        $result = $castable->cast($this->testProperty, '{"name": "John Doe", "age": 30}');
-        $this->assertInstanceOf(Model::class, $result);
-        $this->assertEquals(['name' => 'John Doe', 'age' => 30], $result->toArray());
-
-        $result = $castable->cast($this->testProperty, ['name' => 'John Doe', 'age' => 30]);
-        $this->assertInstanceOf(Model::class, $result);
-        $this->assertEquals(['name' => 'John Doe', 'age' => 30], $result->toArray());
-
-        $this->expectException(CastException::class);
-        $castable->cast($this->testProperty, 'TEST');
-
-        $castable = new ModelCast(ValidatedDTOInstance::class);
-
-        $this->expectException(CastTargetException::class);
-        $castable->cast($this->testProperty, ['name' => 'John Doe', 'age' => 30]);
-    }
-
-    public function testCastToObject()
-    {
-        $castable = new ObjectCast();
-
-        $result = $castable->cast($this->testProperty, '{"name": "John Doe", "email": "john.doe@example.com"}');
-        $this->assertIsObject($result);
-        $this->assertEquals((object) ['name' => 'John Doe', 'email' => 'john.doe@example.com'], $result);
-
-        $result = $castable->cast($this->testProperty, ['name' => 'John Doe', 'email' => 'john.doe@example.com']);
-        $this->assertIsObject($result);
-        $this->assertEquals((object) ['name' => 'John Doe', 'email' => 'john.doe@example.com'], $result);
-
-        $this->expectException(CastException::class);
-        $castable->cast($this->testProperty, 'TEST');
-    }
-
-    public function testCastToString()
-    {
-        $castable = new StringCast();
-
-        $result = $castable->cast($this->testProperty, 5);
-        $this->assertIsString($result);
-        $this->assertEquals('5', $result);
-
-        $result = $castable->cast($this->testProperty, 10.5);
-        $this->assertIsString($result);
-        $this->assertEquals('10.5', $result);
-
-        $result = $castable->cast($this->testProperty, true);
-        $this->assertIsString($result);
-        $this->assertEquals('1', $result);
-
-        $result = $castable->cast($this->testProperty, false);
-        $this->assertIsString($result);
-        $this->assertEquals('', $result);
-
-        $this->expectException(CastException::class);
-        $castable->cast($this->testProperty, ['name' => 'John Doe']);
-    }
-}
+    $result = $castable->cast(TEST_PROPERTY, $dataToCast);
+    expect($result)->toBeInstanceOf(Collection::class);
+    $result = $result->map(fn (ValidatedDTO $dto) => $dto->toArray())->toArray();
+    expect($result)->toEqual([$johnDto->toArray(), $maryDto->toArray()]);
+});
+
+it('casts to DTO', function () {
+    $castable = new DTOCast(ValidatedDTOInstance::class);
+
+    $result = $castable->cast(TEST_PROPERTY, '{"name": "John Doe", "age": 30}');
+    expect($result)->toBeInstanceOf(ValidatedDTO::class);
+    $result = $result->toArray();
+    expect($result)->toEqual(['name' => 'John Doe', 'age' => 30]);
+
+    $result = $castable->cast(TEST_PROPERTY, ['name' => 'John Doe', 'age' => 30]);
+    expect($result)->toBeInstanceOf(ValidatedDTO::class);
+    $result = $result->toArray();
+    expect($result)->toEqual(['name' => 'John Doe', 'age' => 30]);
+
+    $this->expectException(CastException::class);
+    $castable->cast(TEST_PROPERTY, 'TEST');
+
+    $castable = new DTOCast(Model::class);
+
+    $this->expectException(CastTargetException::class);
+    $castable->cast(TEST_PROPERTY, ['name' => 'John Doe', 'age' => 30]);
+});
+
+it('casts to float', function () {
+    $castable = new FloatCast();
+
+    $result = $castable->cast(TEST_PROPERTY, '10.5');
+    expect($result)
+        ->toBeFloat()
+        ->toBe(10.5);
+
+    $this->expectException(CastException::class);
+    $castable->cast(TEST_PROPERTY, 'TEST');
+});
+
+it('casts to integer', function () {
+    $castable = new IntegerCast();
+
+    $result = $castable->cast(TEST_PROPERTY, '5');
+    expect($result)
+        ->toBeInt()
+        ->toBe(5);
+
+    $this->expectException(CastException::class);
+    $castable->cast(TEST_PROPERTY, 'TEST');
+});
+
+it('casts to model', function () {
+    $castable = new ModelCast(ModelInstance::class);
+
+    $result = $castable->cast(TEST_PROPERTY, '{"name": "John Doe", "age": 30}');
+    expect($result)->toBeInstanceOf(Model::class);
+    $result = $result->toArray();
+    expect($result)->toEqual(['name' => 'John Doe', 'age' => 30]);
+
+    $result = $castable->cast(TEST_PROPERTY, ['name' => 'John Doe', 'age' => 30]);
+    expect($result)->toBeInstanceOf(Model::class);
+    $result = $result->toArray();
+    expect($result)->toEqual(['name' => 'John Doe', 'age' => 30]);
+
+    $this->expectException(CastException::class);
+    $castable->cast(TEST_PROPERTY, 'TEST');
+
+    $castable = new ModelCast(ValidatedDTOInstance::class);
+
+    $this->expectException(CastTargetException::class);
+    $castable->cast(TEST_PROPERTY, ['name' => 'John Doe', 'age' => 30]);
+});
+
+it('casts to object', function () {
+    $castable = new ObjectCast();
+
+    $result = $castable->cast(TEST_PROPERTY, '{"name": "John Doe", "email": "john.doe@example.com"}');
+    expect($result)
+        ->toBeObject()
+        ->toEqual((object) ['name' => 'John Doe', 'email' => 'john.doe@example.com']);
+
+    $result = $castable->cast(TEST_PROPERTY, ['name' => 'John Doe', 'email' => 'john.doe@example.com']);
+    expect($result)
+        ->toBeObject()
+        ->toEqual((object) ['name' => 'John Doe', 'email' => 'john.doe@example.com']);
+
+    $this->expectException(CastException::class);
+    $castable->cast(TEST_PROPERTY, 'TEST');
+});
+
+it('casts to string', function () {
+    $castable = new StringCast();
+
+    $result = $castable->cast(TEST_PROPERTY, 5);
+    expect($result)
+        ->toBeString()
+        ->toBe('5');
+
+    $result = $castable->cast(TEST_PROPERTY, 10.5);
+    expect($result)
+        ->toBeString()
+        ->toBe('10.5');
+
+    $result = $castable->cast(TEST_PROPERTY, true);
+    expect($result)
+        ->toBeString()
+        ->toBe('1');
+
+    $result = $castable->cast(TEST_PROPERTY, false);
+    expect($result)
+        ->toBeString()
+        ->toBe('');
+
+    $this->expectException(CastException::class);
+    $castable->cast(TEST_PROPERTY, ['name' => 'John Doe']);
+});

@@ -20,8 +20,8 @@ composer: ## Run composer commands. Specify the command e.g. via "make composer 
 lint: ## Run the Linter
 	docker-compose run app ./vendor/bin/pint
 
-test: ## Run the tests
-	docker-compose run app ./vendor/bin/phpunit tests
+test: ## Run the tests. Apply arguments via make test ARGS="--init"
+	docker-compose run app ./vendor/bin/pest $(ARGS)
 
 prepare: ## Run the Linter
-	docker-compose run app ./vendor/bin/pint && docker-compose run app ./vendor/bin/phpunit tests
+	docker-compose run app ./vendor/bin/pint && docker-compose run app ./vendor/bin/pest

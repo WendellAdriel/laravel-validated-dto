@@ -4,3 +4,4 @@
 /.vagrant
 /.phpstorm.*
 composer.lock
+.phpunit.result.cache

@@ -1,238 +1,200 @@
 <?php
 
-namespace WendellAdriel\ValidatedDTO\Tests\Unit;
-
 use Illuminate\Console\Application;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use function Pest\Faker\faker;
 use WendellAdriel\ValidatedDTO\Exceptions\InvalidJsonException;
-use WendellAdriel\ValidatedDTO\Tests\Dataset\ValidatedDTOInstance;
-use WendellAdriel\ValidatedDTO\Tests\TestCase;
+use WendellAdriel\ValidatedDTO\Tests\Datasets\ValidatedDTOInstance;
 use WendellAdriel\ValidatedDTO\ValidatedDTO;
 
-class ValidatedDTOTest extends TestCase
-{
-    use WithFaker;
+beforeEach(function () {
+    $this->subject_name = faker()->name;
+});
 
-    private string $subject_name;
+it('instantiates a ValidatedDTO validating its data', function () {
+    $validatedDTO = new ValidatedDTOInstance(['name' => $this->subject_name]);
 
-    public function setUp(): void
+    expect($validatedDTO)->toBeInstanceOf(ValidatedDTO::class)
+        ->and($validatedDTO->validatedData)
+        ->toEqual(['name' => $this->subject_name])
+        ->and($validatedDTO->validator->passes())
+        ->toBeTrue();
+});
+
+it('throws exception when trying to instantiate a ValidatedDTO with invalid data', function () {
+    new ValidatedDTOInstance([]);
+})->throws(ValidationException::class);
+
+it('validates that is possible to set a property in a ValidatedDTO', function () {
+    $validatedDTO = new ValidatedDTOInstance(['name' => $this->subject_name]);
+
+    $validatedDTO->age = 30;
+
+    expect($validatedDTO->age)->toBe(30);
+});
+
+it('returns null when trying to access a property that does not exist', function () {
+    $validatedDTO = new ValidatedDTOInstance(['name' => $this->subject_name]);
+
+    expect($validatedDTO->age)->toBeNull();
+});
+
+it('validates that a ValidatedDTO can be instantiated from a JSON string', function () {
+    $validatedDTO = ValidatedDTOInstance::fromJson('{"name": "'.$this->subject_name.'"}');
+
+    expect($validatedDTO->validatedData)
+        ->toEqual(['name' => $this->subject_name])
+        ->and($validatedDTO->validator->passes())
+        ->toBeTrue();
+});
+
+it('throws exception when trying to instantiate a ValidatedDTO from an invalid JSON string', function () {
+    ValidatedDTOInstance::fromJson('{"name": "'.$this->subject_name.'"');
+})->throws(InvalidJsonException::class);
+
+it('validates that a ValidatedDTO can be instantiated from a Request', function () {
+    $request = new Request(['name' => $this->subject_name]);
+
+    $validatedDTO = ValidatedDTOInstance::fromRequest($request);
+
+    expect($validatedDTO->validatedData)
+        ->toEqual(['name' => $this->subject_name])
+        ->and($validatedDTO->validator->passes())
+        ->toBeTrue();
+});
+
+it('validates that a ValidatedDTO can be instantiated from an Eloquent Model', function () {
+    $model = new class() extends Model
     {
-        parent::setUp();
-        $this->subject_name = $this->faker->name();
-    }
+        protected $fillable = ['name'];
+    };
 
-    public function testAValidatedDTOIsConstructedValidatingItsData(): void
+    $model->fill(['name' => $this->subject_name]);
+
+    $validatedDTO = ValidatedDTOInstance::fromModel($model);
+
+    expect($validatedDTO->validatedData)
+        ->toEqual(['name' => $this->subject_name])
+        ->and($validatedDTO->validator->passes())
+        ->toBeTrue();
+});
+
+it('validates that a ValidatedDTO can be instantiated from Command arguments', function () {
+    $command = new class() extends Command
     {
-        $validatedDTO = new ValidatedDTOInstance(['name' => $this->subject_name]);
+        protected $signature
+            = 'test:command
+            {name : The name of the user}';
 
-        $this->assertInstanceOf(ValidatedDTO::class, $validatedDTO);
-        $this->assertEquals(
-            ['name' => $this->subject_name],
-            $validatedDTO->validatedData
-        );
-        $this->assertTrue($validatedDTO->validator->passes());
-    }
-
-    public function testConstructingAValidatedDTOWithInvalidDataThrowsAnException(): void
-    {
-        $this->expectException(ValidationException::class);
-
-        new ValidatedDTOInstance([]);
-    }
-
-    public function testItIsPossibleToSetAPropertyInAValidatedDTO(): void
-    {
-        $validatedDTO = new ValidatedDTOInstance(['name' => $this->subject_name]);
-
-        $validatedDTO->age = 30;
-
-        $this->assertEquals(30, $validatedDTO->age);
-    }
-
-    public function testNullWillBeReturnedWhenTryingToGetAPropertyThatDoesNotExist(): void
-    {
-        $validatedDTO = new ValidatedDTOInstance(['name' => $this->subject_name]);
-
-        $this->assertNull($validatedDTO->age);
-    }
-
-    public function testAValidatedDTOCanBeConstructedFromJson(): void
-    {
-        $validatedDTO = ValidatedDTOInstance::fromJson(
-            '{"name": "'.$this->subject_name.'"}'
-        );
-
-        $this->assertEquals(
-            ['name' => $this->subject_name],
-            $validatedDTO->validatedData
-        );
-        $this->assertTrue($validatedDTO->validator->passes());
-    }
-
-    public function testConstructingAValidatedDTOFromInvalidJsonThrowsAnException(): void
-    {
-        $this->expectException(InvalidJsonException::class);
-
-        ValidatedDTOInstance::fromJson(
-            '{"name": "'.$this->subject_name.'"'
-        );
-    }
-
-    public function testAValidatedDTOCanBeConstructedFromARequest(): void
-    {
-        $request = new Request(['name' => $this->subject_name]);
-
-        $validatedDTO = ValidatedDTOInstance::fromRequest($request);
-
-        $this->assertEquals(
-            ['name' => $this->subject_name],
-            $validatedDTO->validatedData
-        );
-        $this->assertTrue($validatedDTO->validator->passes());
-    }
-
-    public function testAValidatedDTOCanBeConstructedFromAnEloquentModel(): void
-    {
-        $model = new class() extends Model
+        public function __invoke()
         {
-            protected $fillable = ['name'];
-        };
+        }
+    };
 
-        $model->fill(['name' => $this->subject_name]);
+    Application::starting(function ($artisan) use ($command) {
+        $artisan->add($command);
+    });
 
-        $validatedDTO = ValidatedDTOInstance::fromModel($model);
+    $this->artisan('test:command', ['name' => $this->subject_name]);
 
-        $this->assertEquals(
-            ['name' => $this->subject_name],
-            $validatedDTO->validatedData
-        );
-        $this->assertTrue($validatedDTO->validator->passes());
-    }
+    $validatedDTO = ValidatedDTOInstance::fromCommandArguments($command);
 
-    public function testAValidatedDTOCanBeConstructedFromCommandArguments(): void
+    expect($validatedDTO->validatedData)
+        ->toEqual(['name' => $this->subject_name])
+        ->and($validatedDTO->validator->passes())
+        ->toBeTrue();
+});
+
+it('validates that a ValidatedDTO can be instantiated from Command options', function () {
+    $command = new class() extends Command
     {
-        $command = new class() extends Command
+        protected $signature
+            = 'test:command
+            {--name= : The name of the user}';
+
+        public function __invoke()
         {
-            public function __invoke()
-            {
-            }
+        }
+    };
 
-            protected $signature
-                = 'test:command
-                {name : The name of the user}';
-        };
+    Application::starting(function ($artisan) use ($command) {
+        $artisan->add($command);
+    });
 
-        Application::starting(function ($artisan) use ($command) {
-            $artisan->add($command);
-        });
+    $this->artisan('test:command', ['--name' => $this->subject_name]);
 
-        $this->artisan('test:command', ['name' => $this->subject_name]);
+    $validatedDTO = ValidatedDTOInstance::fromCommandOptions($command);
 
-        $validatedDTO = ValidatedDTOInstance::fromCommandArguments($command);
+    expect($validatedDTO->validatedData)
+        ->toEqual(['name' => $this->subject_name])
+        ->and($validatedDTO->validator->passes())
+        ->toBeTrue();
+});
 
-        $this->assertEquals(
-            ['name' => $this->subject_name],
-            $validatedDTO->validatedData
-        );
-        $this->assertTrue($validatedDTO->validator->passes());
-    }
-
-    public function testAValidatedDTOCanBeConstructedFromCommandOptions(): void
+it('validates that a ValidatedDTO can be instantiated from a Command', function () {
+    $command = new class() extends Command
     {
-        $command = new class() extends Command
+        protected $signature
+            = 'test:command
+            {name : The name of the user}
+            {--age= : The age of the user}';
+
+        public function __invoke()
         {
-            public function __invoke()
-            {
-            }
+        }
+    };
 
-            protected $signature
-                = 'test:command
-                {--name= : The name of the user}';
-        };
+    Application::starting(function ($artisan) use ($command) {
+        $artisan->add($command);
+    });
 
-        Application::starting(function ($artisan) use ($command) {
-            $artisan->add($command);
-        });
+    $this->artisan(
+        'test:command',
+        ['name' => $this->subject_name, '--age' => 30]
+    );
 
-        $this->artisan('test:command', ['--name' => $this->subject_name]);
+    $validatedDTO = ValidatedDTOInstance::fromCommand($command);
 
-        $validatedDTO = ValidatedDTOInstance::fromCommandOptions($command);
+    expect($validatedDTO->validatedData)
+        ->toEqual(['name' => $this->subject_name, 'age' => 30])
+        ->and($validatedDTO->validator->passes())
+        ->toBeTrue();
+});
 
-        $this->assertEquals(
-            ['name' => $this->subject_name],
-            $validatedDTO->validatedData
-        );
-        $this->assertTrue($validatedDTO->validator->passes());
-    }
+it('validates that the ValidatedDTO can be converted into an array', function () {
+    $validatedDTO = new ValidatedDTOInstance(['name' => $this->subject_name]);
+    $result = $validatedDTO->toArray();
 
-    public function testAValidatedDTOCanBeConstructedFromACommand(): void
+    expect($result)
+        ->toBeArray()
+        ->toEqual(['name' => $this->subject_name]);
+});
+
+it('validates that the ValidatedDTO can be converted into a JSON string', function () {
+    $validatedDTO = new ValidatedDTOInstance(['name' => $this->subject_name]);
+    $result = $validatedDTO->toJson();
+
+    expect($result)
+        ->toBeString()
+        ->toBe('{"name":"'.$this->subject_name.'"}');
+});
+
+it('validates that the ValidatedDTO can be converted into an Eloquent Model', function () {
+    $validatedDTO = new ValidatedDTOInstance(['name' => $this->subject_name]);
+
+    $model = new class() extends Model
     {
-        $command = new class() extends Command
-        {
-            public function __invoke()
-            {
-            }
+        protected $fillable = ['name'];
+    };
 
-            protected $signature
-                = 'test:command
-                {name : The name of the user}
-                {--age= : The age of the user}';
-        };
+    $model_instance = $validatedDTO->toModel($model::class);
 
-        Application::starting(function ($artisan) use ($command) {
-            $artisan->add($command);
-        });
-
-        $this->artisan(
-            'test:command',
-            ['name' => $this->subject_name, '--age' => 30]
-        );
-
-        $validatedDTO = ValidatedDTOInstance::fromCommand($command);
-
-        $this->assertEquals(
-            ['name' => $this->subject_name, 'age' => 30],
-            $validatedDTO->validatedData
-        );
-        $this->assertTrue($validatedDTO->validator->passes());
-    }
-
-    public function testTheMethodToArrayReturnsTheValidatedData(): void
-    {
-        $validatedDTO = new ValidatedDTOInstance(['name' => $this->subject_name]);
-
-        $this->assertEquals(['name' => $this->subject_name], $validatedDTO->toArray());
-    }
-
-    public function testTheMethodToJsonReturnsTheValidatedDataAsJson(): void
-    {
-        $validatedDTO = new ValidatedDTOInstance(['name' => $this->subject_name]);
-
-        $this->assertEquals(
-            '{"name":"'.$this->subject_name.'"}',
-            $validatedDTO->toJson()
-        );
-    }
-
-    public function testAModelInstanceCanBeCreatedFromAValidatedDTO(): void
-    {
-        $validatedDTO = new ValidatedDTOInstance(['name' => $this->subject_name]);
-
-        $model = new class() extends Model
-        {
-            protected $fillable = ['name'];
-        };
-
-        $model_instance = $validatedDTO->toModel($model::class);
-
-        $this->assertInstanceOf(Model::class, $model_instance);
-        $this->assertEquals(
-            ['name' => $this->subject_name],
-            $model_instance->toArray()
-        );
-    }
-}
+    expect($model_instance)->toBeInstanceOf(Model::class);
+    $result = $model_instance->toArray();
+    expect($result)
+        ->toBeArray()
+        ->toEqual(['name' => $this->subject_name]);
+});
