@@ -31,6 +31,16 @@ class UserDTO extends ValidatedDTO
     }
 
     /**
+     * Defines the type casting for the properties of the DTO.
+     *
+     * @return array
+     */
+    protected function casts(): array
+    {
+        return [];
+    }
+
+    /**
      * Defines the custom messages for validator errors.
      *
      * @return array

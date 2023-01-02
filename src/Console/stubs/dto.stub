@@ -31,7 +31,7 @@ class {{ class }} extends ValidatedDTO
      *
      * @return array
      */
-    abstract protected function casts(): array
+    protected function casts(): array
     {
         return [];
     }
