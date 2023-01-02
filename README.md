@@ -14,6 +14,7 @@
 - Easily define **custom validation messages**
 - Support for **typed properties**
 - **Type Casting** out-of-the-box for your DTOs properties
+- Support casting of **nested data**
 - Easily create **custom Type Casters** for your own needs
 
 ## Installation
