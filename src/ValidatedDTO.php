@@ -82,11 +82,11 @@ abstract class ValidatedDTO
      * Creates a DTO instance from a valid JSON string.
      *
      * @param  string  $json
-     * @return ValidatedDTO
+     * @return $this
      *
      * @throws InvalidJsonException|ValidationException|MissingCastTypeException|CastTargetException
      */
-    public static function fromJson(string $json): ValidatedDTO
+    public static function fromJson(string $json): self
     {
         $jsonDecoded = json_decode($json, true);
         if (! is_array($jsonDecoded)) {
@@ -100,11 +100,11 @@ abstract class ValidatedDTO
      * Creates a DTO instance from a Request.
      *
      * @param  Request  $request
-     * @return ValidatedDTO
+     * @return $this
      *
      * @throws ValidationException|MissingCastTypeException|CastTargetException
      */
-    public static function fromRequest(Request $request): ValidatedDTO
+    public static function fromRequest(Request $request): self
     {
         return new static($request->all());
     }
@@ -113,11 +113,11 @@ abstract class ValidatedDTO
      * Creates a DTO instance from the given model.
      *
      * @param  Model  $model
-     * @return ValidatedDTO
+     * @return $this
      *
      * @throws ValidationException|MissingCastTypeException|CastTargetException
      */
-    public static function fromModel(Model $model): ValidatedDTO
+    public static function fromModel(Model $model): self
     {
         return new static($model->toArray());
     }
@@ -126,11 +126,11 @@ abstract class ValidatedDTO
      * Creates a DTO instance from the given command arguments.
      *
      * @param  Command  $command
-     * @return ValidatedDTO
+     * @return $this
      *
      * @throws ValidationException|MissingCastTypeException|CastTargetException
      */
-    public static function fromCommandArguments(Command $command): ValidatedDTO
+    public static function fromCommandArguments(Command $command): self
     {
         return new static($command->arguments());
     }
@@ -139,11 +139,11 @@ abstract class ValidatedDTO
      * Creates a DTO instance from the given command options.
      *
      * @param  Command  $command
-     * @return ValidatedDTO
+     * @return $this
      *
      * @throws ValidationException|MissingCastTypeException|CastTargetException
      */
-    public static function fromCommandOptions(Command $command): ValidatedDTO
+    public static function fromCommandOptions(Command $command): self
     {
         return new static($command->options());
     }
@@ -152,11 +152,11 @@ abstract class ValidatedDTO
      * Creates a DTO instance from the given command arguments and options.
      *
      * @param  Command  $command
-     * @return ValidatedDTO
+     * @return $this
      *
      * @throws ValidationException|MissingCastTypeException|CastTargetException
      */
-    public static function fromCommand(Command $command): ValidatedDTO
+    public static function fromCommand(Command $command): self
     {
         return new static(array_merge($command->arguments(), $command->options()));
     }
