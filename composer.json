@@ -38,6 +38,15 @@
         "pestphp/pest": "^1.22",
         "pestphp/pest-plugin-faker": "^1.0"
     },
+    "scripts": {
+        "lint": "pint",
+        "test:lint": "pint --test",
+        "test:unit": "./vendor/bin/pest --order-by random",
+        "tests": [
+            "@test:lint",
+            "@test:unit"
+        ]
+    },
     "extra": {
         "laravel": {
             "providers": [
