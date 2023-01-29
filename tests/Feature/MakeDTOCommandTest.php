@@ -64,7 +64,10 @@ class UserDTO extends ValidatedDTO
 CLASS;
 
     $dtoClass = app_path('DTOs/UserDTO.php');
-    unlink($dtoClass);
+
+    if (file_exists($dtoClass)) {
+        unlink($dtoClass);
+    }
 
     $this->artisan('make:dto', ['name' => 'UserDTO'])
         ->assertExitCode(0);
