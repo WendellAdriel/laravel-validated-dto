@@ -24,9 +24,15 @@ it('instantiates a ValidatedDTO validating its data', function () {
         ->toBeTrue();
 });
 
-it('throws exception when trying to instantiate a ValidatedDTO with invalid data', function () {
-    new ValidatedDTOInstance([]);
-})->throws(ValidationException::class);
+it('throws exception when trying to instantiate a ValidatedDTO with invalid data')
+    ->expect(fn () => new ValidatedDTOInstance([]))
+    ->throws(ValidationException::class);
+
+it('returns null when trying to access a property that does not exist', function () {
+    $validatedDTO = new ValidatedDTOInstance(['name' => $this->subject_name]);
+
+    expect($validatedDTO->age)->toBeNull();
+});
 
 it('validates that is possible to set a property in a ValidatedDTO', function () {
     $validatedDTO = new ValidatedDTOInstance(['name' => $this->subject_name]);
@@ -34,12 +40,6 @@ it('validates that is possible to set a property in a ValidatedDTO', function ()
     $validatedDTO->age = 30;
 
     expect($validatedDTO->age)->toBe(30);
-});
-
-it('returns null when trying to access a property that does not exist', function () {
-    $validatedDTO = new ValidatedDTOInstance(['name' => $this->subject_name]);
-
-    expect($validatedDTO->age)->toBeNull();
 });
 
 it('validates that a ValidatedDTO can be instantiated from a JSON string', function () {
@@ -51,9 +51,9 @@ it('validates that a ValidatedDTO can be instantiated from a JSON string', funct
         ->toBeTrue();
 });
 
-it('throws exception when trying to instantiate a ValidatedDTO from an invalid JSON string', function () {
-    ValidatedDTOInstance::fromJson('{"name": "'.$this->subject_name.'"');
-})->throws(InvalidJsonException::class);
+it('throws exception when trying to instantiate a ValidatedDTO from an invalid JSON string')
+    ->expect(fn () => ValidatedDTOInstance::fromJson('{"name": "'.$this->subject_name.'"'))
+    ->throws(InvalidJsonException::class);
 
 it('validates that a ValidatedDTO can be instantiated from a Request', function () {
     $request = new Request(['name' => $this->subject_name]);

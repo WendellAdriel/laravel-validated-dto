@@ -57,7 +57,7 @@ return [
 
 This package provides a base **DTO Class** that can **validate** the data when creating a **DTO**. But why should we do this instead of using the standard **Request** validation?
 
-Imagine that now you want to do the same action that you do in an endpoint on a **CLI** command per example. If your validation is linked to the Request you'll have to implement the same validation again.
+Imagine that now you want to do the same action that you do in an endpoint on a **CLI** command for example. If your validation is linked to the Request you'll have to implement the same validation again.
 
 With this package you **define the validation once** and can **reuse it where you need**, making your application more **maintainable** and **decoupled**.
 

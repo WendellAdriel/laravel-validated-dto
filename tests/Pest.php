@@ -24,8 +24,12 @@ uses(WendellAdriel\ValidatedDTO\Tests\TestCase::class)->in('Feature', 'Unit');
 |
 */
 
-expect()->extend('toBeOne', function () {
-    return $this->toBe(1);
+expect()->extend('toBeFileWithContent', function (string $fileContent) {
+    test()->assertFileExists($this->value);
+
+    expect(file_get_contents($this->value))->toBe($fileContent);
+
+    return $this;
 });
 
 /*
@@ -39,7 +43,12 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function something()
+/**
+ * Returns the string "test_property"
+ *
+ * @return string
+ */
+function test_property(): string
 {
-    // ..
+    return 'test_property';
 }
