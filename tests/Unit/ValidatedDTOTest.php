@@ -19,7 +19,7 @@ it('instantiates a ValidatedDTO validating its data', function () {
 
     expect($validatedDTO)->toBeInstanceOf(ValidatedDTO::class)
         ->and($validatedDTO->validatedData)
-        ->toEqual(['name' => $this->subject_name])
+        ->toBe(['name' => $this->subject_name])
         ->and($validatedDTO->validator->passes())
         ->toBeTrue();
 });
@@ -46,7 +46,7 @@ it('validates that a ValidatedDTO can be instantiated from a JSON string', funct
     $validatedDTO = ValidatedDTOInstance::fromJson('{"name": "'.$this->subject_name.'"}');
 
     expect($validatedDTO->validatedData)
-        ->toEqual(['name' => $this->subject_name])
+        ->ToBe(['name' => $this->subject_name])
         ->and($validatedDTO->validator->passes())
         ->toBeTrue();
 });
@@ -61,7 +61,7 @@ it('validates that a ValidatedDTO can be instantiated from a Request', function 
     $validatedDTO = ValidatedDTOInstance::fromRequest($request);
 
     expect($validatedDTO->validatedData)
-        ->toEqual(['name' => $this->subject_name])
+        ->toBe(['name' => $this->subject_name])
         ->and($validatedDTO->validator->passes())
         ->toBeTrue();
 });
@@ -77,7 +77,7 @@ it('validates that a ValidatedDTO can be instantiated from an Eloquent Model', f
     $validatedDTO = ValidatedDTOInstance::fromModel($model);
 
     expect($validatedDTO->validatedData)
-        ->toEqual(['name' => $this->subject_name])
+        ->toBe(['name' => $this->subject_name])
         ->and($validatedDTO->validator->passes())
         ->toBeTrue();
 });
@@ -103,7 +103,7 @@ it('validates that a ValidatedDTO can be instantiated from Command arguments', f
     $validatedDTO = ValidatedDTOInstance::fromCommandArguments($command);
 
     expect($validatedDTO->validatedData)
-        ->toEqual(['name' => $this->subject_name])
+        ->ToBe(['name' => $this->subject_name])
         ->and($validatedDTO->validator->passes())
         ->toBeTrue();
 });
@@ -166,19 +166,15 @@ it('validates that a ValidatedDTO can be instantiated from a Command', function 
 
 it('validates that the ValidatedDTO can be converted into an array', function () {
     $validatedDTO = new ValidatedDTOInstance(['name' => $this->subject_name]);
-    $result = $validatedDTO->toArray();
 
-    expect($result)
-        ->toBeArray()
-        ->toEqual(['name' => $this->subject_name]);
+    expect($validatedDTO)->toArray()
+        ->toBe(['name' => $this->subject_name]);
 });
 
 it('validates that the ValidatedDTO can be converted into a JSON string', function () {
     $validatedDTO = new ValidatedDTOInstance(['name' => $this->subject_name]);
-    $result = $validatedDTO->toJson();
 
-    expect($result)
-        ->toBeString()
+    expect($validatedDTO)->toJson()
         ->toBe('{"name":"'.$this->subject_name.'"}');
 });
 
@@ -192,9 +188,8 @@ it('validates that the ValidatedDTO can be converted into an Eloquent Model', fu
 
     $model_instance = $validatedDTO->toModel($model::class);
 
-    expect($model_instance)->toBeInstanceOf(Model::class);
-    $result = $model_instance->toArray();
-    expect($result)
-        ->toBeArray()
-        ->toEqual(['name' => $this->subject_name]);
+    expect($model_instance)
+        ->toBeInstanceOf(Model::class)
+        ->toArray()
+        ->toBe(['name' => $this->subject_name]);
 });
