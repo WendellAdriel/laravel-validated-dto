@@ -9,15 +9,16 @@
 <a href="https://packagist.org/packages/WendellAdriel/laravel-validated-dto"><img src="https://img.shields.io/packagist/v/WendellAdriel/laravel-validated-dto.svg?style=flat-square" alt="Packagist"></a>
 <a href="https://packagist.org/packages/WendellAdriel/laravel-validated-dto"><img src="https://img.shields.io/packagist/php-v/WendellAdriel/laravel-validated-dto.svg?style=flat-square" alt="PHP from Packagist"></a>
 <a href="https://packagist.org/packages/WendellAdriel/laravel-validated-dto"><img src="https://img.shields.io/badge/Laravel-9.x,%2010.x-brightgreen.svg?style=flat-square" alt="Laravel Version"></a>
-<a href="https://github.com/WendellAdriel/laravel-validated-dto/actions"><img alt="Tests" src="https://github.com/WendellAdriel/laravel-validated-dto/workflows/Tests/badge.svg" /> </a>
+<a href="https://github.com/WendellAdriel/laravel-validated-dto/actions"><img alt="GitHub Workflow Status (main)" src="https://img.shields.io/github/actions/workflow/status/WendellAdriel/laravel-validated-dto/tests.yml?branch=main&label=Tests"> </a>
 </p>
 
 <p align="center">
+    <a href="#documentation">Documentation</a> |
     <a href="#features">Features</a> |
     <a href="#installation">Installation</a> |
-    <a href="#documentation">Documentation</a> |
     <a href="#generating-dtos">Generating DTOs</a> |
-    <a href="#credits">Credits</a>
+    <a href="#credits">Credits</a> |
+    <a href="#contributing">Contributing</a>
 </p>
 
 ![Validated DTO class example](validated_dto.png)
