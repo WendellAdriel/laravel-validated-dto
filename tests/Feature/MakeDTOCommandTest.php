@@ -1,7 +1,26 @@
 <?php
 
-it('validates that a new ValidatedDTO class is generated', function () {
-    $expectedContent = <<<CLASS
+it('generates a new ValidatedDTO class via command', function () {
+    $dtoClass = app_path('DTOs/UserDTO.php');
+
+    if (file_exists($dtoClass)) {
+        unlink($dtoClass);
+    }
+
+    $this->artisan('make:dto', ['name' => 'UserDTO'])
+        ->assertExitCode(0);
+
+    expect($dtoClass)->toBeFileWithContent(UserDTO());
+});
+
+/**
+ * Content of the expected UserDTO class
+ *
+ * @return string
+ */
+function UserDTO(): string
+{
+    return <<<CLASS
 <?php
 
 namespace App\DTOs;
@@ -62,15 +81,4 @@ class UserDTO extends ValidatedDTO
 }
 
 CLASS;
-
-    $dtoClass = app_path('DTOs/UserDTO.php');
-    unlink($dtoClass);
-
-    $this->artisan('make:dto', ['name' => 'UserDTO'])
-        ->assertExitCode(0);
-
-    $this->assertFileExists($dtoClass);
-
-    $contents = file_get_contents($dtoClass);
-    expect($contents)->toEqual($expectedContent);
-});
+}

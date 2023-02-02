@@ -1,6 +1,24 @@
-# Laravel Validated DTO
+<div align="center">
+    <p>
+        <h1>Laravel Validated DTO</h1>
+        Data Transfer Objects with validation for Laravel applications
+    </p>
+</div>
 
-> Data Transfer Objects with validation for Laravel applications
+<p align="center">
+<a href="https://packagist.org/packages/WendellAdriel/laravel-validated-dto"><img src="https://img.shields.io/packagist/v/WendellAdriel/laravel-validated-dto.svg?style=flat-square" alt="Packagist"></a>
+<a href="https://packagist.org/packages/WendellAdriel/laravel-validated-dto"><img src="https://img.shields.io/packagist/php-v/WendellAdriel/laravel-validated-dto.svg?style=flat-square" alt="PHP from Packagist"></a>
+<a href="https://packagist.org/packages/WendellAdriel/laravel-validated-dto"><img src="https://img.shields.io/badge/Laravel-9.x,%2010.x-brightgreen.svg?style=flat-square" alt="Laravel Version"></a>
+<a href="https://github.com/WendellAdriel/laravel-validated-dto/actions"><img alt="Tests" src="https://github.com/WendellAdriel/laravel-validated-dto/workflows/Tests/badge.svg" /> </a>
+</p>
+
+<p align="center">
+    <a href="#features">Features</a> |
+    <a href="#installation">Installation</a> |
+    <a href="#documentation">Documentation</a> |
+    <a href="#generating-dtos">Generating DTOs</a> |
+    <a href="#credits">Credits</a>
+</p>
 
 ![Validated DTO class example](validated_dto.png)
 
@@ -57,7 +75,7 @@ return [
 
 This package provides a base **DTO Class** that can **validate** the data when creating a **DTO**. But why should we do this instead of using the standard **Request** validation?
 
-Imagine that now you want to do the same action that you do in an endpoint on a **CLI** command per example. If your validation is linked to the Request you'll have to implement the same validation again.
+Imagine that now you want to do the same action that you do in an endpoint on a **CLI** command for example. If your validation is linked to the Request you'll have to implement the same validation again.
 
 With this package you **define the validation once** and can **reuse it where you need**, making your application more **maintainable** and **decoupled**.
 
@@ -754,6 +772,5 @@ All PRs are welcome.
 For major changes, please open an issue first describing what you want to add/change.
 
 <!---------------------------------------------------------------------------->
-
 [Docs Button]: https://img.shields.io/badge/Documentation-40CA00?style=for-the-badge&logoColor=white&logo=GitBook
 [Docs Link]: https://wendell-adriel.gitbook.io/laravel-validated-dto/
