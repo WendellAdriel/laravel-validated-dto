@@ -21,7 +21,7 @@
     <a href="#contributing">Contributing</a>
 </p>
 
-![Validated DTO class example](validated_dto.png)
+![Validated DTO class example](art/validated_dto.png)
 
 ## Documentation 
 [![Docs Button]][Docs Link]
