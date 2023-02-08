@@ -5,29 +5,29 @@ help:
 
 ##@ [Docker]
 start: ## Spin up the container
-	docker-compose up -d
+	docker compose up -d
 
 stop: ## Shut down the containers
-	docker-compose down
+	docker compose down
 
 build: ## Build all docker images
-	docker-compose build
+	docker compose build
 
 ##@ [Application]
 composer: ## Run composer commands. Specify the command e.g. via make composer ARGS="install|update|require <dependency>
-	docker-compose run --rm app composer $(ARGS)
+	docker compose run --rm app composer $(ARGS)
 
 install:
-	docker-compose run --rm app composer install
+	docker compose run --rm app composer install
 
 lint: ## Run the Linter
-	docker-compose run --rm app composer lint
+	docker compose run --rm app composer lint
 
 test-lint: ## Run the Linter Test
-	docker-compose run --rm app composer test:lint
+	docker compose run --rm app composer test:lint
 
 test-unit: ## Run the Test Suite
-	docker-compose run --rm app composer test:unit
+	docker compose run --rm app composer test:unit
 
 test: ## Run the Linter Test and the Test Suite
-	docker-compose run --rm app composer test
+	docker compose run --rm app composer test
