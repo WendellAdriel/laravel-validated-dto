@@ -768,9 +768,7 @@ class CustomDTO extends ValidatedDTO
 
 ## Contributing
 
-All PRs are welcome.
-
-For major changes, please open an issue first describing what you want to add/change.
+Check the **[Contributing Guide](CONTRIBUTING.md)**.
 
 <!---------------------------------------------------------------------------->
 [Docs Button]: https://img.shields.io/badge/Documentation-40CA00?style=for-the-badge&logoColor=white&logo=GitBook

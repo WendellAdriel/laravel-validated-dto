@@ -14,14 +14,20 @@ build: ## Build all docker images
 	docker-compose build
 
 ##@ [Application]
-composer: ## Run composer commands. Specify the command e.g. via "make composer ARGS="install|update|require <dependency>"
+composer: ## Run composer commands. Specify the command e.g. via make composer ARGS="install|update|require <dependency>
 	docker-compose run --rm app composer $(ARGS)
 
+install:
+	docker-compose run --rm app composer install
+
 lint: ## Run the Linter
-	docker-compose run --rm app ./vendor/bin/pint
+	docker-compose run --rm app composer lint
 
-test: ## Run the tests. Apply arguments via make test ARGS="--init"
-	docker-compose run --rm app ./vendor/bin/pest $(ARGS)
+test-lint: ## Run the Linter Test
+	docker-compose run --rm app composer test:lint
 
-prepare: ## Run the Linter
-	docker-compose run --rm app ./vendor/bin/pint && docker-compose run --rm app ./vendor/bin/pest
+test-unit: ## Run the Test Suite
+	docker-compose run --rm app composer test:unit
+
+test: ## Run the Linter Test and the Test Suite
+	docker-compose run --rm app composer test

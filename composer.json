@@ -42,7 +42,7 @@
       "lint": "pint",
       "test:lint": "pint --test",
       "test:unit": "./vendor/bin/pest --order-by random",
-      "tests": ["@test:lint", "@test:unit"]
+      "test": ["@test:lint", "@test:unit"]
   },
     "extra": {
       "laravel": {
