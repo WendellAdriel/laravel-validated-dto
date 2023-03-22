@@ -23,8 +23,6 @@ abstract class ValidatedDTO
     private \Illuminate\Contracts\Validation\Validator|\Illuminate\Validation\Validator $validator;
 
     /**
-     * @param  array  $data
-     *
      * @throws ValidationException|MissingCastTypeException|CastTargetException
      */
     public function __construct(array $data)
@@ -38,20 +36,11 @@ abstract class ValidatedDTO
             : $this->failedValidation();
     }
 
-    /**
-     * @param  string  $name
-     * @param  mixed  $value
-     * @return void
-     */
     public function __set(string $name, mixed $value): void
     {
         $this->{$name} = $value;
     }
 
-    /**
-     * @param  string  $name
-     * @return mixed
-     */
     public function __get(string $name): mixed
     {
         return $this->{$name} ?? null;
@@ -59,29 +48,22 @@ abstract class ValidatedDTO
 
     /**
      * Defines the validation rules for the DTO.
-     *
-     * @return array
      */
     abstract protected function rules(): array;
 
     /**
      * Defines the default values for the properties of the DTO.
-     *
-     * @return array
      */
     abstract protected function defaults(): array;
 
     /**
      * Defines the type casting for the properties of the DTO.
-     *
-     * @return array
      */
     abstract protected function casts(): array;
 
     /**
      * Creates a DTO instance from a valid JSON string.
      *
-     * @param  string  $json
      * @return $this
      *
      * @throws InvalidJsonException|ValidationException|MissingCastTypeException|CastTargetException
@@ -99,7 +81,6 @@ abstract class ValidatedDTO
     /**
      * Creates a DTO instance from a Request.
      *
-     * @param  Request  $request
      * @return $this
      *
      * @throws ValidationException|MissingCastTypeException|CastTargetException
@@ -112,7 +93,6 @@ abstract class ValidatedDTO
     /**
      * Creates a DTO instance from the given model.
      *
-     * @param  Model  $model
      * @return $this
      *
      * @throws ValidationException|MissingCastTypeException|CastTargetException
@@ -125,7 +105,6 @@ abstract class ValidatedDTO
     /**
      * Creates a DTO instance from the given command arguments.
      *
-     * @param  Command  $command
      * @return $this
      *
      * @throws ValidationException|MissingCastTypeException|CastTargetException
@@ -138,7 +117,6 @@ abstract class ValidatedDTO
     /**
      * Creates a DTO instance from the given command options.
      *
-     * @param  Command  $command
      * @return $this
      *
      * @throws ValidationException|MissingCastTypeException|CastTargetException
@@ -151,7 +129,6 @@ abstract class ValidatedDTO
     /**
      * Creates a DTO instance from the given command arguments and options.
      *
-     * @param  Command  $command
      * @return $this
      *
      * @throws ValidationException|MissingCastTypeException|CastTargetException
@@ -163,8 +140,6 @@ abstract class ValidatedDTO
 
     /**
      * Returns the DTO validated data in array format.
-     *
-     * @return array
      */
     public function toArray(): array
     {
@@ -173,9 +148,6 @@ abstract class ValidatedDTO
 
     /**
      * Returns the DTO validated data in a JSON string format.
-     *
-     * @param  bool  $pretty
-     * @return string
      */
     public function toJson(bool $pretty = false): string
     {
@@ -186,9 +158,6 @@ abstract class ValidatedDTO
 
     /**
      * Creates a new model with the DTO validated data.
-     *
-     * @param  string  $model
-     * @return Model
      */
     public function toModel(string $model): Model
     {
@@ -197,8 +166,6 @@ abstract class ValidatedDTO
 
     /**
      * Defines the custom messages for validator errors.
-     *
-     * @return array
      */
     public function messages(): array
     {
@@ -207,8 +174,6 @@ abstract class ValidatedDTO
 
     /**
      * Defines the custom attributes for validator errors.
-     *
-     * @return array
      */
     public function attributes(): array
     {
@@ -218,7 +183,6 @@ abstract class ValidatedDTO
     /**
      * Handles a passed validation attempt.
      *
-     * @return void
      *
      * @throws MissingCastTypeException|CastTargetException
      */
@@ -262,7 +226,6 @@ abstract class ValidatedDTO
     /**
      * Handles a failed validation attempt.
      *
-     * @return void
      *
      * @throws ValidationException
      */
@@ -273,8 +236,6 @@ abstract class ValidatedDTO
 
     /**
      * Inits the configuration for the DTOs.
-     *
-     * @return void
      */
     private function initConfig(): void
     {
@@ -286,8 +247,6 @@ abstract class ValidatedDTO
 
     /**
      * Checks if the data is valid for the DTO.
-     *
-     * @return bool
      */
     private function isValidData(): bool
     {
@@ -304,7 +263,6 @@ abstract class ValidatedDTO
     /**
      * Builds the validated data from the given data and the rules.
      *
-     * @return array
      *
      * @throws MissingCastTypeException|CastTargetException
      */

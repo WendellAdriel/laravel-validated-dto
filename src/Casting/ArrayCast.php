@@ -4,11 +4,6 @@ namespace WendellAdriel\ValidatedDTO\Casting;
 
 class ArrayCast implements Castable
 {
-    /**
-     * @param  string  $property
-     * @param  mixed  $value
-     * @return array
-     */
     public function cast(string $property, mixed $value): array
     {
         if (is_string($value)) {

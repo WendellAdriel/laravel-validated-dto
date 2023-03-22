@@ -45,8 +45,6 @@ expect()->extend('toBeFileWithContent', function (string $fileContent) {
 
 /**
  * Returns the string "test_property"
- *
- * @return string
  */
 function test_property(): string
 {

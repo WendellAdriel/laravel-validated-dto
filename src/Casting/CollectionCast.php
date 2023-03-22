@@ -6,18 +6,10 @@ use Illuminate\Support\Collection;
 
 class CollectionCast implements Castable
 {
-    /**
-     * @param  Castable|null  $type
-     */
     public function __construct(private ?Castable $type = null)
     {
     }
 
-    /**
-     * @param  string  $property
-     * @param  mixed  $value
-     * @return Collection
-     */
     public function cast(string $property, mixed $value): Collection
     {
         $arrayCast = new ArrayCast();

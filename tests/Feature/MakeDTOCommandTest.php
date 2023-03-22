@@ -15,8 +15,6 @@ it('generates a new ValidatedDTO class via command', function () {
 
 /**
  * Content of the expected UserDTO class
- *
- * @return string
  */
 function UserDTO(): string
 {

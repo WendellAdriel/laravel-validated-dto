@@ -9,18 +9,11 @@ use WendellAdriel\ValidatedDTO\Exceptions\CastTargetException;
 
 class ModelCast implements Castable
 {
-    /**
-     * @param  string  $modelClass
-     */
     public function __construct(private string $modelClass)
     {
     }
 
     /**
-     * @param  string  $property
-     * @param  mixed  $value
-     * @return Model
-     *
      * @throws CastException|CastTargetException
      */
     public function cast(string $property, mixed $value): Model
