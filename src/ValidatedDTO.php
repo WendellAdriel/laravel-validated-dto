@@ -3,16 +3,18 @@
 namespace WendellAdriel\ValidatedDTO;
 
 use Illuminate\Console\Command;
+use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use WendellAdriel\ValidatedDTO\Casting\ArrayCast;
 use WendellAdriel\ValidatedDTO\Casting\Castable;
 use WendellAdriel\ValidatedDTO\Exceptions\CastTargetException;
 use WendellAdriel\ValidatedDTO\Exceptions\InvalidJsonException;
 use WendellAdriel\ValidatedDTO\Exceptions\MissingCastTypeException;
 
-abstract class ValidatedDTO
+abstract class ValidatedDTO implements CastsAttributes
 {
     protected array $data = [];
 
@@ -25,8 +27,12 @@ abstract class ValidatedDTO
     /**
      * @throws ValidationException|MissingCastTypeException|CastTargetException
      */
-    public function __construct(array $data)
+    public function __construct(?array $data = null)
     {
+        if (is_null($data)) {
+            return;
+        }
+
         $this->data = $data;
 
         $this->initConfig();
@@ -178,6 +184,38 @@ abstract class ValidatedDTO
     public function attributes(): array
     {
         return [];
+    }
+
+    /**
+     * Cast the given value to a DTO instance.
+     *
+     * @return $this
+     *
+     * @throws ValidationException|MissingCastTypeException|CastTargetException
+     */
+    public function get(Model $model, string $key, mixed $value, array $attributes): self
+    {
+        $arrayCast = new ArrayCast();
+
+        return new static($arrayCast->cast($key, $value));
+    }
+
+    /**
+     * Prepare the value for storage.
+     */
+    public function set(Model $model, string $key, mixed $value, array $attributes): string
+    {
+        if (is_string($value)) {
+            return $value;
+        }
+        if (is_array($value)) {
+            return json_encode($value);
+        }
+        if ($value instanceof ValidatedDTO) {
+            return $value->toJson();
+        }
+
+        return '';
     }
 
     /**
