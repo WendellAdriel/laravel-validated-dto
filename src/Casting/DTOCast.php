@@ -10,18 +10,11 @@ use WendellAdriel\ValidatedDTO\ValidatedDTO;
 
 class DTOCast implements Castable
 {
-    /**
-     * @param  string  $dtoClass
-     */
     public function __construct(private string $dtoClass)
     {
     }
 
     /**
-     * @param  string  $property
-     * @param  mixed  $value
-     * @return ValidatedDTO
-     *
      * @throws CastException|CastTargetException|ValidationException
      */
     public function cast(string $property, mixed $value): ValidatedDTO

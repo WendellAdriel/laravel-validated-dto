@@ -8,10 +8,6 @@ use WendellAdriel\ValidatedDTO\Exceptions\CastException;
 
 class CarbonCast implements Castable
 {
-    /**
-     * @param  string|null  $timezone
-     * @param  string|null  $format
-     */
     public function __construct(
         private ?string $timezone = null,
         private ?string $format = null
@@ -19,10 +15,6 @@ class CarbonCast implements Castable
     }
 
     /**
-     * @param  string  $property
-     * @param  mixed  $value
-     * @return Carbon
-     *
      * @throws CastException
      */
     public function cast(string $property, mixed $value): Carbon

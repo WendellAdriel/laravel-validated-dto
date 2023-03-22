@@ -7,10 +7,6 @@ use WendellAdriel\ValidatedDTO\Exceptions\CastException;
 class ObjectCast implements Castable
 {
     /**
-     * @param  string  $property
-     * @param  mixed  $value
-     * @return object
-     *
      * @throws CastException
      */
     public function cast(string $property, mixed $value): object

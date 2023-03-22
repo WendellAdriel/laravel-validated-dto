@@ -67,8 +67,6 @@ class MakeDTOCommand extends GeneratorCommand
 
     /**
      * Get the stub file for the generator.
-     *
-     * @return string
      */
     protected function getStub(): string
     {
@@ -77,8 +75,6 @@ class MakeDTOCommand extends GeneratorCommand
 
     /**
      * Get the console command options.
-     *
-     * @return array
      */
     protected function getOptions(): array
     {
