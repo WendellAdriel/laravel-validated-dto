@@ -189,11 +189,15 @@ abstract class ValidatedDTO implements CastsAttributes
     /**
      * Cast the given value to a DTO instance.
      *
+     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @param  string  $key
+     * @param  mixed  $value
+     * @param  array  $attributes
      * @return $this
      *
      * @throws ValidationException|MissingCastTypeException|CastTargetException
      */
-    public function get(Model $model, string $key, mixed $value, array $attributes): self
+    public function get($model, $key, $value, $attributes)
     {
         $arrayCast = new ArrayCast();
 
@@ -202,8 +206,14 @@ abstract class ValidatedDTO implements CastsAttributes
 
     /**
      * Prepare the value for storage.
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @param  string  $key
+     * @param  mixed  $value
+     * @param  array  $attributes
+     * @return string
      */
-    public function set(Model $model, string $key, mixed $value, array $attributes): string
+    public function set($model, $key, $value, $attributes)
     {
         if (is_string($value)) {
             return $value;
