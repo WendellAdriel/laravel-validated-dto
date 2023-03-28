@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use function Pest\Faker\faker;
 use WendellAdriel\ValidatedDTO\Exceptions\InvalidJsonException;
+use WendellAdriel\ValidatedDTO\Tests\Datasets\NullableDTO;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\ValidatedDTOInstance;
 use WendellAdriel\ValidatedDTO\ValidatedDTO;
 
@@ -27,6 +28,21 @@ it('instantiates a ValidatedDTO validating its data', function () {
 it('throws exception when trying to instantiate a ValidatedDTO with invalid data')
     ->expect(fn () => new ValidatedDTOInstance([]))
     ->throws(ValidationException::class);
+
+it('instantiates a ValidatedDTO with nullable and optional properties', function () {
+    $dto = new NullableDTO([
+        'name' => $this->subject_name,
+        'address' => null,
+    ]);
+
+    expect($dto)->toBeInstanceOf(NullableDTO::class)
+        ->and($dto->name)
+        ->toBeString()
+        ->and($dto->age)
+        ->toBeNull()
+        ->and($dto->address)
+        ->toBeNull();
+});
 
 it('returns null when trying to access a property that does not exist', function () {
     $validatedDTO = new ValidatedDTOInstance(['name' => $this->subject_name]);
