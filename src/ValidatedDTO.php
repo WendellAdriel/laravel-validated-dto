@@ -264,7 +264,9 @@ abstract class ValidatedDTO implements CastsAttributes
                     throw new CastTargetException($key);
                 }
 
-                $formatted = $casts[$key]->cast($key, $value);
+                $formatted = $this->shouldReturnNull($key, $value)
+                    ? null
+                    : $casts[$key]->cast($key, $value);
                 $this->{$key} = $formatted;
                 $this->validatedData[$key] = $formatted;
             }
@@ -337,10 +339,36 @@ abstract class ValidatedDTO implements CastsAttributes
                     throw new CastTargetException($key);
                 }
 
-                $result[$key] = $casts[$key]->cast($key, $value);
+                $result[$key] = $this->shouldReturnNull($key, $value)
+                    ? null
+                    : $casts[$key]->cast($key, $value);
+            }
+        }
+
+        foreach ($acceptedKeys as $property) {
+            if (
+                ! array_key_exists($property, $result) &&
+                $this->isOptionalProperty($property)
+            ) {
+                $result[$property] = null;
             }
         }
 
         return $result;
+    }
+
+    private function shouldReturnNull(string $key, mixed $value): bool
+    {
+        return is_null($value) && $this->isOptionalProperty($key);
+    }
+
+    private function isOptionalProperty(string $property): bool
+    {
+        $rules = $this->rules();
+        $propertyRules = is_array($rules[$property])
+            ? $rules[$property]
+            : explode('|', $rules[$property]);
+
+        return in_array('optional', $propertyRules) || in_array('nullable', $propertyRules);
     }
 }
