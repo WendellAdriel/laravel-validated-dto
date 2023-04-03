@@ -150,6 +150,16 @@ $dto = new UserDTO([
 ]);
 ```
 
+You can also use the `fromArray` static method:
+
+```php
+$dto = UserDTO::fromArray([
+    'name' => 'John Doe',
+    'email' => 'john.doe@example.com',
+    'password' => 's3CreT!@1a2B'
+]);
+```
+
 ### From JSON strings
 
 ```php
