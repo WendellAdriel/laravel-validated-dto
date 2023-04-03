@@ -85,6 +85,18 @@ abstract class ValidatedDTO implements CastsAttributes
     }
 
     /**
+     * Creates a DTO instance from Array.
+     *
+     * @return $this
+     *
+     * @throws CastTargetException|MissingCastTypeException
+     */
+    public static function fromArray(array $array): self
+    {
+        return new static($array);
+    }
+
+    /**
      * Creates a DTO instance from a Request.
      *
      * @return $this
