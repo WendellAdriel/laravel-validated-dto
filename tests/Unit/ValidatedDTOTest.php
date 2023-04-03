@@ -71,6 +71,15 @@ it('throws exception when trying to instantiate a ValidatedDTO from an invalid J
     ->expect(fn () => ValidatedDTOInstance::fromJson('{"name": "'.$this->subject_name.'"'))
     ->throws(InvalidJsonException::class);
 
+it('validates that a ValidatedDTO can be instantiated from Array', function () {
+    $validatedDTO = ValidatedDTOInstance::fromArray(['name' => $this->subject_name]);
+
+    expect($validatedDTO->validatedData)
+        ->toBe(['name' => $this->subject_name])
+        ->and($validatedDTO->validator->passes())
+        ->toBeTrue();
+});
+
 it('validates that a ValidatedDTO can be instantiated from a Request', function () {
     $request = new Request(['name' => $this->subject_name]);
 
