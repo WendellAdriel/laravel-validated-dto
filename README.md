@@ -105,7 +105,7 @@ class UserDTO extends ValidatedDTO
 }
 ```
 
-Remind that the property types must be compatible with the **Cast Type** you define for them.
+Remember that the property types must be compatible with the **Cast Type** you define for them.
 
 ## Defining Validation Rules
 
