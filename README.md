@@ -399,6 +399,7 @@ $dto->toJson();
 // '{"name":"John Doe","email":"john.doe@example.com","password":"s3CreT!@1a2B"}'
 
 $dto->toJson(true); // YOU CAN CALL IT LIKE THIS TO PRETTY PRINT YOUR JSON
+$dto->toPrettyJson(); // OR LIKE THIS
 // {
 //     "name": "John Doe",
 //     "email": "john.doe@example.com",
