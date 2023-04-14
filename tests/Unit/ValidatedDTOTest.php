@@ -203,6 +203,20 @@ it('validates that the ValidatedDTO can be converted into a JSON string', functi
         ->toBe('{"name":"'.$this->subject_name.'"}');
 });
 
+it('validates that the ValidatedDTO can be converted into a pretty JSON string with flag', function () {
+    $validatedDTO = new ValidatedDTOInstance(['name' => $this->subject_name]);
+
+    expect($validatedDTO)->toJson(true)
+        ->toBe(json_encode(['name' => $this->subject_name], JSON_PRETTY_PRINT));
+});
+
+it('validates that the ValidatedDTO can be converted into a pretty JSON string', function () {
+    $validatedDTO = new ValidatedDTOInstance(['name' => $this->subject_name]);
+
+    expect($validatedDTO)->toPrettyJson()
+        ->toBe(json_encode(['name' => $this->subject_name], JSON_PRETTY_PRINT));
+});
+
 it('validates that the ValidatedDTO can be converted into an Eloquent Model', function () {
     $validatedDTO = new ValidatedDTOInstance(['name' => $this->subject_name]);
 

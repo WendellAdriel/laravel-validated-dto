@@ -175,6 +175,14 @@ abstract class ValidatedDTO implements CastsAttributes
     }
 
     /**
+     * Returns the DTO validated data in a pretty JSON string format.
+     */
+    public function toPrettyJson(): string
+    {
+        return json_encode($this->validatedData, JSON_PRETTY_PRINT);
+    }
+
+    /**
      * Creates a new model with the DTO validated data.
      */
     public function toModel(string $model): Model
