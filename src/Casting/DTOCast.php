@@ -10,8 +10,10 @@ use WendellAdriel\ValidatedDTO\ValidatedDTO;
 
 class DTOCast implements Castable
 {
-    public function __construct(private string $dtoClass)
-    {
+    public function __construct(
+        private string $dtoClass,
+        private array $config = []
+    ) {
     }
 
     /**
@@ -28,7 +30,7 @@ class DTOCast implements Castable
         }
 
         try {
-            $dto = new $this->dtoClass($value);
+            $dto = new $this->dtoClass($value, $this->config);
         } catch (ValidationException $exception) {
             throw $exception;
         } catch (Throwable) {
