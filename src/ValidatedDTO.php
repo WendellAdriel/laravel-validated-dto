@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Pipeline;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use WendellAdriel\ValidatedDTO\Casting\ArrayCast;
@@ -27,8 +28,10 @@ abstract class ValidatedDTO implements CastsAttributes
     /**
      * @throws ValidationException|MissingCastTypeException|CastTargetException
      */
-    public function __construct(?array $data = null)
-    {
+    public function __construct(
+        ?array $data = null,
+        protected array $config = []
+    ) {
         if (is_null($data)) {
             return;
         }
@@ -36,6 +39,12 @@ abstract class ValidatedDTO implements CastsAttributes
         $this->data = $data;
 
         $this->initConfig();
+
+        if (isset($this->config['pipeline_before_validation'])) {
+            $this->data = Pipeline::send($this->data)
+                ->through($this->config['pipeline_before_validation'])
+                ->then(fn (array $data) => $data);
+        }
 
         $this->isValidData()
             ? $this->passedValidation()
@@ -74,14 +83,14 @@ abstract class ValidatedDTO implements CastsAttributes
      *
      * @throws InvalidJsonException|ValidationException|MissingCastTypeException|CastTargetException
      */
-    public static function fromJson(string $json): self
+    public static function fromJson(string $json, array $config = []): self
     {
         $jsonDecoded = json_decode($json, true);
         if (! is_array($jsonDecoded)) {
             throw new InvalidJsonException();
         }
 
-        return new static($jsonDecoded);
+        return new static($jsonDecoded, $config);
     }
 
     /**
@@ -91,9 +100,9 @@ abstract class ValidatedDTO implements CastsAttributes
      *
      * @throws CastTargetException|MissingCastTypeException
      */
-    public static function fromArray(array $array): self
+    public static function fromArray(array $array, array $config = []): self
     {
-        return new static($array);
+        return new static($array, $config);
     }
 
     /**
@@ -103,9 +112,9 @@ abstract class ValidatedDTO implements CastsAttributes
      *
      * @throws ValidationException|MissingCastTypeException|CastTargetException
      */
-    public static function fromRequest(Request $request): self
+    public static function fromRequest(Request $request, array $config = []): self
     {
-        return new static($request->all());
+        return new static($request->all(), $config);
     }
 
     /**
@@ -115,9 +124,9 @@ abstract class ValidatedDTO implements CastsAttributes
      *
      * @throws ValidationException|MissingCastTypeException|CastTargetException
      */
-    public static function fromModel(Model $model): self
+    public static function fromModel(Model $model, array $config = []): self
     {
-        return new static($model->toArray());
+        return new static($model->toArray(), $config);
     }
 
     /**
@@ -127,9 +136,9 @@ abstract class ValidatedDTO implements CastsAttributes
      *
      * @throws ValidationException|MissingCastTypeException|CastTargetException
      */
-    public static function fromCommandArguments(Command $command): self
+    public static function fromCommandArguments(Command $command, array $config = []): self
     {
-        return new static($command->arguments());
+        return new static($command->arguments(), $config);
     }
 
     /**
@@ -139,9 +148,9 @@ abstract class ValidatedDTO implements CastsAttributes
      *
      * @throws ValidationException|MissingCastTypeException|CastTargetException
      */
-    public static function fromCommandOptions(Command $command): self
+    public static function fromCommandOptions(Command $command, array $config = []): self
     {
-        return new static($command->options());
+        return new static($command->options(), $config);
     }
 
     /**
@@ -151,9 +160,9 @@ abstract class ValidatedDTO implements CastsAttributes
      *
      * @throws ValidationException|MissingCastTypeException|CastTargetException
      */
-    public static function fromCommand(Command $command): self
+    public static function fromCommand(Command $command, array $config = []): self
     {
-        return new static(array_merge($command->arguments(), $command->options()));
+        return new static(array_merge($command->arguments(), $command->options()), $config);
     }
 
     /**
@@ -161,7 +170,7 @@ abstract class ValidatedDTO implements CastsAttributes
      */
     public function toArray(): array
     {
-        return $this->validatedData;
+        return $this->getValidatedData();
     }
 
     /**
@@ -170,8 +179,8 @@ abstract class ValidatedDTO implements CastsAttributes
     public function toJson(bool $pretty = false): string
     {
         return $pretty
-            ? json_encode($this->validatedData, JSON_PRETTY_PRINT)
-            : json_encode($this->validatedData);
+            ? json_encode($this->getValidatedData(), JSON_PRETTY_PRINT)
+            : json_encode($this->getValidatedData());
     }
 
     /**
@@ -179,7 +188,7 @@ abstract class ValidatedDTO implements CastsAttributes
      */
     public function toPrettyJson(): string
     {
-        return json_encode($this->validatedData, JSON_PRETTY_PRINT);
+        return json_encode($this->getValidatedData(), JSON_PRETTY_PRINT);
     }
 
     /**
@@ -187,7 +196,7 @@ abstract class ValidatedDTO implements CastsAttributes
      */
     public function toModel(string $model): Model
     {
-        return new $model($this->validatedData);
+        return new $model($this->getValidatedData());
     }
 
     /**
@@ -246,6 +255,22 @@ abstract class ValidatedDTO implements CastsAttributes
         }
 
         return '';
+    }
+
+    /**
+     * Returns validated data array.
+     */
+    protected function getValidatedData(): array
+    {
+        $data = $this->validatedData;
+
+        if (isset($this->config['pipeline_before_export'])) {
+            $data = Pipeline::send($data)
+                ->through($this->config['pipeline_before_export'])
+                ->then(fn (array $data) => $data);
+        }
+
+        return $data;
     }
 
     /**
