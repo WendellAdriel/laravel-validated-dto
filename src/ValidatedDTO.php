@@ -278,6 +278,7 @@ abstract class ValidatedDTO implements CastsAttributes
     private function afterProcess(): void
     {
         $this->convertValidatedValue();
+        $this->fillProperties();
     }
 
     /**
@@ -384,6 +385,13 @@ abstract class ValidatedDTO implements CastsAttributes
     private function convertValidatedValue(): void
     {
         $this->validatedData = Arr::undot($this->validatedData);
+    }
+
+    private function fillProperties(): void
+    {
+        foreach ($this->validatedData as $key => $value) {
+            $this->{$key} = $value;
+        }
     }
 
     /**
