@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use function Pest\Faker\faker;
 use WendellAdriel\ValidatedDTO\Exceptions\InvalidJsonException;
+use WendellAdriel\ValidatedDTO\Tests\Datasets\NestedCastsDTOInstance;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\NullableDTO;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\ValidatedDTOInstance;
 use WendellAdriel\ValidatedDTO\ValidatedDTO;
@@ -231,4 +232,73 @@ it('validates that the ValidatedDTO can be converted into an Eloquent Model', fu
         ->toBeInstanceOf(Model::class)
         ->toArray()
         ->toBe(['name' => $this->subject_name]);
+});
+
+it('validates that ValidatedDto contains nested arguments', function () {
+    $params = [
+        'user' => [
+            'name' => 'User',
+            'age' => 25,
+            'payments' => [
+                100,
+                60,
+                35,
+                70,
+            ],
+        ],
+    ];
+
+    $validatedDTO = new NestedCastsDTOInstance($params);
+
+    expect($validatedDTO)
+        ->toBeInstanceOf(ValidatedDTO::class)
+        ->and($validatedDTO->user)
+        ->toBeArray()
+        ->and($validatedDTO->user['name'])
+        ->toBeString()
+        ->and($validatedDTO->user['payments'])
+        ->toBeArray()
+        ->and($validatedDTO->user['payments'])
+        ->toHaveCount(4);
+});
+
+it('validates that ValidatedDto can casting nested arguments', function () {
+    $params = [
+        'user' => [
+            'name' => 'User',
+            'age' => 25,
+            'payments' => [
+                '100',
+                60,
+                '35',
+                '70',
+            ],
+        ],
+    ];
+
+    $validatedDTO = new NestedCastsDTOInstance($params);
+    $payments = $validatedDTO->user['payments'];
+
+    expect($payments)
+        ->each
+        ->toBeInt();
+});
+
+it('validates that ValidatedDto can use default values', function () {
+    $params = [
+        'user' => [
+            'name' => 'User',
+            'age' => 25,
+        ],
+    ];
+
+    $validatedDTO = new NestedCastsDTOInstance($params);
+    $payments = $validatedDTO->user['payments'];
+
+    expect($payments)
+        ->toHaveCount(1)
+        ->and($payments)
+        ->toHaveKey(0)
+        ->and($payments[0])
+        ->toEqual(10);
 });
