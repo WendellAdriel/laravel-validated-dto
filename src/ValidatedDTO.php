@@ -33,7 +33,7 @@ abstract class ValidatedDTO implements CastsAttributes
             return;
         }
 
-        $this->data = $data;
+        $this->data = $this->parseData($data);
 
         $this->initConfig();
 
@@ -66,6 +66,16 @@ abstract class ValidatedDTO implements CastsAttributes
      * Defines the type casting for the properties of the DTO.
      */
     abstract protected function casts(): array;
+
+    protected function mapBeforeValidation(): array
+    {
+        return [];
+    }
+
+    protected function mapBeforeExport(): array
+    {
+        return [];
+    }
 
     /**
      * Creates a DTO instance from a valid JSON string.
@@ -390,5 +400,26 @@ abstract class ValidatedDTO implements CastsAttributes
             : explode('|', $rules[$property]);
 
         return in_array('optional', $propertyRules) || in_array('nullable', $propertyRules);
+    }
+
+    private function parseData(?array $data): array
+    {
+        if (is_null($data)) {
+            return [];
+        }
+
+        if (empty($this->mapBeforeValidation())) {
+            return $data;
+        }
+
+        $values = [];
+        foreach ($data as $key => $value) {
+            if (array_key_exists($key, $this->mapBeforeValidation())) {
+                $values[$this->mapBeforeValidation()[$key]] = $value;
+                continue;
+            }
+            $values[$key] = $value;
+        }
+        return $values;
     }
 }
