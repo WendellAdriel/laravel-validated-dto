@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use WendellAdriel\ValidatedDTO\Casting\ArrayCast;
@@ -13,6 +14,7 @@ use WendellAdriel\ValidatedDTO\Casting\Castable;
 use WendellAdriel\ValidatedDTO\Exceptions\CastTargetException;
 use WendellAdriel\ValidatedDTO\Exceptions\InvalidJsonException;
 use WendellAdriel\ValidatedDTO\Exceptions\MissingCastTypeException;
+use WendellAdriel\ValidatedDTO\Validations\DtoValidationParser;
 
 abstract class ValidatedDTO implements CastsAttributes
 {
@@ -37,9 +39,8 @@ abstract class ValidatedDTO implements CastsAttributes
 
         $this->initConfig();
 
-        $this->isValidData()
-            ? $this->passedValidation()
-            : $this->failedValidation();
+        $this->process();
+        $this->afterProcess();
     }
 
     public function __set(string $name, mixed $value): void
@@ -179,7 +180,7 @@ abstract class ValidatedDTO implements CastsAttributes
      */
     public function toPrettyJson(): string
     {
-        return json_encode($this->validatedData, JSON_PRETTY_PRINT);
+        return $this->toJson(true);
     }
 
     /**
@@ -249,51 +250,6 @@ abstract class ValidatedDTO implements CastsAttributes
     }
 
     /**
-     * Handles a passed validation attempt.
-     *
-     *
-     * @throws MissingCastTypeException|CastTargetException
-     */
-    protected function passedValidation(): void
-    {
-        $this->validatedData = $this->validatedData();
-        /** @var array<Castable> $casts */
-        $casts = $this->casts();
-
-        foreach ($this->validatedData as $key => $value) {
-            $this->{$key} = $value;
-        }
-
-        foreach ($this->defaults() as $key => $value) {
-            if (
-                ! property_exists($this, $key) ||
-                empty($this->{$key})
-            ) {
-                if (! array_key_exists($key, $casts)) {
-                    if ($this->requireCasting) {
-                        throw new MissingCastTypeException($key);
-                    }
-
-                    $this->{$key} = $value;
-                    $this->validatedData[$key] = $value;
-
-                    continue;
-                }
-
-                if (! ($casts[$key] instanceof Castable)) {
-                    throw new CastTargetException($key);
-                }
-
-                $formatted = $this->shouldReturnNull($key, $value)
-                    ? null
-                    : $casts[$key]->cast($key, $value);
-                $this->{$key} = $formatted;
-                $this->validatedData[$key] = $formatted;
-            }
-        }
-    }
-
-    /**
      * Handles a failed validation attempt.
      *
      *
@@ -302,6 +258,132 @@ abstract class ValidatedDTO implements CastsAttributes
     protected function failedValidation(): void
     {
         throw new ValidationException($this->validator);
+    }
+
+    /**
+     * @throws CastTargetException
+     * @throws MissingCastTypeException
+     */
+    private function process(): void
+    {
+        if (! $this->isValidData()) {
+            $this->failedValidation();
+        }
+
+        $this->fillValidatedValues();
+        $this->fillEmptyValues();
+        $this->fillDefaultValues();
+    }
+
+    private function afterProcess(): void
+    {
+        $this->convertValidatedValue();
+    }
+
+    /**
+     * @throws CastTargetException
+     * @throws MissingCastTypeException
+     */
+    private function isValidCastValue(string $key): bool
+    {
+        /** @var array<Castable> $casts */
+        $casts = $this->getImplodedCasts();
+
+        if (! array_key_exists($key, $casts)) {
+            if ($this->requireCasting) {
+                throw new MissingCastTypeException($key);
+            }
+
+            return false;
+        }
+
+        if (! ($casts[$key] instanceof Castable)) {
+            throw new CastTargetException($key);
+        }
+
+        return true;
+    }
+
+    /**
+     * @throws CastTargetException
+     * @throws MissingCastTypeException
+     */
+    private function fillValidatedValues(): void
+    {
+        $acceptedKeys = array_keys($this->getImplodedRules());
+
+        /** @var array<Castable> $casts */
+        $casts = $this->getImplodedCasts();
+
+        foreach ($this->getImplodedData() as $key => $value) {
+            if (! in_array($key, $acceptedKeys)) {
+                continue;
+            }
+
+            if (! $this->isValidCastValue($key)) {
+                $this->validatedData[$key] = $value;
+                $this->{$key} = $value;
+
+                continue;
+            }
+
+            $this->validatedData[$key] = $this->formatValue($key, $value);
+        }
+    }
+
+    private function fillEmptyValues(): void
+    {
+        $acceptedKeys = array_keys($this->getImplodedRules());
+
+        foreach ($acceptedKeys as $property) {
+            if (
+                ! array_key_exists($property, $this->validatedData) &&
+                $this->isOptionalProperty($property)
+            ) {
+                $this->validatedData[$property] = null;
+            }
+        }
+    }
+
+    /**
+     * Handles a passed validation attempt.
+     *
+     *
+     * @throws MissingCastTypeException|CastTargetException
+     */
+    private function fillDefaultValues(): void
+    {
+        foreach ($this->defaults() as $key => $value) {
+            if (
+                property_exists($this, $key) &&
+                ! empty($this->{$key})
+            ) {
+                continue;
+            }
+
+            if (! $this->isValidCastValue($key)) {
+                $this->validatedData[$key] = $value;
+                $this->{$key} = $value;
+
+                continue;
+            }
+
+            $this->validatedData[$key] = $this->formatValue($key, $value);
+        }
+    }
+
+    private function formatValue(string $key, mixed $value): mixed
+    {
+        $casts = $this->getImplodedCasts();
+
+        return $this->shouldReturnNull($key, $value)
+            ? null
+            : $casts[$key]->cast($key, $value);
+    }
+
+    private function convertValidatedValue(): void
+    {
+        $this->validatedData = Arr::undot($this->validatedData);
     }
 
     /**
@@ -330,51 +412,44 @@ abstract class ValidatedDTO implements CastsAttributes
         return $this->validator->passes();
     }
 
-    /**
-     * Builds the validated data from the given data and the rules.
-     *
-     *
-     * @throws MissingCastTypeException|CastTargetException
-     */
-    private function validatedData(): array
+    private function getImplodedData(): array
     {
-        $acceptedKeys = array_keys($this->rules());
-        $result = [];
+        return Arr::dot($this->data);
+    }
 
-        /** @var array<Castable> $casts */
-        $casts = $this->casts();
+    private function getImplodedRules(): array
+    {
+        return (new DtoValidationParser($this->data))
+            ->explode(
+                DtoValidationParser::filterConditionalRules(
+                    $this->rules(),
+                    $this->data,
+                ),
+            )
+            ->rules;
+    }
 
-        foreach ($this->data as $key => $value) {
-            if (in_array($key, $acceptedKeys)) {
-                if (! array_key_exists($key, $casts)) {
-                    if ($this->requireCasting) {
-                        throw new MissingCastTypeException($key);
-                    }
-                    $result[$key] = $value;
+    private function getImplodedCasts(): array
+    {
+        $casts = (new DtoValidationParser($this->data))
+            ->explode(
+                DtoValidationParser::filterConditionalRules(
+                    $this->casts(),
+                    $this->data,
+                ),
+            )
+            ->rules;
 
-                    continue;
+        return array_map(
+            static function ($cast) {
+                if (! is_array($cast)) {
+                    return $cast;
                 }
 
-                if (! ($casts[$key] instanceof Castable)) {
-                    throw new CastTargetException($key);
-                }
-
-                $result[$key] = $this->shouldReturnNull($key, $value)
-                    ? null
-                    : $casts[$key]->cast($key, $value);
-            }
-        }
-
-        foreach ($acceptedKeys as $property) {
-            if (
-                ! array_key_exists($property, $result) &&
-                $this->isOptionalProperty($property)
-            ) {
-                $result[$property] = null;
-            }
-        }
-
-        return $result;
+                return $cast[0];
+            },
+            $casts,
+        );
     }
 
     private function shouldReturnNull(string $key, mixed $value): bool
@@ -384,7 +459,7 @@ abstract class ValidatedDTO implements CastsAttributes
 
     private function isOptionalProperty(string $property): bool
     {
-        $rules = $this->rules();
+        $rules = $this->getImplodedRules();
         $propertyRules = is_array($rules[$property])
             ? $rules[$property]
             : explode('|', $rules[$property]);
