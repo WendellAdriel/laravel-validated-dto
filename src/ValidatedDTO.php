@@ -323,7 +323,6 @@ abstract class ValidatedDTO implements CastsAttributes
 
             if (! $this->isValidCastValue($key)) {
                 $this->validatedData[$key] = $value;
-                $this->{$key} = $value;
 
                 continue;
             }
@@ -354,7 +353,7 @@ abstract class ValidatedDTO implements CastsAttributes
      */
     private function fillDefaultValues(): void
     {
-        foreach ($this->defaults() as $key => $value) {
+        foreach ($this->getImplodedDefaults() as $key => $value) {
             if (
                 property_exists($this, $key) &&
                 ! empty($this->{$key})
@@ -364,7 +363,6 @@ abstract class ValidatedDTO implements CastsAttributes
 
             if (! $this->isValidCastValue($key)) {
                 $this->validatedData[$key] = $value;
-                $this->{$key} = $value;
 
                 continue;
             }
@@ -435,6 +433,24 @@ abstract class ValidatedDTO implements CastsAttributes
                 ),
             )
             ->rules;
+    }
+
+    private function getImplodedDefaults(): array
+    {
+        $defaults = (new DtoValidationParser($this->data))
+            ->explode(
+                DtoValidationParser::filterConditionalRules(
+                    $this->defaults(),
+                    $this->data,
+                ),
+            )
+            ->rules;
+
+        if (is_array($defaults)) {
+            return Arr::dot($defaults);
+        }
+
+        return $defaults;
     }
 
     private function getImplodedCasts(): array
