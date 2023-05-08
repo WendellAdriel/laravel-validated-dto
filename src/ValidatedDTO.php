@@ -33,7 +33,7 @@ abstract class ValidatedDTO implements CastsAttributes
             return;
         }
 
-        $this->data = $data;
+        $this->data = $this->buildDataForValidation($data);
 
         $this->initConfig();
 
@@ -161,7 +161,7 @@ abstract class ValidatedDTO implements CastsAttributes
      */
     public function toArray(): array
     {
-        return $this->validatedData;
+        return $this->buildDataForExport();
     }
 
     /**
@@ -170,8 +170,8 @@ abstract class ValidatedDTO implements CastsAttributes
     public function toJson(bool $pretty = false): string
     {
         return $pretty
-            ? json_encode($this->validatedData, JSON_PRETTY_PRINT)
-            : json_encode($this->validatedData);
+            ? json_encode($this->buildDataForExport(), JSON_PRETTY_PRINT)
+            : json_encode($this->buildDataForExport());
     }
 
     /**
@@ -179,7 +179,7 @@ abstract class ValidatedDTO implements CastsAttributes
      */
     public function toPrettyJson(): string
     {
-        return json_encode($this->validatedData, JSON_PRETTY_PRINT);
+        return json_encode($this->buildDataForExport(), JSON_PRETTY_PRINT);
     }
 
     /**
@@ -187,7 +187,7 @@ abstract class ValidatedDTO implements CastsAttributes
      */
     public function toModel(string $model): Model
     {
-        return new $model($this->validatedData);
+        return new $model($this->buildDataForExport());
     }
 
     /**
@@ -248,6 +248,16 @@ abstract class ValidatedDTO implements CastsAttributes
         return '';
     }
 
+    protected function mapBeforeValidation(): array
+    {
+        return [];
+    }
+
+    protected function mapBeforeExport(): array
+    {
+        return [];
+    }
+
     /**
      * Handles a passed validation attempt.
      *
@@ -302,6 +312,34 @@ abstract class ValidatedDTO implements CastsAttributes
     protected function failedValidation(): void
     {
         throw new ValidationException($this->validator);
+    }
+
+    private function buildDataForValidation(array $data): array
+    {
+        return $this->mapData($this->mapBeforeValidation(), $data);
+    }
+
+    private function buildDataForExport(): array
+    {
+        return $this->mapData($this->mapBeforeExport(), $this->validatedData);
+    }
+
+    private function mapData(array $mapping, array $data): array
+    {
+        if (empty($mapping)) {
+            return $data;
+        }
+
+        $mappedData = [];
+        foreach ($data as $key => $value) {
+            $property = array_key_exists($key, $mapping)
+                ? $mapping[$key]
+                : $key;
+
+            $mappedData[$property] = $value;
+        }
+
+        return $mappedData;
     }
 
     /**

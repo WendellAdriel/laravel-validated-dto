@@ -35,6 +35,7 @@
 - **Type Casting** out-of-the-box for your DTOs properties
 - Support casting of **nested data**
 - Easily create **custom Type Casters** for your own needs
+- Custom Data Mapping
 
 ## Installation
 
@@ -424,6 +425,46 @@ $dto->toModel(\App\Models\User::class);
 // }
 
 ```
+
+## Mapping DTO properties
+
+### Mapping data before validation
+
+Sometimes the data you have to validate is not the same you want in your DTO. You can use the `mapBeforeValidation`
+method to map your data before the validation and the DTO instantiation occurs:
+
+```php
+protected function mapBeforeValidation(): array
+{
+    return [
+        'full_name' => 'name',
+    ];
+}
+```
+
+The code above will map the `full_name` property to the `name` property before the validation and the DTO instantiation.
+So your Request/Array/etc can have a `full_name` property and your DTO will have a `name` property instead.
+
+### Mapping data before export
+
+Sometimes the data you have in your DTO is not the same you want to your Model, Array, JSON. You can use the `mapBeforeExport`
+method to map your data before exporting your DTO to another structure:
+
+```php
+protected function mapBeforeExport(): array
+{
+    return [
+        'name' => 'username',
+    ];
+}
+```
+
+The code above will map the `name` property to the `username` property before exporting your DTO to another structure.
+So the result structure will have a `username` property instead of a `name` property.
+
+You can combine both methods to map your data before validation and before export.
+If you combine the both examples above your request will have a `full_name` property, your DTO will have a `name` property
+and when exported the result will have a `username` property.
 
 ## Customizing Error Messages, Attributes and Exceptions
 

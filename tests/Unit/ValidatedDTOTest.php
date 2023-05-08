@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use function Pest\Faker\faker;
 use WendellAdriel\ValidatedDTO\Exceptions\InvalidJsonException;
+use WendellAdriel\ValidatedDTO\Tests\Datasets\MapBeforeExportDTO;
+use WendellAdriel\ValidatedDTO\Tests\Datasets\MapBeforeValidationDTO;
+use WendellAdriel\ValidatedDTO\Tests\Datasets\MapDataDTO;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\NullableDTO;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\ValidatedDTOInstance;
 use WendellAdriel\ValidatedDTO\ValidatedDTO;
@@ -231,4 +234,37 @@ it('validates that the ValidatedDTO can be converted into an Eloquent Model', fu
         ->toBeInstanceOf(Model::class)
         ->toArray()
         ->toBe(['name' => $this->subject_name]);
+});
+
+it('maps data before validation', function () {
+    $dto = MapBeforeValidationDTO::fromArray(['full_name' => $this->subject_name]);
+
+    expect($dto->full_name)
+        ->toBeNull()
+        ->and($dto->name)
+        ->toBe($this->subject_name);
+});
+
+it('maps data before export', function () {
+    $dto = MapBeforeExportDTO::fromArray(['name' => $this->subject_name]);
+
+    expect($dto->name)
+        ->toBe($this->subject_name)
+        ->and($dto->username)
+        ->toBeNull()
+        ->and($dto->toArray())
+        ->toBe(['username' => $this->subject_name]);
+});
+
+it('maps data before validation and before export', function () {
+    $dto = MapDataDTO::fromArray(['full_name' => $this->subject_name]);
+
+    expect($dto->full_name)
+        ->toBeNull()
+        ->and($dto->name)
+        ->toBe($this->subject_name)
+        ->and($dto->username)
+        ->toBeNull()
+        ->and($dto->toArray())
+        ->toBe(['username' => $this->subject_name]);
 });
