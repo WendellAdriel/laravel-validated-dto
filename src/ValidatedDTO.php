@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use WendellAdriel\ValidatedDTO\Casting\ArrayCast;
@@ -332,6 +333,17 @@ abstract class ValidatedDTO implements CastsAttributes
 
         $mappedData = [];
         foreach ($data as $key => $value) {
+            $properties = $this->getMappedProperties($mapping, $key);
+            if ($properties !== [] && $this->isArrayable($value)) {
+                $formatted = $this->formatArrayableValue($value);
+
+                foreach ($properties as $property => $mappedValue) {
+                    $mappedData[$mappedValue] = $formatted[$property] ?? null;
+                }
+
+                continue;
+            }
+
             $property = array_key_exists($key, $mapping)
                 ? $mapping[$key]
                 : $key;
@@ -340,6 +352,46 @@ abstract class ValidatedDTO implements CastsAttributes
         }
 
         return $mappedData;
+    }
+
+    private function getMappedProperties(array $mapping, string $key): array
+    {
+        $properties = [];
+        foreach ($mapping as $mappedKey => $mappedValue) {
+            if (str_starts_with($mappedKey, "{$key}.")) {
+                $arrayKey = str_replace("{$key}.", '', $mappedKey);
+                $properties[$arrayKey] = $mappedValue;
+            }
+
+            if (str_starts_with($mappedValue, "{$key}.")) {
+                $arrayKey = str_replace("{$key}.", '', $mappedValue);
+                $properties[$arrayKey] = $mappedKey;
+            }
+        }
+
+        return $properties;
+    }
+
+    private function isArrayable(mixed $value): bool
+    {
+        return is_array($value) ||
+            $value instanceof Collection ||
+            $value instanceof ValidatedDTO ||
+            $value instanceof Model ||
+            is_object($value);
+    }
+
+    private function formatArrayableValue(mixed $value): array
+    {
+        if (is_array($value)) {
+            return $value;
+        }
+
+        if (is_object($value)) {
+            return (array) $value;
+        }
+
+        return $value->toArray();
     }
 
     /**
