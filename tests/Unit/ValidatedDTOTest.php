@@ -10,6 +10,7 @@ use WendellAdriel\ValidatedDTO\Exceptions\InvalidJsonException;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\MapBeforeExportDTO;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\MapBeforeValidationDTO;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\MapDataDTO;
+use WendellAdriel\ValidatedDTO\Tests\Datasets\MappedNameDTO;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\NameDTO;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\NullableDTO;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\User;
@@ -270,6 +271,20 @@ it('maps data before validation and before export', function () {
         ->toBeNull()
         ->and($dto->toArray())
         ->toBe(['username' => $this->subject_name]);
+});
+
+it('maps nested data to flat data before validation', function () {
+    $dto = MappedNameDTO::fromArray([
+        'name' => [
+            'first_name' => 'John',
+            'last_name' => 'Doe',
+        ],
+    ]);
+
+    expect($dto->first_name)
+        ->toBe('John')
+        ->and($dto->last_name)
+        ->toBe('Doe');
 });
 
 it('maps nested data to flat data before export', function () {

@@ -362,6 +362,11 @@ abstract class ValidatedDTO implements CastsAttributes
                 $arrayKey = str_replace("{$key}.", '', $mappedKey);
                 $properties[$arrayKey] = $mappedValue;
             }
+
+            if (str_starts_with($mappedValue, "{$key}.")) {
+                $arrayKey = str_replace("{$key}.", '', $mappedValue);
+                $properties[$arrayKey] = $mappedKey;
+            }
         }
 
         return $properties;

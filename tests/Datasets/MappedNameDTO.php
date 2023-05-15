@@ -4,7 +4,7 @@ namespace WendellAdriel\ValidatedDTO\Tests\Datasets;
 
 use WendellAdriel\ValidatedDTO\ValidatedDTO;
 
-class NameDTO extends ValidatedDTO
+class MappedNameDTO extends ValidatedDTO
 {
     public string $first_name;
 
@@ -26,5 +26,13 @@ class NameDTO extends ValidatedDTO
     protected function casts(): array
     {
         return [];
+    }
+
+    protected function mapBeforeValidation(): array
+    {
+        return [
+            'first_name' => 'name.first_name',
+            'last_name' => 'name.last_name',
+        ];
     }
 }

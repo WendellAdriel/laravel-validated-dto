@@ -7,6 +7,10 @@ use WendellAdriel\ValidatedDTO\ValidatedDTO;
 
 class UserDTO extends ValidatedDTO
 {
+    public NameDTO $name;
+
+    public string $email;
+
     protected function rules(): array
     {
         return [
