@@ -10,7 +10,10 @@ use WendellAdriel\ValidatedDTO\Exceptions\InvalidJsonException;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\MapBeforeExportDTO;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\MapBeforeValidationDTO;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\MapDataDTO;
+use WendellAdriel\ValidatedDTO\Tests\Datasets\NameDTO;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\NullableDTO;
+use WendellAdriel\ValidatedDTO\Tests\Datasets\User;
+use WendellAdriel\ValidatedDTO\Tests\Datasets\UserDTO;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\ValidatedDTOInstance;
 use WendellAdriel\ValidatedDTO\ValidatedDTO;
 
@@ -267,4 +270,31 @@ it('maps data before validation and before export', function () {
         ->toBeNull()
         ->and($dto->toArray())
         ->toBe(['username' => $this->subject_name]);
+});
+
+it('maps nested data to flat data before export', function () {
+    $dto = UserDTO::fromArray([
+        'name' => [
+            'first_name' => 'John',
+            'last_name' => 'Doe',
+        ],
+        'email' => 'john.doe@example.com',
+    ]);
+
+    $user = $dto->toModel(User::class);
+
+    expect($dto->name)
+        ->toBeInstanceOf(NameDTO::class)
+        ->and($dto->name->first_name)
+        ->toBe('John')
+        ->and($dto->name->last_name)
+        ->toBe('Doe')
+        ->and($dto->email)
+        ->toBe('john.doe@example.com')
+        ->and($user->first_name)
+        ->toBe('John')
+        ->and($user->last_name)
+        ->toBe('Doe')
+        ->and($user->email)
+        ->toBe('john.doe@example.com');
 });
