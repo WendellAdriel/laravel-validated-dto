@@ -2,18 +2,10 @@
 
 namespace {{ namespace }};
 
-use WendellAdriel\ValidatedDTO\ValidatedDTO;
+use WendellAdriel\ValidatedDTO\SimpleDTO;
 
-class {{ class }} extends ValidatedDTO
+class {{ class }} extends SimpleDTO
 {
-    /**
-     * Defines the validation rules for the DTO.
-     */
-    protected function rules(): array
-    {
-        return [];
-    }
-
     /**
      * Defines the default values for the properties of the DTO.
      */
@@ -42,22 +34,6 @@ class {{ class }} extends ValidatedDTO
      * Maps the DTO properties before the DTO export.
      */
     protected function mapBeforeExport(): array
-    {
-        return [];
-    }
-
-    /**
-     * Defines the custom messages for validator errors.
-     */
-    public function messages(): array
-    {
-        return [];
-    }
-
-    /**
-     * Defines the custom attributes for validator errors.
-     */
-    public function attributes(): array
     {
         return [];
     }
