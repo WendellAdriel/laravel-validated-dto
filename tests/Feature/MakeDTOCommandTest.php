@@ -13,6 +13,19 @@ it('generates a new ValidatedDTO class via command', function () {
     expect($dtoClass)->toBeFileWithContent(UserDTO());
 });
 
+it('generates a new SimpleDTO class via command', function () {
+    $dtoClass = app_path('DTOs/SimpleUserDTO.php');
+
+    if (file_exists($dtoClass)) {
+        unlink($dtoClass);
+    }
+
+    $this->artisan('make:dto', ['name' => 'SimpleUserDTO', '--simple' => true])
+        ->assertExitCode(0);
+
+    expect($dtoClass)->toBeFileWithContent(SimpleUserDTO());
+});
+
 /**
  * Content of the expected UserDTO class
  */
@@ -29,8 +42,6 @@ class UserDTO extends ValidatedDTO
 {
     /**
      * Defines the validation rules for the DTO.
-     *
-     * @return array
      */
     protected function rules(): array
     {
@@ -39,8 +50,6 @@ class UserDTO extends ValidatedDTO
 
     /**
      * Defines the default values for the properties of the DTO.
-     *
-     * @return array
      */
     protected function defaults(): array
     {
@@ -49,8 +58,6 @@ class UserDTO extends ValidatedDTO
 
     /**
      * Defines the type casting for the properties of the DTO.
-     *
-     * @return array
      */
     protected function casts(): array
     {
@@ -58,9 +65,23 @@ class UserDTO extends ValidatedDTO
     }
 
     /**
+     * Maps the DTO properties before the DTO instantiation.
+     */
+    protected function mapBeforeValidation(): array
+    {
+        return [];
+    }
+
+    /**
+     * Maps the DTO properties before the DTO export.
+     */
+    protected function mapBeforeExport(): array
+    {
+        return [];
+    }
+
+    /**
      * Defines the custom messages for validator errors.
-     *
-     * @return array
      */
     public function messages(): array
     {
@@ -69,10 +90,58 @@ class UserDTO extends ValidatedDTO
 
     /**
      * Defines the custom attributes for validator errors.
-     *
-     * @return array
      */
     public function attributes(): array
+    {
+        return [];
+    }
+}
+
+CLASS;
+}
+
+/**
+ * Content of the expected SimpleUserDTO class
+ */
+function SimpleUserDTO(): string
+{
+    return <<<CLASS
+<?php
+
+namespace App\DTOs;
+
+use WendellAdriel\ValidatedDTO\SimpleDTO;
+
+class SimpleUserDTO extends SimpleDTO
+{
+    /**
+     * Defines the default values for the properties of the DTO.
+     */
+    protected function defaults(): array
+    {
+        return [];
+    }
+
+    /**
+     * Defines the type casting for the properties of the DTO.
+     */
+    protected function casts(): array
+    {
+        return [];
+    }
+
+    /**
+     * Maps the DTO properties before the DTO instantiation.
+     */
+    protected function mapBeforeValidation(): array
+    {
+        return [];
+    }
+
+    /**
+     * Maps the DTO properties before the DTO export.
+     */
+    protected function mapBeforeExport(): array
     {
         return [];
     }

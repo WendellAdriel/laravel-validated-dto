@@ -70,7 +70,9 @@ class MakeDTOCommand extends GeneratorCommand
      */
     protected function getStub(): string
     {
-        return __DIR__.'/../stubs/dto.stub';
+        return $this->option('simple')
+            ? __DIR__.'/../stubs/simple_dto.stub'
+            : __DIR__.'/../stubs/dto.stub';
     }
 
     /**
@@ -80,6 +82,7 @@ class MakeDTOCommand extends GeneratorCommand
     {
         return [
             ['force', null, InputOption::VALUE_NONE, 'Create the class even if the DTO already exists'],
+            ['simple', null, InputOption::VALUE_NONE, 'If the DTO should be a SimpleDTO instead of a ValidatedDTO'],
         ];
     }
 }

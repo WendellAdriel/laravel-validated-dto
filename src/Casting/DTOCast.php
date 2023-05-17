@@ -6,7 +6,7 @@ use Illuminate\Validation\ValidationException;
 use Throwable;
 use WendellAdriel\ValidatedDTO\Exceptions\CastException;
 use WendellAdriel\ValidatedDTO\Exceptions\CastTargetException;
-use WendellAdriel\ValidatedDTO\ValidatedDTO;
+use WendellAdriel\ValidatedDTO\SimpleDTO;
 
 class DTOCast implements Castable
 {
@@ -17,7 +17,7 @@ class DTOCast implements Castable
     /**
      * @throws CastException|CastTargetException|ValidationException
      */
-    public function cast(string $property, mixed $value): ValidatedDTO
+    public function cast(string $property, mixed $value): SimpleDTO
     {
         if (is_string($value)) {
             $value = json_decode($value, true);
@@ -35,7 +35,7 @@ class DTOCast implements Castable
             throw new CastException($property);
         }
 
-        if (! ($dto instanceof ValidatedDTO)) {
+        if (! ($dto instanceof SimpleDTO)) {
             throw new CastTargetException($property);
         }
 
