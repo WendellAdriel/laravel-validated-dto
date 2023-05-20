@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WendellAdriel\ValidatedDTO\Tests\Datasets;
 
 use WendellAdriel\ValidatedDTO\SimpleDTO;

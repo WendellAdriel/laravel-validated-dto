@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Console\Application;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
@@ -66,7 +68,7 @@ it('validates that is possible to set a property in a ValidatedDTO', function ()
 });
 
 it('validates that a ValidatedDTO can be instantiated from a JSON string', function () {
-    $validatedDTO = ValidatedDTOInstance::fromJson('{"name": "'.$this->subject_name.'"}');
+    $validatedDTO = ValidatedDTOInstance::fromJson('{"name": "' . $this->subject_name . '"}');
 
     expect($validatedDTO->validatedData)
         ->ToBe(['name' => $this->subject_name])
@@ -75,7 +77,7 @@ it('validates that a ValidatedDTO can be instantiated from a JSON string', funct
 });
 
 it('throws exception when trying to instantiate a ValidatedDTO from an invalid JSON string')
-    ->expect(fn () => ValidatedDTOInstance::fromJson('{"name": "'.$this->subject_name.'"'))
+    ->expect(fn () => ValidatedDTOInstance::fromJson('{"name": "' . $this->subject_name . '"'))
     ->throws(InvalidJsonException::class);
 
 it('validates that a ValidatedDTO can be instantiated from Array', function () {
@@ -207,7 +209,7 @@ it('validates that the ValidatedDTO can be converted into a JSON string', functi
     $validatedDTO = new ValidatedDTOInstance(['name' => $this->subject_name]);
 
     expect($validatedDTO)->toJson()
-        ->toBe('{"name":"'.$this->subject_name.'"}');
+        ->toBe('{"name":"' . $this->subject_name . '"}');
 });
 
 it('validates that the ValidatedDTO can be converted into a pretty JSON string with flag', function () {

@@ -6,15 +6,13 @@ namespace WendellAdriel\ValidatedDTO\Tests\Datasets;
 
 use WendellAdriel\ValidatedDTO\Casting\IntegerCast;
 use WendellAdriel\ValidatedDTO\Casting\StringCast;
-use WendellAdriel\ValidatedDTO\SimpleDTO;
+use WendellAdriel\ValidatedDTO\ResponseDTO;
 
-class SimpleNullableDTO extends SimpleDTO
+class UserResponseDTO extends ResponseDTO
 {
     public string $name;
 
-    public ?int $age;
-
-    public ?string $address;
+    public int $age;
 
     protected function defaults(): array
     {
@@ -26,7 +24,6 @@ class SimpleNullableDTO extends SimpleDTO
         return [
             'name' => new StringCast(),
             'age' => new IntegerCast(),
-            'address' => new StringCast(),
         ];
     }
 }

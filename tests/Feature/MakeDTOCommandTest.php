@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 it('generates a new ValidatedDTO class via command', function () {
     $dtoClass = app_path('DTOs/UserDTO.php');
 
@@ -24,6 +26,19 @@ it('generates a new SimpleDTO class via command', function () {
         ->assertExitCode(0);
 
     expect($dtoClass)->toBeFileWithContent(SimpleUserDTO());
+});
+
+it('generates a new ResponseDTO class via command', function () {
+    $dtoClass = app_path('DTOs/UserResponseDTO.php');
+
+    if (file_exists($dtoClass)) {
+        unlink($dtoClass);
+    }
+
+    $this->artisan('make:dto', ['name' => 'UserResponseDTO', '--response' => true])
+        ->assertExitCode(0);
+
+    expect($dtoClass)->toBeFileWithContent(UserResponseDTO());
 });
 
 /**
@@ -113,6 +128,56 @@ namespace App\DTOs;
 use WendellAdriel\ValidatedDTO\SimpleDTO;
 
 class SimpleUserDTO extends SimpleDTO
+{
+    /**
+     * Defines the default values for the properties of the DTO.
+     */
+    protected function defaults(): array
+    {
+        return [];
+    }
+
+    /**
+     * Defines the type casting for the properties of the DTO.
+     */
+    protected function casts(): array
+    {
+        return [];
+    }
+
+    /**
+     * Maps the DTO properties before the DTO instantiation.
+     */
+    protected function mapBeforeValidation(): array
+    {
+        return [];
+    }
+
+    /**
+     * Maps the DTO properties before the DTO export.
+     */
+    protected function mapBeforeExport(): array
+    {
+        return [];
+    }
+}
+
+CLASS;
+}
+
+/**
+ * Content of the expected UserResponseDTO class
+ */
+function UserResponseDTO(): string
+{
+    return <<<CLASS
+<?php
+
+namespace App\DTOs;
+
+use WendellAdriel\ValidatedDTO\ResponseDTO;
+
+class UserResponseDTO extends ResponseDTO
 {
     /**
      * Defines the default values for the properties of the DTO.

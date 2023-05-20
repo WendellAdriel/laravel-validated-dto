@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use function Pest\Faker\faker;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\AttributesDTO;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\ModelCastInstance;

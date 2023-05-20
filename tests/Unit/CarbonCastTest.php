@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use WendellAdriel\ValidatedDTO\Casting\CarbonCast;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use WendellAdriel\ValidatedDTO\Casting\IntegerCast;
 use WendellAdriel\ValidatedDTO\Exceptions\CastException;
 

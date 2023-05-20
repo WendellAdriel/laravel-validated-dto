@@ -17,7 +17,7 @@
     <a href="#features">Features</a> |
     <a href="#installation">Installation</a> |
     <a href="#generating-dtos">Generating DTOs</a> |
-    <a href="#simple-dtos">Simple DTOs</a> |
+    <a href="#more-dtos">More DTOs</a> |
     <a href="#credits">Credits</a> |
     <a href="#contributing">Contributing</a>
 </p>
@@ -37,6 +37,8 @@
 - Support casting of **nested data**
 - Easily create **custom Type Casters** for your own needs
 - Custom Data Mapping
+- Use DTOs for wrapping, typing and transforming API responses
+- **[Laravel Livewire](https://laravel-livewire.com/)** support
 
 ## Installation
 
@@ -955,8 +957,9 @@ class AttributesDTO extends ValidatedDTO
     }
 }
 ```
+## More DTOs
 
-## Simple DTOs
+### Simple DTOs
 
 If you don't need to validate the data, you can use the `SimpleDTO` class instead of the `ValidatedDTO` class.
 The DTOs created with this class will not validate the data, but will still have all the other features of the `ValidatedDTO` class:
@@ -1006,6 +1009,56 @@ To generate a `SimpleDTO` you can use the `--simple` flag:
 
 ```bash
 php artisan make:dto SimpleUserDTO --simple
+```
+
+### Response DTOs
+
+If you want to use DTOs to wrap, type and transform your API responses, you can use the `ResponseDTO` class.
+This class will have the same features as the `SimpleDTO` class and will implement the `Illuminate\Contracts\Support\Responsable` interface:
+
+```php
+class UserResponseDTO extends ResponseDTO
+{
+    public string $name;
+
+    public string $email;
+
+    public int $age;
+
+    // Your DTO methods...
+}
+```
+
+Then you can return your DTOs from your controllers:
+
+```php
+class UserController extends Controller
+{
+    public function show(int $id)
+    {
+        return UserResponseDTO::fromModel(User::findOrFail($id));
+    }
+}
+```
+
+To generate a `ResponseDTO` you can use the `--response` flag:
+
+```bash
+php artisan make:dto UserResponseDTO --response
+```
+
+### Wireable DTOS
+
+If you're using **[Laravel Livewire](https://laravel-livewire.com/)**, you can turn your DTOs into **wireable** DTOs
+by adding the `WendellAdriel\ValidatedDTO\Concerns\Wireable` trait to your DTOs:
+
+```php
+class UserDTO extends ValidatedDTO
+{
+    use Wireable;
+
+    // Your DTO code...
+}
 ```
 
 ## Credits
