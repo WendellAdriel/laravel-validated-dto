@@ -28,17 +28,17 @@ it('generates a new SimpleDTO class via command', function () {
     expect($dtoClass)->toBeFileWithContent(SimpleUserDTO());
 });
 
-it('generates a new ResponseDTO class via command', function () {
-    $dtoClass = app_path('DTOs/UserResponseDTO.php');
+it('generates a new ResourceDTO class via command', function () {
+    $dtoClass = app_path('DTOs/UserResourceDTO.php');
 
     if (file_exists($dtoClass)) {
         unlink($dtoClass);
     }
 
-    $this->artisan('make:dto', ['name' => 'UserResponseDTO', '--response' => true])
+    $this->artisan('make:dto', ['name' => 'UserResourceDTO', '--resource' => true])
         ->assertExitCode(0);
 
-    expect($dtoClass)->toBeFileWithContent(UserResponseDTO());
+    expect($dtoClass)->toBeFileWithContent(UserResourceDTO());
 });
 
 /**
@@ -166,18 +166,18 @@ CLASS;
 }
 
 /**
- * Content of the expected UserResponseDTO class
+ * Content of the expected UserResourceDTO class
  */
-function UserResponseDTO(): string
+function UserResourceDTO(): string
 {
     return <<<CLASS
 <?php
 
 namespace App\DTOs;
 
-use WendellAdriel\ValidatedDTO\ResponseDTO;
+use WendellAdriel\ValidatedDTO\ResourceDTO;
 
-class UserResponseDTO extends ResponseDTO
+class UserResourceDTO extends ResourceDTO
 {
     /**
      * Defines the default values for the properties of the DTO.

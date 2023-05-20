@@ -2,9 +2,9 @@
 
 namespace {{ namespace }};
 
-use WendellAdriel\ValidatedDTO\ResponseDTO;
+use WendellAdriel\ValidatedDTO\ResourceDTO;
 
-class {{ class }} extends ResponseDTO
+class {{ class }} extends ResourceDTO
 {
     /**
      * Defines the default values for the properties of the DTO.

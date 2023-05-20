@@ -8,7 +8,7 @@ use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-abstract class ResponseDTO extends SimpleDTO implements Responsable
+abstract class ResourceDTO extends SimpleDTO implements Responsable
 {
     private int $status;
 
