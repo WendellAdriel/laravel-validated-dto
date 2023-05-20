@@ -1011,13 +1011,13 @@ To generate a `SimpleDTO` you can use the `--simple` flag:
 php artisan make:dto SimpleUserDTO --simple
 ```
 
-### Response DTOs
+### Resource DTOs
 
-If you want to use DTOs to wrap, type and transform your API responses, you can use the `ResponseDTO` class.
+If you want to use DTOs to wrap, type and transform your API responses, you can use the `ResourceDTO` class.
 This class will have the same features as the `SimpleDTO` class and will implement the `Illuminate\Contracts\Support\Responsable` interface:
 
 ```php
-class UserResponseDTO extends ResponseDTO
+class UserResourceDTO extends ResourceDTO
 {
     public string $name;
 
@@ -1036,15 +1036,15 @@ class UserController extends Controller
 {
     public function show(int $id)
     {
-        return UserResponseDTO::fromModel(User::findOrFail($id));
+        return UserResourceDTO::fromModel(User::findOrFail($id));
     }
 }
 ```
 
-To generate a `ResponseDTO` you can use the `--response` flag:
+To generate a `ResourceDTO` you can use the `--resource` flag:
 
 ```bash
-php artisan make:dto UserResponseDTO --response
+php artisan make:dto UserResourceDTO --resource
 ```
 
 ### Wireable DTOS
