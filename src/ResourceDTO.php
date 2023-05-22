@@ -7,6 +7,7 @@ namespace WendellAdriel\ValidatedDTO;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use WendellAdriel\ValidatedDTO\Support\ResourceCollection;
 
 abstract class ResourceDTO extends SimpleDTO implements Responsable
 {
@@ -19,6 +20,11 @@ abstract class ResourceDTO extends SimpleDTO implements Responsable
         parent::__construct($data);
         $this->status = $status;
         $this->headers = $headers;
+    }
+
+    public static function collection(array $data, int $status = 200, array $headers = []): ResourceCollection
+    {
+        return new ResourceCollection($data, static::class, $status, $headers);
     }
 
     /**
