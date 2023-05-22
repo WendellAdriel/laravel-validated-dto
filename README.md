@@ -1041,6 +1041,21 @@ class UserController extends Controller
 }
 ```
 
+You can also return a collection/list of your DTOs as a response using the `ResourceDTO::collection()` method:
+
+```php
+class UserController extends Controller
+{
+    public function index()
+    {
+        return UserResourceDTO::collection(User::all());
+    }
+}
+```
+
+This way every item in the collection will be converted to a `UserResourceDTO` instance before sending
+the response to the client, using all the typing, casting and mapping features of your DTO class.
+
 To generate a `ResourceDTO` you can use the `--resource` flag:
 
 ```bash
