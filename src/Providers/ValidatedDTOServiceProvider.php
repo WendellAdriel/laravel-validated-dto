@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WendellAdriel\ValidatedDTO\Providers;
 
 use Illuminate\Support\ServiceProvider;
@@ -18,7 +20,7 @@ class ValidatedDTOServiceProvider extends ServiceProvider
 
         $this->publishes(
             [
-                __DIR__.'/../../config/dto.php' => base_path('config/dto.php'),
+                __DIR__ . '/../../config/dto.php' => base_path('config/dto.php'),
             ],
             'config'
         );
@@ -29,6 +31,6 @@ class ValidatedDTOServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__.'/../../config/dto.php', 'dto');
+        $this->mergeConfigFrom(__DIR__ . '/../../config/dto.php', 'dto');
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WendellAdriel\ValidatedDTO;
 
 use Illuminate\Console\Command;
@@ -341,7 +343,7 @@ abstract class SimpleDTO implements CastsAttributes
 
         foreach ($acceptedKeys as $property) {
             if (! array_key_exists($property, $result)) {
-                $this->$property = null;
+                $this->{$property} = null;
             }
         }
 

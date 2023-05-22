@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WendellAdriel\ValidatedDTO\Casting;
 
 use WendellAdriel\ValidatedDTO\Exceptions\CastException;

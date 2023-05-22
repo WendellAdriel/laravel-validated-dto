@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WendellAdriel\ValidatedDTO\Casting;
 
 class BooleanCast implements Castable
@@ -14,6 +16,6 @@ class BooleanCast implements Castable
             return filter_var($value, FILTER_VALIDATE_BOOLEAN);
         }
 
-        return boolval($value);
+        return (bool) $value;
     }
 }

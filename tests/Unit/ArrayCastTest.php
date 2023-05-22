@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use WendellAdriel\ValidatedDTO\Casting\ArrayCast;
 
 it('properly casts from json strign to array')

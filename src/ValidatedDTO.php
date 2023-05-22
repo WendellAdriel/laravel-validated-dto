@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WendellAdriel\ValidatedDTO;
 
 use Illuminate\Support\Facades\Validator;

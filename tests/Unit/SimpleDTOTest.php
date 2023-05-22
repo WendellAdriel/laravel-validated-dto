@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Console\Application;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
@@ -59,14 +61,14 @@ it('validates that is possible to set a property in a SimpleDTO', function () {
 });
 
 it('validates that a SimpleDTO can be instantiated from a JSON string', function () {
-    $simpleDTO = SimpleDTOInstance::fromJson('{"name": "'.$this->subject_name.'"}');
+    $simpleDTO = SimpleDTOInstance::fromJson('{"name": "' . $this->subject_name . '"}');
 
     expect($simpleDTO->validatedData)
         ->toBe(['name' => $this->subject_name]);
 });
 
 it('throws exception when trying to instantiate a SimpleDTO from an invalid JSON string')
-    ->expect(fn () => SimpleDTOInstance::fromJson('{"name": "'.$this->subject_name.'"'))
+    ->expect(fn () => SimpleDTOInstance::fromJson('{"name": "' . $this->subject_name . '"'))
     ->throws(InvalidJsonException::class);
 
 it('validates that a SimpleDTO can be instantiated from Array', function () {
@@ -187,7 +189,7 @@ it('validates that the SimpleDTO can be converted into a JSON string', function 
     $simpleDTO = new SimpleDTOInstance(['name' => $this->subject_name]);
 
     expect($simpleDTO)->toJson()
-        ->toBe('{"name":"'.$this->subject_name.'"}');
+        ->toBe('{"name":"' . $this->subject_name . '"}');
 });
 
 it('validates that the SimpleDTO can be converted into a pretty JSON string with flag', function () {

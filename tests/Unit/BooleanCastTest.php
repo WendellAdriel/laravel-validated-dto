@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use WendellAdriel\ValidatedDTO\Casting\BooleanCast;
 
 it('properly casts from integer to true boolean')

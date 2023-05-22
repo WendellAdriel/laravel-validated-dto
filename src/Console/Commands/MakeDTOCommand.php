@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WendellAdriel\ValidatedDTO\Console\Commands;
 
 use Illuminate\Console\GeneratorCommand;
@@ -62,7 +64,7 @@ class MakeDTOCommand extends GeneratorCommand
     {
         $name = Str::replaceFirst($this->rootNamespace(), '', $name);
 
-        return $this->laravel['path'].'/DTOs/'.str_replace('\\', '/', $name).'.php';
+        return $this->laravel['path'] . '/DTOs/' . str_replace('\\', '/', $name) . '.php';
     }
 
     /**
@@ -70,9 +72,11 @@ class MakeDTOCommand extends GeneratorCommand
      */
     protected function getStub(): string
     {
-        return $this->option('simple')
-            ? __DIR__.'/../stubs/simple_dto.stub'
-            : __DIR__.'/../stubs/dto.stub';
+        return match (true) {
+            $this->option('resource') => __DIR__ . '/../stubs/resource_dto.stub',
+            $this->option('simple') => __DIR__ . '/../stubs/simple_dto.stub',
+            default => __DIR__ . '/../stubs/dto.stub',
+        };
     }
 
     /**
@@ -82,7 +86,8 @@ class MakeDTOCommand extends GeneratorCommand
     {
         return [
             ['force', null, InputOption::VALUE_NONE, 'Create the class even if the DTO already exists'],
-            ['simple', null, InputOption::VALUE_NONE, 'If the DTO should be a SimpleDTO instead of a ValidatedDTO'],
+            ['simple', null, InputOption::VALUE_NONE, 'If the DTO should be a SimpleDTO'],
+            ['resource', null, InputOption::VALUE_NONE, 'If the DTO should be a ResourceDTO'],
         ];
     }
 }

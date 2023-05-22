@@ -1,6 +1,26 @@
 {
     "preset": "laravel",
     "rules": {
+        "array_push": true,
+        "assign_null_coalescing_to_coalesce_equal": true,
+        "combine_consecutive_issets": true,
+        "combine_consecutive_unsets": true,
+        "concat_space": {
+            "spacing": "one"
+        },
+        "declare_strict_types": true,
+        "explicit_indirect_variable": true,
+        "explicit_string_variable": true,
+        "global_namespace_import": true,
+        "method_argument_space": {
+            "on_multiline": "ensure_fully_multiline"
+        },
+        "modernize_strpos": true,
+        "modernize_types_casting": true,
+        "new_with_braces": true,
+        "no_superfluous_elseif": true,
+        "no_useless_else": true,
+        "nullable_type_declaration_for_default_null_value": true,
         "ordered_imports": {
             "sort_algorithm": "alpha"
         },
@@ -28,6 +48,9 @@
                 "method_private"
             ],
             "sort_algorithm": "none"
-        }
+        },
+        "strict_comparison": true,
+        "ternary_to_null_coalescing": true,
+        "use_arrow_functions": true
     }
 }
