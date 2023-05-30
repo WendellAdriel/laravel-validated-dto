@@ -297,7 +297,7 @@ it('maps nested data to flat data before export', function () {
         ->toBe('john.doe@example.com');
 });
 
-it('custom casting with callback function', function () {
+it('casts properties with castable classes and callables', function () {
     $dto = CallableCastingDTOInstance::fromArray([
         'name' => [
             'first_name' => 'John',
