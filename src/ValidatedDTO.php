@@ -60,7 +60,7 @@ abstract class ValidatedDTO extends SimpleDTO
 
                 $result[$key] = $this->shouldReturnNull($key, $value)
                     ? null
-                    : $this->getCast($casts[$key], $key, $value);
+                    : $this->castValue($casts[$key], $key, $value);
             }
         }
 
