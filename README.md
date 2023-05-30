@@ -853,6 +853,8 @@ protected function casts(): array
 
 ## Create Your Own Type Cast
 
+### Castable classes
+
 You can easily create new `Castable` types for your project by implementing the `WendellAdriel\ValidatedDTO\Casting\Castable`
 interface. This interface has a single method that must be implemented:
 
@@ -906,6 +908,36 @@ class CustomDTO extends ValidatedDTO
     {
         return [
             'url' => new URLCast(),
+        ];
+    }
+}
+```
+
+### Callable Casts
+
+You can also create new `Castable` types for your project by using a `callable/callback`:
+
+```php
+class CustomDTO extends ValidatedDTO
+{
+    protected function rules(): array
+    {
+        return [
+            'url' => ['required', 'url'],
+        ];
+    }
+
+    protected function defaults(): array
+    {
+        return [];
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'url' => function (string $property, mixed $value) {
+                return new URLWrapper($value);
+            },
         ];
     }
 }
