@@ -345,13 +345,13 @@ abstract class SimpleDTO implements CastsAttributes
     /**
      *  Check cast is callable or instance of Castable.
      */
-    protected function getCast($cast, string $key, mixed $value): mixed
+    protected function getCast(mixed $cast, string $key, mixed $value): mixed
     {
-        if($cast instanceof  \WendellAdriel\ValidatedDTO\Casting\Castable){
+        if ($cast instanceof \WendellAdriel\ValidatedDTO\Casting\Castable) {
             return $cast->cast($key, $value);
         }
 
-        return  is_callable($cast) ? $cast($key, $value) : $value;
+        return is_callable($cast) ? $cast($key, $value) : $value;
     }
 
     protected function shouldReturnNull(string $key, mixed $value): bool
