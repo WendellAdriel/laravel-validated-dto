@@ -58,13 +58,9 @@ abstract class ValidatedDTO extends SimpleDTO
                     continue;
                 }
 
-                if (! ($casts[$key] instanceof Castable)) {
-                    throw new CastTargetException($key);
-                }
-
                 $result[$key] = $this->shouldReturnNull($key, $value)
                     ? null
-                    : $casts[$key]->cast($key, $value);
+                    : $this->castValue($casts[$key], $key, $value);
             }
         }
 

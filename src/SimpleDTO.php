@@ -277,13 +277,9 @@ abstract class SimpleDTO implements CastsAttributes
                     continue;
                 }
 
-                if (! ($casts[$key] instanceof Castable)) {
-                    throw new CastTargetException($key);
-                }
-
                 $formatted = $this->shouldReturnNull($key, $value)
                     ? null
-                    : $casts[$key]->cast($key, $value);
+                    : $this->castValue($casts[$key], $key, $value);
                 $this->{$key} = $formatted;
                 $this->validatedData[$key] = $formatted;
             }
@@ -331,13 +327,9 @@ abstract class SimpleDTO implements CastsAttributes
                     continue;
                 }
 
-                if (! ($casts[$key] instanceof Castable)) {
-                    throw new CastTargetException($key);
-                }
-
                 $result[$key] = $this->shouldReturnNull($key, $value)
                     ? null
-                    : $casts[$key]->cast($key, $value);
+                    : $this->castValue($casts[$key], $key, $value);
             }
         }
 
@@ -348,6 +340,22 @@ abstract class SimpleDTO implements CastsAttributes
         }
 
         return $result;
+    }
+
+    /**
+     * @throws \WendellAdriel\ValidatedDTO\Exceptions\CastTargetException
+     */
+    protected function castValue(mixed $cast, string $key, mixed $value): mixed
+    {
+        if ($cast instanceof Castable) {
+            return $cast->cast($key, $value);
+        }
+
+        if (! is_callable($cast)) {
+            throw new CastTargetException($key);
+        }
+
+        return $cast($key, $value);
     }
 
     protected function shouldReturnNull(string $key, mixed $value): bool
