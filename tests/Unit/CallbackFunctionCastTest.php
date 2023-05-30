@@ -20,8 +20,7 @@ it('casts property to object using callback function')
 
         return $callback(test_property(), '{"name": "John Doe", "email": "john.doe@example.com"}');
     })
-    ->toBeObject()
-    ->toEqual((object) ['name' => 'John Doe', 'email' => 'john.doe@example.com']);
+    ->toBe((object) ['name' => 'John Doe', 'email' => 'john.doe@example.com']);
 
 it('casts property to uppercase using callback function')
     ->expect(function () {
@@ -29,4 +28,4 @@ it('casts property to uppercase using callback function')
 
         return $callback(test_property(), 'John Doe');
     })
-    ->toEqual('JOHN DOE');
+    ->toBe('JOHN DOE');
