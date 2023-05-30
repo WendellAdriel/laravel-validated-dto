@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use function Pest\Faker\faker;
 use WendellAdriel\ValidatedDTO\Exceptions\InvalidJsonException;
 use WendellAdriel\ValidatedDTO\SimpleDTO;
+use WendellAdriel\ValidatedDTO\Tests\Datasets\CallableCastingDTOInstance;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\SimpleDTOInstance;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\SimpleMapBeforeExportDTO;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\SimpleMapBeforeValidationDTO;
@@ -294,4 +295,23 @@ it('maps nested data to flat data before export', function () {
         ->toBe('Doe')
         ->and($user->email)
         ->toBe('john.doe@example.com');
+});
+
+it('custom casting with callback function', function () {
+    $dto = CallableCastingDTOInstance::fromArray([
+        'name' => [
+            'first_name' => 'John',
+            'last_name' => 'Doe',
+        ],
+        'age' => '30',
+    ]);
+
+    expect($dto->name)
+        ->toBeInstanceOf(SimpleNameDTO::class)
+        ->and($dto->name->first_name)
+        ->toBe('John')
+        ->and($dto->name->last_name)
+        ->toBe('Doe')
+        ->and($dto->age)
+        ->toBe(30);
 });
