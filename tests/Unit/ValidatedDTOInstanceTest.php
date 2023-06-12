@@ -13,16 +13,13 @@ it('casts to DTO', function () {
     $castable = new DTOCast(ValidatedDTOInstance::class);
 
     expect($castable)->cast(test_property(), '{"name": "John Doe", "age": 30}')
-        ->toBeInstanceOf(ValidatedDTO::class);
-
-    expect($castable)->cast(test_property(), '{"name": "John Doe", "age": 30}')
+        ->toBeInstanceOf(ValidatedDTO::class)
+        ->and($castable)->cast(test_property(), '{"name": "John Doe", "age": 30}')
         ->toArray()
-        ->toBe(['name' => 'John Doe', 'age' => 30]);
-
-    expect($castable)->cast(test_property(), ['name' => 'John Doe', 'age' => 30])
-        ->toBeInstanceOf(ValidatedDTO::class);
-
-    expect($castable)->cast(test_property(), ['name' => 'John Doe', 'age' => 30])
+        ->toBe(['name' => 'John Doe', 'age' => 30])
+        ->and($castable)->cast(test_property(), ['name' => 'John Doe', 'age' => 30])
+        ->toBeInstanceOf(ValidatedDTO::class)
+        ->and($castable)->cast(test_property(), ['name' => 'John Doe', 'age' => 30])
         ->toArray()
         ->toEqual(['name' => 'John Doe', 'age' => 30]);
 
