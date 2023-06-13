@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use WendellAdriel\ValidatedDTO\Casting\ArrayCast;
 
-it('properly casts from json strign to array')
+it('properly casts from json string to array')
     ->expect(fn () => new ArrayCast())
     ->cast(test_property(), '{"name": "John Doe", "email": "john.doe@example.com"}')
     ->toBe(['name' => 'John Doe', 'email' => 'john.doe@example.com']);
