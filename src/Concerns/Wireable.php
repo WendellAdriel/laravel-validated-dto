@@ -11,9 +11,9 @@ trait Wireable
     public static function fromLivewire($value)
     {
         if (is_array($value)) {
-            $array = json_decode(json_encode($value), true);
+            json_decode(json_encode($value), true);
 
-            return new static($array);
+            return new static($value);
         }
 
         if (is_object($value) && method_exists($value, 'toArray')) {
@@ -29,10 +29,10 @@ trait Wireable
 
     public function toLivewire(): array
     {
-        $fullArray = json_decode(json_encode($this), true);
+        $fullArray = json_decode(json_encode($this->toArray()), true);
 
         $filteredArray = array_filter($fullArray, fn ($value) => ! is_null($value));
 
-        return (new static($filteredArray))->toArray();
+        return $filteredArray;
     }
 }
