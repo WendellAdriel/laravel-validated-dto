@@ -164,19 +164,17 @@ abstract class SimpleDTO implements CastsAttributes
     /**
      * Returns the DTO validated data in a JSON string format.
      */
-    public function toJson(bool $pretty = false): string
+    public function toJson(int $flag = 0, int $depth = 512): string
     {
-        return $pretty
-            ? json_encode($this->buildDataForExport(), JSON_PRETTY_PRINT)
-            : json_encode($this->buildDataForExport());
+        return json_encode($this->buildDataForExport(), $flag, $depth);
     }
 
     /**
      * Returns the DTO validated data in a pretty JSON string format.
      */
-    public function toPrettyJson(): string
+    public function toPrettyJson(int $flag = 0, int $depth = 512): string
     {
-        return json_encode($this->buildDataForExport(), JSON_PRETTY_PRINT);
+        return $this->toJson($flag|JSON_PRETTY_PRINT, $depth);
     }
 
     /**
