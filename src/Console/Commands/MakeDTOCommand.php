@@ -10,7 +10,7 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputOption;
 
 #[AsCommand(name: 'make:dto')]
-class MakeDTOCommand extends GeneratorCommand
+final class MakeDTOCommand extends GeneratorCommand
 {
     /**
      * The console command name.

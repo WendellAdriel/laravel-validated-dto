@@ -7,7 +7,7 @@ namespace WendellAdriel\ValidatedDTO\Casting;
 use Throwable;
 use WendellAdriel\ValidatedDTO\Exceptions\CastException;
 
-class StringCast implements Castable
+final class StringCast implements Castable
 {
     /**
      * @throws CastException

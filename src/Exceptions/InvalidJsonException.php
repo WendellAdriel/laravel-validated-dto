@@ -7,7 +7,7 @@ namespace WendellAdriel\ValidatedDTO\Exceptions;
 use Exception;
 use Symfony\Component\HttpFoundation\Response;
 
-class InvalidJsonException extends Exception
+final class InvalidJsonException extends Exception
 {
     public function __construct()
     {
