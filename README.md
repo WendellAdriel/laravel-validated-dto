@@ -775,6 +775,24 @@ protected function casts(): array
 }
 ```
 
+### Enum
+
+This will try to convert the value to the given `Enum` class. It works with `UnitEnum` and `BackedEnum`.
+
+This will throw a `WendellAdriel\ValidatedDTO\Exceptions\CastException` exception if the property is not a valid enum value.
+
+This will throw a `WendellAdriel\ValidatedDTO\Exceptions\CastTargetException` exception if the class passed to the
+`EnumCast` constructor is not a `Enum` instance.
+
+```php
+protected function casts(): array
+{
+    return [
+        'property' => new EnumCast(MyEnum::class),
+    ];
+}
+```
+
 ### Float
 
 If a not numeric value is found, it will throw a `WendellAdriel\ValidatedDTO\Exceptions\CastException` exception.
