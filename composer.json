@@ -1,69 +1,69 @@
 {
-  "name": "wendelladriel/laravel-validated-dto",
-  "description": "Data Transfer Objects with validation for Laravel applications",
-  "type": "library",
-  "keywords": [
-    "laravel",
-    "dto",
-    "data transfer object",
-    "validation"
-  ],
-  "license": "MIT",
-  "autoload": {
-    "psr-4": {
-      "WendellAdriel\\ValidatedDTO\\": "src/"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "WendellAdriel\\ValidatedDTO\\Tests\\": "tests/"
-    }
-  },
-  "support": {
-    "issues": "https://github.com/WendellAdriel/laravel-validated-dto/issues",
-    "source": "https://github.com/WendellAdriel/laravel-validated-dto"
-  },
-  "authors": [
-    {
-      "name": "Wendell Adriel",
-      "email": "wendelladriel.ti@gmail.com"
-    }
-  ],
-  "require": {
-    "php": "^8.1",
-    "illuminate/console": "^9.0|^10.0",
-    "illuminate/database": "^9.0|^10.0",
-    "illuminate/http": "^9.0|^10.0",
-    "illuminate/support": "^9.0|^10.0",
-    "illuminate/validation": "^9.0|^10.0"
-  },
-  "require-dev": {
-    "laravel/pint": "^1.11",
-    "orchestra/testbench": "^7.20|^8.10",
-    "pestphp/pest": "v2.15",
-    "pestphp/pest-plugin-faker": "^2.0"
-  },
-  "scripts": {
-    "lint": "pint",
-    "test:lint": "pint --test",
-    "test:unit": "./vendor/bin/pest --order-by random",
-    "test": [
-      "@test:lint",
-      "@test:unit"
-    ]
-  },
-  "extra": {
-    "laravel": {
-      "providers": [
-        "WendellAdriel\\ValidatedDTO\\Providers\\ValidatedDTOServiceProvider"
-      ]
-    }
-  },
-  "config": {
-    "allow-plugins": {
-      "pestphp/pest-plugin": true
-    }
-  },
-  "minimum-stability": "dev",
-  "prefer-stable": true
+    "name": "wendelladriel/laravel-validated-dto",
+    "description": "Data Transfer Objects with validation for Laravel applications",
+    "type": "library",
+    "keywords": [
+        "laravel",
+        "dto",
+        "data transfer object",
+        "validation"
+    ],
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "WendellAdriel\\ValidatedDTO\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "WendellAdriel\\ValidatedDTO\\Tests\\": "tests/"
+        }
+    },
+    "support": {
+        "issues": "https://github.com/WendellAdriel/laravel-validated-dto/issues",
+        "source": "https://github.com/WendellAdriel/laravel-validated-dto"
+    },
+    "authors": [
+        {
+            "name": "Wendell Adriel",
+            "email": "wendelladriel.ti@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.1",
+        "illuminate/console": "^9.0|^10.0",
+        "illuminate/database": "^9.0|^10.0",
+        "illuminate/http": "^9.0|^10.0",
+        "illuminate/support": "^9.0|^10.0",
+        "illuminate/validation": "^9.0|^10.0"
+    },
+    "require-dev": {
+        "laravel/pint": "^1.11",
+        "orchestra/testbench": "^7.20|^8.10",
+        "pestphp/pest": "v2.15",
+        "pestphp/pest-plugin-faker": "^2.0"
+    },
+    "scripts": {
+        "lint": "pint",
+        "test:lint": "pint --test",
+        "test:unit": "./vendor/bin/pest --order-by random",
+        "test": [
+            "@test:lint",
+            "@test:unit"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "WendellAdriel\\ValidatedDTO\\Providers\\ValidatedDTOServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
