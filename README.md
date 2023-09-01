@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="https://github.com/WendellAdriel/laravel-validated-dto/raw/main/art/validated-dto-logo.svg" alt="Validated DTO for Laravel" height="300"/>
+    <img src="https://github.com/WendellAdriel/laravel-validated-dto/raw/main/art/laravel-validated-dto-banner.png" alt="Validated DTO for Laravel" height="300"/>
     <p>
         <h1>Validated DTO for Laravel</h1>
         Data Transfer Objects with validation for Laravel applications
