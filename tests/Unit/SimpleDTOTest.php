@@ -6,7 +6,6 @@ use Illuminate\Console\Application;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
-use function Pest\Faker\faker;
 use WendellAdriel\ValidatedDTO\Exceptions\InvalidJsonException;
 use WendellAdriel\ValidatedDTO\SimpleDTO;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\CallableCastingDTOInstance;
@@ -21,7 +20,7 @@ use WendellAdriel\ValidatedDTO\Tests\Datasets\SimpleUserDTO;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\User;
 
 beforeEach(function () {
-    $this->subject_name = faker()->name;
+    $this->subject_name = fake()->name;
 });
 
 it('instantiates a SimpleDTO', function () {
