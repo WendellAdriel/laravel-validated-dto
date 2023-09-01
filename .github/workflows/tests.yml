@@ -15,7 +15,7 @@ jobs:
                       testbench: 8.*
                       carbon: ^2.63
                     - laravel: 9.*
-                      testbench: 7.*
+                      testbench: 8.*
                       carbon: ^2.63
 
         name: PHP ${{ matrix.php }} - Lrvl ${{ matrix.laravel }} - ${{ matrix.dependency-version }} - ${{ matrix.os }}
