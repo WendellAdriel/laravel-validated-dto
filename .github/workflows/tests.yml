@@ -7,7 +7,7 @@ jobs:
         runs-on: ubuntu-latest
         strategy:
             matrix:
-                php: [8.2, 8.1, 8.0]
+                php: [8.2, 8.1]
                 laravel: [9.*,10.*]
                 dependency-version: [prefer-lowest, prefer-stable]
                 include:
@@ -17,15 +17,12 @@ jobs:
                     - laravel: 9.*
                       testbench: 7.*
                       carbon: ^2.63
-                exclude:
-                    - laravel: 10.*
-                      php: 8.0
 
         name: PHP ${{ matrix.php }} - Lrvl ${{ matrix.laravel }} - ${{ matrix.dependency-version }} - ${{ matrix.os }}
 
         steps:
             - name: Checkout code
-              uses: actions/checkout@v2
+              uses: actions/checkout@v3
 
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
