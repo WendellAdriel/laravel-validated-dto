@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use function Pest\Faker\faker;
 use WendellAdriel\ValidatedDTO\ResourceDTO;
 use WendellAdriel\ValidatedDTO\Support\ResourceCollection;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\UserResourceDTO;
 
 beforeEach(function () {
-    $this->name = faker()->name;
-    $this->age = faker()->numberBetween(1, 100);
+    $this->name = fake()->name;
+    $this->age = fake()->numberBetween(1, 100);
 });
 
 it('validates that a ResourceDTO can be converted to a JsonResponse', function () {
