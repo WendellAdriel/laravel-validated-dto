@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace WendellAdriel\ValidatedDTO\Casting;
 
-class ArrayCast implements Castable
+final class ArrayCast implements Castable
 {
     public function cast(string $property, mixed $value): array
     {

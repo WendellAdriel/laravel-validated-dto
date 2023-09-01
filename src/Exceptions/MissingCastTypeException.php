@@ -7,7 +7,7 @@ namespace WendellAdriel\ValidatedDTO\Exceptions;
 use Exception;
 use Symfony\Component\HttpFoundation\Response;
 
-class MissingCastTypeException extends Exception
+final class MissingCastTypeException extends Exception
 {
     public function __construct(string $property)
     {

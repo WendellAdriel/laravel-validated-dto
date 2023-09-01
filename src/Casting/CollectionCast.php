@@ -6,7 +6,7 @@ namespace WendellAdriel\ValidatedDTO\Casting;
 
 use Illuminate\Support\Collection;
 
-class CollectionCast implements Castable
+final class CollectionCast implements Castable
 {
     public function __construct(private ?Castable $type = null)
     {

@@ -9,7 +9,7 @@ use Throwable;
 use WendellAdriel\ValidatedDTO\Exceptions\CastException;
 use WendellAdriel\ValidatedDTO\Exceptions\CastTargetException;
 
-class ModelCast implements Castable
+final class ModelCast implements Castable
 {
     public function __construct(private string $modelClass)
     {

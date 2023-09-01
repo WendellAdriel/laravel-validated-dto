@@ -7,7 +7,7 @@ namespace WendellAdriel\ValidatedDTO\Providers;
 use Illuminate\Support\ServiceProvider;
 use WendellAdriel\ValidatedDTO\Console\Commands\MakeDTOCommand;
 
-class ValidatedDTOServiceProvider extends ServiceProvider
+final class ValidatedDTOServiceProvider extends ServiceProvider
 {
     /**
      * @return void

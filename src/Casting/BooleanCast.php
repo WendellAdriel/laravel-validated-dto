@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace WendellAdriel\ValidatedDTO\Casting;
 
-class BooleanCast implements Castable
+final class BooleanCast implements Castable
 {
     public function cast(string $property, mixed $value): bool
     {
