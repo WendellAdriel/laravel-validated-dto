@@ -1,15 +1,16 @@
 <div align="center">
+    <img src="https://github.com/WendellAdriel/laravel-validated-dto/raw/main/art/validated-dto-logo.svg" alt="Validated DTO for Laravel" height="300"/>
     <p>
-        <h1>Laravel Validated DTO</h1>
+        <h1>Validated DTO for Laravel</h1>
         Data Transfer Objects with validation for Laravel applications
     </p>
 </div>
 
 <p align="center">
-<a href="https://packagist.org/packages/WendellAdriel/laravel-validated-dto"><img src="https://img.shields.io/packagist/v/WendellAdriel/laravel-validated-dto.svg?style=flat-square" alt="Packagist"></a>
-<a href="https://packagist.org/packages/WendellAdriel/laravel-validated-dto"><img src="https://img.shields.io/packagist/php-v/WendellAdriel/laravel-validated-dto.svg?style=flat-square" alt="PHP from Packagist"></a>
-<a href="https://packagist.org/packages/WendellAdriel/laravel-validated-dto"><img src="https://img.shields.io/badge/Laravel-9.x,%2010.x-brightgreen.svg?style=flat-square" alt="Laravel Version"></a>
-<a href="https://github.com/WendellAdriel/laravel-validated-dto/actions"><img alt="GitHub Workflow Status (main)" src="https://img.shields.io/github/actions/workflow/status/WendellAdriel/laravel-validated-dto/tests.yml?branch=main&label=Tests"> </a>
+    <a href="https://packagist.org/packages/WendellAdriel/laravel-validated-dto"><img src="https://img.shields.io/packagist/v/WendellAdriel/laravel-validated-dto.svg?style=flat-square" alt="Packagist"></a>
+    <a href="https://packagist.org/packages/WendellAdriel/laravel-validated-dto"><img src="https://img.shields.io/packagist/php-v/WendellAdriel/laravel-validated-dto.svg?style=flat-square" alt="PHP from Packagist"></a>
+    <a href="https://packagist.org/packages/WendellAdriel/laravel-validated-dto"><img src="https://img.shields.io/badge/Laravel-9.x,%2010.x-brightgreen.svg?style=flat-square" alt="Laravel Version"></a>
+    <a href="https://github.com/WendellAdriel/laravel-validated-dto/actions"><img alt="GitHub Workflow Status (main)" src="https://img.shields.io/github/actions/workflow/status/WendellAdriel/laravel-validated-dto/tests.yml?branch=main&label=Tests"> </a>
 </p>
 
 <p align="center">
@@ -21,8 +22,6 @@
     <a href="#credits">Credits</a> |
     <a href="#contributing">Contributing</a>
 </p>
-
-![Validated DTO class example](art/validated_dto.png)
 
 ## Documentation 
 [![Docs Button]][Docs Link]
