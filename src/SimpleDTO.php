@@ -4,20 +4,22 @@ declare(strict_types=1);
 
 namespace WendellAdriel\ValidatedDTO;
 
-use Illuminate\Console\Command;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\ValidationException;
 use WendellAdriel\ValidatedDTO\Casting\ArrayCast;
 use WendellAdriel\ValidatedDTO\Casting\Castable;
+use WendellAdriel\ValidatedDTO\Concerns\DataResolver;
+use WendellAdriel\ValidatedDTO\Concerns\DataTransformer;
+use WendellAdriel\ValidatedDTO\Contracts\BaseDTO;
 use WendellAdriel\ValidatedDTO\Exceptions\CastTargetException;
-use WendellAdriel\ValidatedDTO\Exceptions\InvalidJsonException;
 use WendellAdriel\ValidatedDTO\Exceptions\MissingCastTypeException;
 
-abstract class SimpleDTO implements CastsAttributes
+abstract class SimpleDTO implements BaseDTO, CastsAttributes
 {
+    use DataResolver, DataTransformer;
+
     protected array $data = [];
 
     protected array $validatedData = [];
@@ -63,129 +65,6 @@ abstract class SimpleDTO implements CastsAttributes
      * Defines the type casting for the properties of the DTO.
      */
     abstract protected function casts(): array;
-
-    /**
-     * Creates a DTO instance from a valid JSON string.
-     *
-     * @return $this
-     *
-     * @throws InvalidJsonException|ValidationException|MissingCastTypeException|CastTargetException
-     */
-    public static function fromJson(string $json): self
-    {
-        $jsonDecoded = json_decode($json, true);
-        if (! is_array($jsonDecoded)) {
-            throw new InvalidJsonException();
-        }
-
-        return new static($jsonDecoded);
-    }
-
-    /**
-     * Creates a DTO instance from Array.
-     *
-     * @return $this
-     *
-     * @throws CastTargetException|MissingCastTypeException
-     */
-    public static function fromArray(array $array): self
-    {
-        return new static($array);
-    }
-
-    /**
-     * Creates a DTO instance from a Request.
-     *
-     * @return $this
-     *
-     * @throws ValidationException|MissingCastTypeException|CastTargetException
-     */
-    public static function fromRequest(Request $request): self
-    {
-        return new static($request->all());
-    }
-
-    /**
-     * Creates a DTO instance from the given model.
-     *
-     * @return $this
-     *
-     * @throws ValidationException|MissingCastTypeException|CastTargetException
-     */
-    public static function fromModel(Model $model): self
-    {
-        return new static($model->toArray());
-    }
-
-    /**
-     * Creates a DTO instance from the given command arguments.
-     *
-     * @return $this
-     *
-     * @throws ValidationException|MissingCastTypeException|CastTargetException
-     */
-    public static function fromCommandArguments(Command $command): self
-    {
-        return new static($command->arguments());
-    }
-
-    /**
-     * Creates a DTO instance from the given command options.
-     *
-     * @return $this
-     *
-     * @throws ValidationException|MissingCastTypeException|CastTargetException
-     */
-    public static function fromCommandOptions(Command $command): self
-    {
-        return new static($command->options());
-    }
-
-    /**
-     * Creates a DTO instance from the given command arguments and options.
-     *
-     * @return $this
-     *
-     * @throws ValidationException|MissingCastTypeException|CastTargetException
-     */
-    public static function fromCommand(Command $command): self
-    {
-        return new static(array_merge($command->arguments(), $command->options()));
-    }
-
-    /**
-     * Returns the DTO validated data in array format.
-     */
-    public function toArray(): array
-    {
-        return $this->buildDataForExport();
-    }
-
-    /**
-     * Returns the DTO validated data in a JSON string format.
-     */
-    public function toJson(bool $pretty = false): string
-    {
-        return $pretty
-            ? json_encode($this->buildDataForExport(), JSON_PRETTY_PRINT)
-            : json_encode($this->buildDataForExport());
-    }
-
-    /**
-     * Returns the DTO validated data in a pretty JSON string format.
-     */
-    public function toPrettyJson(): string
-    {
-        return json_encode($this->buildDataForExport(), JSON_PRETTY_PRINT);
-    }
-
-    /**
-     * Creates a new model with the DTO validated data.
-     */
-    public function toModel(string $model): Model
-    {
-        return new $model($this->buildDataForExport());
-    }
 
     /**
      * Cast the given value to a DTO instance.
