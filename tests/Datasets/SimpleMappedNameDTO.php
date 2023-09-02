@@ -22,7 +22,7 @@ class SimpleMappedNameDTO extends SimpleDTO
         return [];
     }
 
-    protected function mapBeforeValidation(): array
+    protected function mapData(): array
     {
         return [
             'first_name' => 'name.first_name',

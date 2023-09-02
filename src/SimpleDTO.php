@@ -111,15 +111,15 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
     /**
      * Maps the DTO properties before the DTO instantiation.
      */
-    protected function mapBeforeValidation(): array
+    protected function mapData(): array
     {
         return [];
     }
 
     /**
-     * Maps the DTO properties before the DTO export.
+     * Maps the DTO properties before the DTO transformation.
      */
-    protected function mapBeforeExport(): array
+    protected function mapToTransform(): array
     {
         return [];
     }
@@ -234,15 +234,15 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
 
     private function buildDataForValidation(array $data): array
     {
-        return $this->mapData($this->mapBeforeValidation(), $data);
+        return $this->mapDTOData($this->mapData(), $data);
     }
 
     private function buildDataForExport(): array
     {
-        return $this->mapData($this->mapBeforeExport(), $this->validatedData);
+        return $this->mapDTOData($this->mapToTransform(), $this->validatedData);
     }
 
-    private function mapData(array $mapping, array $data): array
+    private function mapDTOData(array $mapping, array $data): array
     {
         if (empty($mapping)) {
             return $data;

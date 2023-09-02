@@ -30,7 +30,7 @@ class MappedNameDTO extends ValidatedDTO
         return [];
     }
 
-    protected function mapBeforeValidation(): array
+    protected function mapData(): array
     {
         return [
             'first_name' => 'name.first_name',

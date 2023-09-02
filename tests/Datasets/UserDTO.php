@@ -33,7 +33,7 @@ class UserDTO extends ValidatedDTO
         ];
     }
 
-    protected function mapBeforeExport(): array
+    protected function mapToTransform(): array
     {
         return [
             'name.first_name' => 'first_name',
