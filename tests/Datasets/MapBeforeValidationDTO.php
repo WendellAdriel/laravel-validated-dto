@@ -27,7 +27,7 @@ class MapBeforeValidationDTO extends ValidatedDTO
         return [];
     }
 
-    protected function mapBeforeValidation(): array
+    protected function mapData(): array
     {
         return [
             'full_name' => 'name',
