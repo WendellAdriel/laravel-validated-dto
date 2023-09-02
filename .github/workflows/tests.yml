@@ -8,19 +8,9 @@ jobs:
         strategy:
             matrix:
                 php: [8.2, 8.1]
-                laravel: [9.*,10.*]
                 dependency-version: [prefer-lowest, prefer-stable]
-                include:
-                    - laravel: 10.*
-                      testbench: 8.*
-                      carbon: ^2.63
-                    - laravel: 9.*
-                      testbench: 7.*
-                      phpunit: ^9.3
-                      pest: ^1.0
-                      carbon: ^2.63
 
-        name: PHP ${{ matrix.php }} - Lrvl ${{ matrix.laravel }} - ${{ matrix.dependency-version }} - ${{ matrix.os }}
+        name: PHP ${{ matrix.php }} - ${{ matrix.dependency-version }} - ${{ matrix.os }}
 
         steps:
             - name: Checkout code
@@ -30,13 +20,11 @@ jobs:
               uses: shivammathur/setup-php@v2
               with:
                   php-version: ${{ matrix.php }}
-                  extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, mysql, mysqli, pdo_mysql
                   coverage: none
 
             - name: Install dependencies
               run: |
-                  composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "nesbot/carbon:${{ matrix.carbon }}" --no-interaction --no-update
-                  composer update --${{ matrix.dependency-version }} --prefer-dist --no-interaction
+                composer update --${{ matrix.dependency-version }} --prefer-dist --no-interaction
 
             - name: Code Style 👨‍🏭
               run: composer test:lint
