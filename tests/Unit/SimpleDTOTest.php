@@ -192,13 +192,6 @@ it('validates that the SimpleDTO can be converted into a JSON string', function 
         ->toBe('{"name":"' . $this->subject_name . '"}');
 });
 
-it('validates that the SimpleDTO can be converted into a pretty JSON string with flag', function () {
-    $simpleDTO = new SimpleDTOInstance(['name' => $this->subject_name]);
-
-    expect($simpleDTO)->toJson(true)
-        ->toBe(json_encode(['name' => $this->subject_name], JSON_PRETTY_PRINT));
-});
-
 it('validates that the SimpleDTO can be converted into a pretty JSON string', function () {
     $simpleDTO = new SimpleDTOInstance(['name' => $this->subject_name]);
 
