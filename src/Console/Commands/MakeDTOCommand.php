@@ -13,17 +13,11 @@ use Symfony\Component\Console\Input\InputOption;
 final class MakeDTOCommand extends GeneratorCommand
 {
     /**
-     * The console command name.
-     *
      * @var string
      */
     protected $name = 'make:dto';
 
     /**
-     * The name of the console command.
-     *
-     * This name is used to identify the command during lazy loading.
-     *
      * @var string|null
      *
      * @deprecated
@@ -31,22 +25,16 @@ final class MakeDTOCommand extends GeneratorCommand
     protected static $defaultName = 'make:dto';
 
     /**
-     * The console command description.
-     *
      * @var string
      */
     protected $description = 'Create a new DTO class';
 
     /**
-     * The type of class being generated.
-     *
      * @var string
      */
     protected $type = 'DTO';
 
     /**
-     * Get the root namespace for the class.
-     *
      * @return string
      */
     protected function rootNamespace()
@@ -55,8 +43,6 @@ final class MakeDTOCommand extends GeneratorCommand
     }
 
     /**
-     * Get the destination class path.
-     *
      * @param  string  $name
      * @return string
      */
@@ -67,9 +53,6 @@ final class MakeDTOCommand extends GeneratorCommand
         return $this->laravel['path'] . '/DTOs/' . str_replace('\\', '/', $name) . '.php';
     }
 
-    /**
-     * Get the stub file for the generator.
-     */
     protected function getStub(): string
     {
         return match (true) {
@@ -79,9 +62,6 @@ final class MakeDTOCommand extends GeneratorCommand
         };
     }
 
-    /**
-     * Get the console command options.
-     */
     protected function getOptions(): array
     {
         return [
