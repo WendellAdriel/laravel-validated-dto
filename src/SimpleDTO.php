@@ -69,7 +69,7 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
     /**
      * Cast the given value to a DTO instance.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @param  Model  $model
      * @param  string  $key
      * @param  mixed  $value
      * @param  array  $attributes
@@ -87,7 +87,7 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
     /**
      * Prepare the value for storage.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @param  Model  $model
      * @param  string  $key
      * @param  mixed  $value
      * @param  array  $attributes
@@ -125,9 +125,6 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
     }
 
     /**
-     * Handles a passed validation attempt.
-     *
-     *
      * @throws MissingCastTypeException|CastTargetException
      */
     protected function passedValidation(): void
@@ -165,17 +162,11 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
         }
     }
 
-    /**
-     * Handles a failed validation attempt.
-     */
     protected function failedValidation(): void
     {
         // Do nothing
     }
 
-    /**
-     * Checks if the data is valid for the DTO.
-     */
     protected function isValidData(): bool
     {
         return true;
@@ -183,7 +174,6 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
 
     /**
      * Builds the validated data from the given data and the rules.
-     *
      *
      * @throws MissingCastTypeException|CastTargetException
      */
@@ -222,7 +212,7 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
     }
 
     /**
-     * @throws \WendellAdriel\ValidatedDTO\Exceptions\CastTargetException
+     * @throws CastTargetException
      */
     protected function castValue(mixed $cast, string $key, mixed $value): mixed
     {
@@ -321,9 +311,6 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
         return $value->toArray();
     }
 
-    /**
-     * Inits the configuration for the DTOs.
-     */
     private function initConfig(): void
     {
         $config = config('dto');

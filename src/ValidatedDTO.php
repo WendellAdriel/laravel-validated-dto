@@ -36,7 +36,6 @@ abstract class ValidatedDTO extends SimpleDTO
     /**
      * Builds the validated data from the given data and the rules.
      *
-     *
      * @throws MissingCastTypeException|CastTargetException
      */
     protected function validatedData(): array
@@ -89,9 +88,6 @@ abstract class ValidatedDTO extends SimpleDTO
     }
 
     /**
-     * Handles a failed validation attempt.
-     *
-     *
      * @throws ValidationException
      */
     protected function failedValidation(): void

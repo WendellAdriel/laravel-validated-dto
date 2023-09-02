@@ -15,8 +15,6 @@ use WendellAdriel\ValidatedDTO\Exceptions\MissingCastTypeException;
 trait DataResolver
 {
     /**
-     * Creates a DTO instance from a valid JSON string.
-     *
      * @throws InvalidJsonException|ValidationException|MissingCastTypeException|CastTargetException
      */
     public static function fromJson(string $json): self
@@ -30,8 +28,6 @@ trait DataResolver
     }
 
     /**
-     * Creates a DTO instance from Array.
-     *
      * @throws CastTargetException|MissingCastTypeException
      */
     public static function fromArray(array $array): self
@@ -40,8 +36,6 @@ trait DataResolver
     }
 
     /**
-     * Creates a DTO instance from a Request.
-     *
      * @throws ValidationException|MissingCastTypeException|CastTargetException
      */
     public static function fromRequest(Request $request): self
@@ -50,8 +44,6 @@ trait DataResolver
     }
 
     /**
-     * Creates a DTO instance from the given model.
-     *
      * @throws ValidationException|MissingCastTypeException|CastTargetException
      */
     public static function fromModel(Model $model): self
@@ -60,8 +52,6 @@ trait DataResolver
     }
 
     /**
-     * Creates a DTO instance from the given command arguments.
-     *
      * @throws ValidationException|MissingCastTypeException|CastTargetException
      */
     public static function fromCommandArguments(Command $command): self
@@ -70,8 +60,6 @@ trait DataResolver
     }
 
     /**
-     * Creates a DTO instance from the given command options.
-     *
      * @throws ValidationException|MissingCastTypeException|CastTargetException
      */
     public static function fromCommandOptions(Command $command): self
@@ -80,8 +68,6 @@ trait DataResolver
     }
 
     /**
-     * Creates a DTO instance from the given command arguments and options.
-     *
      * @throws ValidationException|MissingCastTypeException|CastTargetException
      */
     public static function fromCommand(Command $command): self
