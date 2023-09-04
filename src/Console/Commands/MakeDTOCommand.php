@@ -39,7 +39,7 @@ final class MakeDTOCommand extends GeneratorCommand
      */
     protected function rootNamespace()
     {
-        return "{$this->laravel->getNamespace()}DTOs\\";
+        return config('dto.namespace');
     }
 
     /**
@@ -49,8 +49,9 @@ final class MakeDTOCommand extends GeneratorCommand
     protected function getPath($name)
     {
         $name = Str::replaceFirst($this->rootNamespace(), '', $name);
+        $fullName = str_replace('\\', '/', "{$this->rootNamespace()}{$name}") . '.php';
 
-        return $this->laravel['path'] . '/DTOs/' . str_replace('\\', '/', $name) . '.php';
+        return base_path(lcfirst($fullName));
     }
 
     protected function getStub(): string
