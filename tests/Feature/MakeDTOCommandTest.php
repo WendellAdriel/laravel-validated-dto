@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use Illuminate\Support\Facades\Config;
+
 it('generates a new ValidatedDTO class via command', function () {
     $dtoClass = app_path('DTOs/UserDTO.php');
 
@@ -41,15 +43,30 @@ it('generates a new ResourceDTO class via command', function () {
     expect($dtoClass)->toBeFileWithContent(UserResourceDTO());
 });
 
+it('generates DTO in custom namespace', function () {
+    Config::set('dto.namespace', 'App\DataTransferObjects');
+
+    $dtoClass = app_path('DataTransferObjects/UserDTO.php');
+
+    if (file_exists($dtoClass)) {
+        unlink($dtoClass);
+    }
+
+    $this->artisan('make:dto', ['name' => 'UserDTO'])
+        ->assertExitCode(0);
+
+    expect($dtoClass)->toBeFileWithContent(UserDTO('App\DataTransferObjects'));
+});
+
 /**
  * Content of the expected UserDTO class
  */
-function UserDTO(): string
+function UserDTO(string $namespace = 'App\DTOs'): string
 {
     return <<<CLASS
 <?php
 
-namespace App\DTOs;
+namespace {$namespace};
 
 use WendellAdriel\ValidatedDTO\ValidatedDTO;
 
