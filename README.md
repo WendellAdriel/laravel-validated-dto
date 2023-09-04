@@ -667,6 +667,20 @@ protected function casts(): array
 }
 ```
 
+If you want to cast all the elements inside the array, you can pass a `Castable` to the `ArrayCast`
+constructor. Let's say that you want to convert all the items inside the array into integers:
+
+```php
+protected function casts(): array
+{
+    return [
+        'property' => new ArrayCast(new IntegerCast()),
+    ];
+}
+```
+
+This works with all `Castable`, including `DTOCast` and `ModelCast` for nested data.
+
 ### Boolean
 
 For string values, this uses the `filter_var` function with the `FILTER_VALIDATE_BOOLEAN` flag.
