@@ -20,7 +20,7 @@ class SimpleMapBeforeValidationDTO extends SimpleDTO
         return [];
     }
 
-    protected function mapBeforeValidation(): array
+    protected function mapData(): array
     {
         return [
             'full_name' => 'name',

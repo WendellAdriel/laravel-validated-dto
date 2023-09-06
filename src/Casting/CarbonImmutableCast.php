@@ -8,7 +8,7 @@ use Carbon\CarbonImmutable;
 use Throwable;
 use WendellAdriel\ValidatedDTO\Exceptions\CastException;
 
-class CarbonImmutableCast implements Castable
+final class CarbonImmutableCast implements Castable
 {
     public function __construct(
         private ?string $timezone = null,

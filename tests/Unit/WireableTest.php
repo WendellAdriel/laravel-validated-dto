@@ -3,14 +3,13 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Collection;
-use function Pest\Faker\faker;
 use WendellAdriel\ValidatedDTO\SimpleDTO;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\SimpleNameDTO;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\WireableDTO;
 
 beforeEach(function () {
-    $this->name = faker()->name;
-    $this->age = faker()->numberBetween(1, 100);
+    $this->name = fake()->name;
+    $this->age = fake()->numberBetween(1, 100);
 });
 
 it('validates that a Wireable DTO will return the correct data for the toLivewire method', function () {

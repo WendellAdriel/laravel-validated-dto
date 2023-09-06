@@ -15,7 +15,7 @@ use WendellAdriel\ValidatedDTO\Exceptions\CastTargetException;
 /**
  * @internal
  */
-class ResourceCollection implements Responsable
+final class ResourceCollection implements Responsable
 {
     public function __construct(
         private array $data,

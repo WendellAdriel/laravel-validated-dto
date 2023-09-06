@@ -6,7 +6,7 @@ namespace WendellAdriel\ValidatedDTO\Casting;
 
 use WendellAdriel\ValidatedDTO\Exceptions\CastException;
 
-class IntegerCast implements Castable
+final class IntegerCast implements Castable
 {
     /**
      * @throws CastException

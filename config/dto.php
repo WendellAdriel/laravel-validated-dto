@@ -3,6 +3,18 @@
 declare(strict_types=1);
 
 return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | NAMESPACE
+    |--------------------------------------------------------------------------
+    |
+    | The namespace where your DTOs will be created.
+    |
+    */
+
+    'namespace' => 'App\\DTOs',
+
     /*
     |--------------------------------------------------------------------------
     | REQUIRE CASTING
@@ -13,5 +25,6 @@ return [
     | \WendellAdriel\ValidatedDTO\Exceptions\MissingCastTypeException exception
     |
     */
+
     'require_casting' => false,
 ];

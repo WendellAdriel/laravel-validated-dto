@@ -27,7 +27,7 @@ class MapBeforeExportDTO extends ValidatedDTO
         return [];
     }
 
-    protected function mapBeforeExport(): array
+    protected function mapToTransform(): array
     {
         return [
             'name' => 'username',

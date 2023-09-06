@@ -10,7 +10,7 @@ use WendellAdriel\ValidatedDTO\Exceptions\CastException;
 use WendellAdriel\ValidatedDTO\Exceptions\CastTargetException;
 use WendellAdriel\ValidatedDTO\SimpleDTO;
 
-class DTOCast implements Castable
+final class DTOCast implements Castable
 {
     public function __construct(private string $dtoClass)
     {

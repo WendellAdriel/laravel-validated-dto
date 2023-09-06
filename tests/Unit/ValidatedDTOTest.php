@@ -7,7 +7,6 @@ use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
-use function Pest\Faker\faker;
 use WendellAdriel\ValidatedDTO\Exceptions\InvalidJsonException;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\MapBeforeExportDTO;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\MapBeforeValidationDTO;
@@ -21,7 +20,7 @@ use WendellAdriel\ValidatedDTO\Tests\Datasets\ValidatedDTOInstance;
 use WendellAdriel\ValidatedDTO\ValidatedDTO;
 
 beforeEach(function () {
-    $this->subject_name = faker()->name;
+    $this->subject_name = fake()->name;
 });
 
 it('instantiates a ValidatedDTO validating its data', function () {
@@ -210,13 +209,6 @@ it('validates that the ValidatedDTO can be converted into a JSON string', functi
 
     expect($validatedDTO)->toJson()
         ->toBe('{"name":"' . $this->subject_name . '"}');
-});
-
-it('validates that the ValidatedDTO can be converted into a pretty JSON string with flag', function () {
-    $validatedDTO = new ValidatedDTOInstance(['name' => $this->subject_name]);
-
-    expect($validatedDTO)->toJson(true)
-        ->toBe(json_encode(['name' => $this->subject_name], JSON_PRETTY_PRINT));
 });
 
 it('validates that the ValidatedDTO can be converted into a pretty JSON string', function () {
