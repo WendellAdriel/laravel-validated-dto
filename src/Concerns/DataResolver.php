@@ -17,7 +17,7 @@ trait DataResolver
     /**
      * @throws InvalidJsonException|ValidationException|MissingCastTypeException|CastTargetException
      */
-    public static function fromJson(string $json): self
+    public static function fromJson(string $json): static
     {
         $jsonDecoded = json_decode($json, true);
         if (! is_array($jsonDecoded)) {
@@ -30,7 +30,7 @@ trait DataResolver
     /**
      * @throws CastTargetException|MissingCastTypeException
      */
-    public static function fromArray(array $array): self
+    public static function fromArray(array $array): static
     {
         return new static($array);
     }
@@ -38,7 +38,7 @@ trait DataResolver
     /**
      * @throws ValidationException|MissingCastTypeException|CastTargetException
      */
-    public static function fromRequest(Request $request): self
+    public static function fromRequest(Request $request): static
     {
         return new static($request->all());
     }
@@ -46,7 +46,7 @@ trait DataResolver
     /**
      * @throws ValidationException|MissingCastTypeException|CastTargetException
      */
-    public static function fromModel(Model $model): self
+    public static function fromModel(Model $model): static
     {
         return new static($model->toArray());
     }
@@ -54,7 +54,7 @@ trait DataResolver
     /**
      * @throws ValidationException|MissingCastTypeException|CastTargetException
      */
-    public static function fromCommandArguments(Command $command): self
+    public static function fromCommandArguments(Command $command): static
     {
         return new static($command->arguments());
     }
@@ -62,7 +62,7 @@ trait DataResolver
     /**
      * @throws ValidationException|MissingCastTypeException|CastTargetException
      */
-    public static function fromCommandOptions(Command $command): self
+    public static function fromCommandOptions(Command $command): static
     {
         return new static($command->options());
     }
@@ -70,7 +70,7 @@ trait DataResolver
     /**
      * @throws ValidationException|MissingCastTypeException|CastTargetException
      */
-    public static function fromCommand(Command $command): self
+    public static function fromCommand(Command $command): static
     {
         return new static(array_merge($command->arguments(), $command->options()));
     }
