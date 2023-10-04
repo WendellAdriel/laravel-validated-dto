@@ -40,7 +40,7 @@ abstract class ValidatedDTO extends SimpleDTO
      */
     protected function validatedData(): array
     {
-        $acceptedKeys = array_keys($this->rules());
+        $acceptedKeys = array_keys($this->rulesList());
         $result = [];
 
         /** @var array<Castable> $casts */
@@ -79,8 +79,8 @@ abstract class ValidatedDTO extends SimpleDTO
     {
         $this->validator = Validator::make(
             $this->data,
-            $this->rules(),
-            $this->messages(),
+            $this->rulesList(),
+            $this->messagesList(),
             $this->attributes()
         );
 
@@ -102,11 +102,27 @@ abstract class ValidatedDTO extends SimpleDTO
 
     private function isOptionalProperty(string $property): bool
     {
-        $rules = $this->rules();
+        $rules = $this->rulesList();
         $propertyRules = is_array($rules[$property])
             ? $rules[$property]
             : explode('|', $rules[$property]);
 
         return in_array('optional', $propertyRules) || in_array('nullable', $propertyRules);
+    }
+
+    private function rulesList(): array
+    {
+        return [
+            ...$this->rules(),
+            ...$this->dtoRules,
+        ];
+    }
+
+    private function messagesList(): array
+    {
+        return [
+            ...$this->messages(),
+            ...$this->dtoMessages,
+        ];
     }
 }

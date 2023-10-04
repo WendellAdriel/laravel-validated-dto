@@ -8,6 +8,11 @@ use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\ValidationException;
+use ReflectionClass;
+use ReflectionProperty;
+use WendellAdriel\ValidatedDTO\Attributes\DefaultValue;
+use WendellAdriel\ValidatedDTO\Attributes\Map;
+use WendellAdriel\ValidatedDTO\Attributes\Rules;
 use WendellAdriel\ValidatedDTO\Casting\ArrayCast;
 use WendellAdriel\ValidatedDTO\Casting\Castable;
 use WendellAdriel\ValidatedDTO\Concerns\DataResolver;
@@ -28,6 +33,16 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
 
     protected \Illuminate\Contracts\Validation\Validator|\Illuminate\Validation\Validator $validator;
 
+    protected array $dtoRules = [];
+
+    protected array $dtoMessages = [];
+
+    protected array $dtoDefaults = [];
+
+    protected array $dtoMapData = [];
+
+    protected array $dtoMapTransform = [];
+
     /**
      * @throws ValidationException|MissingCastTypeException|CastTargetException
      */
@@ -37,6 +52,7 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
             return;
         }
 
+        $this->buildAttributesData();
         $this->data = $this->buildDataForValidation($data);
 
         $this->initConfig();
@@ -137,7 +153,12 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
             $this->{$key} = $value;
         }
 
-        foreach ($this->defaults() as $key => $value) {
+        $defaults = [
+            ...$this->defaults(),
+            ...$this->dtoDefaults,
+        ];
+
+        foreach ($defaults as $key => $value) {
             if (
                 ! property_exists($this, $key) ||
                 empty($this->{$key})
@@ -232,14 +253,92 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
         return is_null($value);
     }
 
+    private function buildAttributesData(): void
+    {
+        $publicProperties = $this->getPublicProperties();
+
+        $validatedProperties = $this->getPropertiesForAttribute($publicProperties, Rules::class);
+        foreach ($validatedProperties as $property => $attribute) {
+            $attributeInstance = $attribute->newInstance();
+            $this->dtoRules[$property] = $attributeInstance->rules;
+            $this->dtoMessages[$property] = $attributeInstance->messages ?? [];
+        }
+
+        $this->dtoMessages = array_filter(
+            $this->dtoMessages,
+            fn ($value) => $value !== []
+        );
+
+        $defaultProperties = $this->getPropertiesForAttribute($publicProperties, DefaultValue::class);
+        foreach ($defaultProperties as $property => $attribute) {
+            $attributeInstance = $attribute->newInstance();
+            $this->dtoDefaults[$property] = $attributeInstance->value;
+        }
+
+        $mapDataProperties = $this->getPropertiesForAttribute($publicProperties, Map::class);
+        foreach ($mapDataProperties as $property => $attribute) {
+            $attributeInstance = $attribute->newInstance();
+
+            if (! blank($attributeInstance->data)) {
+                $this->dtoMapData[$attributeInstance->data] = $property;
+            }
+
+            if (! blank($attributeInstance->transform)) {
+                $this->dtoMapTransform[$property] = $attributeInstance->transform;
+            }
+        }
+    }
+
+    private function getPublicProperties(): array
+    {
+        $reflectionClass = new ReflectionClass($this);
+        $dtoProperties = [];
+
+        foreach ($reflectionClass->getProperties(ReflectionProperty::IS_PUBLIC) as $property) {
+            if ($this->isforbiddenProperty($property->getName())) {
+                continue;
+            }
+
+            $reflectionProperty = new ReflectionProperty($this, $property->getName());
+            $attributes = $reflectionProperty->getAttributes();
+            $dtoProperties[$property->getName()] = $attributes;
+        }
+
+        return $dtoProperties;
+    }
+
+    private function getPropertiesForAttribute(array $properties, string $attribute): array
+    {
+        $result = [];
+        foreach ($properties as $property => $attributes) {
+            foreach ($attributes as $attr) {
+                if ($attr->getName() === $attribute) {
+                    $result[$property] = $attr;
+                }
+            }
+        }
+
+        return $result;
+    }
+
     private function buildDataForValidation(array $data): array
     {
-        return $this->mapDTOData($this->mapData(), $data);
+        $mapping = [
+            ...$this->mapData(),
+            ...$this->dtoMapData,
+        ];
+
+        return $this->mapDTOData($mapping, $data);
     }
 
     private function buildDataForExport(): array
     {
-        return $this->mapDTOData($this->mapToTransform(), $this->validatedData);
+        $mapping = [
+            ...$this->mapToTransform(),
+            ...$this->dtoMapTransform,
+        ];
+
+        return $this->mapDTOData($mapping, $this->validatedData);
     }
 
     private function mapDTOData(array $mapping, array $data): array
@@ -338,6 +437,11 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
             'validatedData',
             'requireCasting',
             'validator',
+            'dtoRules',
+            'dtoMessages',
+            'dtoDefaults',
+            'dtoMapData',
+            'dtoMapTransform',
         ]);
     }
 }
