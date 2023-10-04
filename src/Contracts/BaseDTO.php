@@ -10,19 +10,19 @@ use Illuminate\Http\Request;
 
 interface BaseDTO
 {
-    public static function fromJson(string $json): self;
+    public static function fromJson(string $json): static;
 
-    public static function fromArray(array $data): self;
+    public static function fromArray(array $data): static;
 
-    public static function fromRequest(Request $request): self;
+    public static function fromRequest(Request $request): static;
 
-    public static function fromModel(Model $model): self;
+    public static function fromModel(Model $model): static;
 
-    public static function fromCommandArguments(Command $command): self;
+    public static function fromCommandArguments(Command $command): static;
 
-    public static function fromCommandOptions(Command $command): self;
+    public static function fromCommandOptions(Command $command): static;
 
-    public static function fromCommand(Command $command): self;
+    public static function fromCommand(Command $command): static;
 
     public function toArray(): array;
 
