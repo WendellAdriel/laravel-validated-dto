@@ -16,11 +16,13 @@ use WendellAdriel\ValidatedDTO\Tests\Datasets\NameDTO;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\NullableDTO;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\User;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\UserDTO;
+use WendellAdriel\ValidatedDTO\Tests\Datasets\UserNestedDTO;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\ValidatedDTOInstance;
 use WendellAdriel\ValidatedDTO\ValidatedDTO;
 
 beforeEach(function () {
     $this->subject_name = fake()->name;
+    $this->subject_email = fake()->unique()->safeEmail;
 });
 
 it('instantiates a ValidatedDTO validating its data', function () {
@@ -216,6 +218,60 @@ it('validates that the ValidatedDTO can be converted into a pretty JSON string',
 
     expect($validatedDTO)->toPrettyJson()
         ->toBe(json_encode(['name' => $this->subject_name], JSON_PRETTY_PRINT));
+});
+
+it('validates that the ValidatedDTO with nested data can be converted into an array', function () {
+    $validatedDTO = new UserNestedDTO([
+        'name' => [
+            'first_name' => $this->subject_name,
+            'last_name' => 'Doe',
+        ],
+        'email' => $this->subject_email,
+    ]);
+
+    expect($validatedDTO)->toArray()
+        ->toBe([
+            'name' => [
+                'first_name' => $this->subject_name,
+                'last_name' => 'Doe',
+            ],
+            'email' => $this->subject_email,
+        ]);
+});
+
+it('validates that the ValidatedDTO with nested data can be converted into a JSON string', function () {
+    $validatedDTO = new UserNestedDTO([
+        'name' => [
+            'first_name' => $this->subject_name,
+            'last_name' => 'Doe',
+        ],
+        'email' => $this->subject_email,
+    ]);
+
+    expect($validatedDTO)->toJson()
+        ->toBe('{"name":{"first_name":"' . $this->subject_name . '","last_name":"Doe"},"email":"' . $this->subject_email . '"}');
+});
+
+it('validates that the ValidatedDTO with nested data can be converted into a pretty JSON string', function () {
+    $validatedDTO = new UserNestedDTO([
+        'name' => [
+            'first_name' => $this->subject_name,
+            'last_name' => 'Doe',
+        ],
+        'email' => $this->subject_email,
+    ]);
+
+    expect($validatedDTO)->toPrettyJson()
+        ->toBe(json_encode(
+            [
+                'name' => [
+                    'first_name' => $this->subject_name,
+                    'last_name' => 'Doe',
+                ],
+                'email' => $this->subject_email,
+            ],
+            JSON_PRETTY_PRINT
+        ));
 });
 
 it('validates that the ValidatedDTO can be converted into an Eloquent Model', function () {
