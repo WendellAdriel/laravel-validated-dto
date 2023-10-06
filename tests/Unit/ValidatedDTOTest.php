@@ -16,6 +16,7 @@ use WendellAdriel\ValidatedDTO\Tests\Datasets\NameDTO;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\NullableDTO;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\User;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\UserDTO;
+use WendellAdriel\ValidatedDTO\Tests\Datasets\UserNestedCollectionDTO;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\UserNestedDTO;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\ValidatedDTOInstance;
 use WendellAdriel\ValidatedDTO\ValidatedDTO;
@@ -200,78 +201,129 @@ it('validates that a ValidatedDTO can be instantiated from a Command', function 
 });
 
 it('validates that the ValidatedDTO can be converted into an array', function () {
-    $validatedDTO = new ValidatedDTOInstance(['name' => $this->subject_name]);
+    $dataStructure = ['name' => $this->subject_name];
+    $validatedDTO = new ValidatedDTOInstance($dataStructure);
 
     expect($validatedDTO)->toArray()
-        ->toBe(['name' => $this->subject_name]);
+        ->toBe($dataStructure);
 });
 
 it('validates that the ValidatedDTO can be converted into a JSON string', function () {
-    $validatedDTO = new ValidatedDTOInstance(['name' => $this->subject_name]);
+    $dataStructure = ['name' => $this->subject_name];
+    $validatedDTO = new ValidatedDTOInstance($dataStructure);
 
     expect($validatedDTO)->toJson()
-        ->toBe('{"name":"' . $this->subject_name . '"}');
+        ->toBe(json_encode($dataStructure));
 });
 
 it('validates that the ValidatedDTO can be converted into a pretty JSON string', function () {
-    $validatedDTO = new ValidatedDTOInstance(['name' => $this->subject_name]);
+    $dataStructure = ['name' => $this->subject_name];
+    $validatedDTO = new ValidatedDTOInstance($dataStructure);
 
     expect($validatedDTO)->toPrettyJson()
-        ->toBe(json_encode(['name' => $this->subject_name], JSON_PRETTY_PRINT));
+        ->toBe(json_encode($dataStructure, JSON_PRETTY_PRINT));
 });
 
 it('validates that the ValidatedDTO with nested data can be converted into an array', function () {
-    $validatedDTO = new UserNestedDTO([
+    $dataStructure = [
         'name' => [
             'first_name' => $this->subject_name,
             'last_name' => 'Doe',
         ],
         'email' => $this->subject_email,
-    ]);
+    ];
+    $validatedDTO = new UserNestedDTO($dataStructure);
 
     expect($validatedDTO)->toArray()
-        ->toBe([
-            'name' => [
-                'first_name' => $this->subject_name,
-                'last_name' => 'Doe',
-            ],
-            'email' => $this->subject_email,
-        ]);
+        ->toBe($dataStructure);
 });
 
 it('validates that the ValidatedDTO with nested data can be converted into a JSON string', function () {
-    $validatedDTO = new UserNestedDTO([
+    $dataStructure = [
         'name' => [
             'first_name' => $this->subject_name,
             'last_name' => 'Doe',
         ],
         'email' => $this->subject_email,
-    ]);
+    ];
+    $validatedDTO = new UserNestedDTO($dataStructure);
 
     expect($validatedDTO)->toJson()
-        ->toBe('{"name":{"first_name":"' . $this->subject_name . '","last_name":"Doe"},"email":"' . $this->subject_email . '"}');
+        ->toBe(json_encode($dataStructure));
 });
 
 it('validates that the ValidatedDTO with nested data can be converted into a pretty JSON string', function () {
-    $validatedDTO = new UserNestedDTO([
+    $dataStructure = [
         'name' => [
             'first_name' => $this->subject_name,
             'last_name' => 'Doe',
         ],
         'email' => $this->subject_email,
-    ]);
+    ];
+    $validatedDTO = new UserNestedDTO($dataStructure);
 
     expect($validatedDTO)->toPrettyJson()
-        ->toBe(json_encode(
+        ->toBe(json_encode($dataStructure, JSON_PRETTY_PRINT));
+});
+
+it('validates that the ValidatedDTO with nested collection data can be converted into an array', function () {
+    $dataStructure = [
+        'names' => [
             [
-                'name' => [
-                    'first_name' => $this->subject_name,
-                    'last_name' => 'Doe',
-                ],
-                'email' => $this->subject_email,
+                'first_name' => $this->subject_name,
+                'last_name' => 'Doe',
             ],
-            JSON_PRETTY_PRINT
-        ));
+            [
+                'first_name' => 'Jane',
+                'last_name' => 'Doe',
+            ],
+        ],
+        'email' => $this->subject_email,
+    ];
+    $validatedDTO = new UserNestedCollectionDTO($dataStructure);
+
+    expect($validatedDTO)->toArray()
+        ->toBe($dataStructure);
+});
+
+it('validates that the ValidatedDTO with nested collection data can be converted into a JSON string', function () {
+    $dataStructure = [
+        'names' => [
+            [
+                'first_name' => $this->subject_name,
+                'last_name' => 'Doe',
+            ],
+            [
+                'first_name' => 'Jane',
+                'last_name' => 'Doe',
+            ],
+        ],
+        'email' => $this->subject_email,
+    ];
+    $validatedDTO = new UserNestedCollectionDTO($dataStructure);
+
+    expect($validatedDTO)->toJson()
+        ->toBe(json_encode($dataStructure));
+});
+
+it('validates that the ValidatedDTO with nested collection data can be converted into a pretty JSON string', function () {
+    $dataStructure = [
+        'names' => [
+            [
+                'first_name' => $this->subject_name,
+                'last_name' => 'Doe',
+            ],
+            [
+                'first_name' => 'Jane',
+                'last_name' => 'Doe',
+            ],
+        ],
+        'email' => $this->subject_email,
+    ];
+    $validatedDTO = new UserNestedCollectionDTO($dataStructure);
+
+    expect($validatedDTO)->toPrettyJson()
+        ->toBe(json_encode($dataStructure, JSON_PRETTY_PRINT));
 });
 
 it('validates that the ValidatedDTO can be converted into an Eloquent Model', function () {

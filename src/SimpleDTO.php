@@ -400,12 +400,33 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
     {
         return match (true) {
             is_array($value) => $value,
-            $value instanceof Collection => $value->toArray(),
-            $value instanceof Model => $value->toArray(),
+            $value instanceof Collection => $this->transformCollectionToArray($value),
+            $value instanceof Model => $this->transformModelToArray($value),
             $value instanceof SimpleDTO => $this->transformDTOToArray($value),
             is_object($value) => (array) $value,
             default => [],
         };
+    }
+
+    private function transformCollectionToArray(Collection $collection): array
+    {
+        return $collection->map(function ($item) {
+            return $this->isArrayable($item)
+                ? $this->formatArrayableValue($item)
+                : $item;
+        })->toArray();
+    }
+
+    private function transformModelToArray(Model $model): array
+    {
+        $result = [];
+        foreach ($model->getAttributes() as $key => $value) {
+            $result[$key] = $this->isArrayable($value)
+                ? $this->formatArrayableValue($value)
+                : $value;
+        }
+
+        return $result;
     }
 
     private function transformDTOToArray(SimpleDTO $dto): array
