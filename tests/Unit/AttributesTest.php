@@ -53,3 +53,33 @@ it('maps the DTO data using the Map attribute', function () {
             'active' => true,
         ]);
 });
+
+it('casts the DTO data using the Cast attribute', function () {
+    $userDTO = new UserAttributesDTO([
+        'name' => $this->subject_name,
+        'email' => $this->subject_email,
+        'active' => '0',
+        'age' => '25',
+        'grades' => ['10', '9.5', '8.5'],
+    ]);
+
+    expect($userDTO)->toBeInstanceOf(UserAttributesDTO::class)
+        ->and($userDTO->validatedData)
+        ->toBe([
+            'name' => $this->subject_name,
+            'email' => $this->subject_email,
+            'active' => false,
+            'age' => 25,
+            'grades' => [10.0, 9.5, 8.5],
+        ])
+        ->and($userDTO->validator->passes())
+        ->toBeTrue()
+        ->and($userDTO->toArray())
+        ->toBe([
+            'full_name' => $this->subject_name,
+            'email' => $this->subject_email,
+            'active' => false,
+            'age' => 25,
+            'grades' => [10.0, 9.5, 8.5],
+        ]);
+});
