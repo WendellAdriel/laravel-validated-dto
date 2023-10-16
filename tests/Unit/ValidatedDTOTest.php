@@ -16,6 +16,7 @@ use WendellAdriel\ValidatedDTO\Tests\Datasets\MapBeforeExportDTO;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\MapBeforeValidationDTO;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\MapDataDTO;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\MappedNameDTO;
+use WendellAdriel\ValidatedDTO\Tests\Datasets\NameAfterDTO;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\NameDTO;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\NullableDTO;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\User;
@@ -59,6 +60,13 @@ it('instantiates a ValidatedDTO with nullable and optional properties', function
         ->and($dto->address)
         ->toBeNull();
 });
+
+it('handles the after hook when instantiating a ValidatedDTO')
+    ->expect(fn () => new NameAfterDTO([
+        'first_name' => $this->subject_name,
+        'last_name' => $this->subject_name,
+    ]))
+    ->throws(ValidationException::class);
 
 it('returns null when trying to access a property that does not exist', function () {
     $validatedDTO = new ValidatedDTOInstance(['name' => $this->subject_name]);

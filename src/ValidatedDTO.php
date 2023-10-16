@@ -33,6 +33,11 @@ abstract class ValidatedDTO extends SimpleDTO
         return [];
     }
 
+    protected function after(\Illuminate\Validation\Validator $validator): void
+    {
+        // Do nothing
+    }
+
     /**
      * Builds the validated data from the given data and the rules.
      *
@@ -83,6 +88,8 @@ abstract class ValidatedDTO extends SimpleDTO
             $this->messagesList(),
             $this->attributes()
         );
+
+        $this->validator->after(fn (\Illuminate\Validation\Validator $validator) => $this->after($validator));
 
         return $this->validator->passes();
     }
