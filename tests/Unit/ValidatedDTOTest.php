@@ -2,12 +2,16 @@
 
 declare(strict_types=1);
 
+use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 use Illuminate\Console\Application;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use WendellAdriel\ValidatedDTO\Exceptions\InvalidJsonException;
+use WendellAdriel\ValidatedDTO\Tests\Datasets\DummyBackedEnum;
+use WendellAdriel\ValidatedDTO\Tests\Datasets\DummyEnum;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\MapBeforeExportDTO;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\MapBeforeValidationDTO;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\MapDataDTO;
@@ -19,6 +23,7 @@ use WendellAdriel\ValidatedDTO\Tests\Datasets\UserDTO;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\UserNestedCollectionDTO;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\UserNestedDTO;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\ValidatedDTOInstance;
+use WendellAdriel\ValidatedDTO\Tests\Datasets\ValidatedEnumDTO;
 use WendellAdriel\ValidatedDTO\ValidatedDTO;
 
 beforeEach(function () {
@@ -324,6 +329,27 @@ it('validates that the ValidatedDTO with nested collection data can be converted
 
     expect($validatedDTO)->toPrettyJson()
         ->toBe(json_encode($dataStructure, JSON_PRETTY_PRINT));
+});
+
+it('validates that the ValidatedDTO with Enums and Carbon properties can be correctly converted into an array', function () {
+    $dto = new ValidatedEnumDTO([]);
+
+    expect($dto)->toBeInstanceOf(ValidatedEnumDTO::class)
+        ->and($dto->unitEnum)
+        ->toBeInstanceOf(DummyEnum::class)
+        ->and($dto->backedEnum)
+        ->toBeInstanceOf(DummyBackedEnum::class)
+        ->and($dto->carbon)
+        ->toBeInstanceOf(Carbon::class)
+        ->and($dto->carbonImmutable)
+        ->toBeInstanceOf(CarbonImmutable::class)
+        ->and($dto->toArray())
+        ->toBe([
+            'unitEnum' => 'ONE',
+            'backedEnum' => 'bar',
+            'carbon' => '2023-10-16T00:00:00.000000Z',
+            'carbonImmutable' => '2023-10-15T00:00:00.000000Z',
+        ]);
 });
 
 it('validates that the ValidatedDTO can be converted into an Eloquent Model', function () {
