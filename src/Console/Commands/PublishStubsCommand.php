@@ -11,6 +11,18 @@ use Symfony\Component\Console\Attribute\AsCommand;
 final class PublishStubsCommand extends Command
 {
     /**
+     * @var string
+     */
+    protected $name = 'dto:stubs';
+
+    /**
+     * @var string|null
+     *
+     * @deprecated
+     */
+    protected static $defaultName = 'dto:stubs';
+
+    /**
      * The name and signature of the console command.
      *
      * @var string
