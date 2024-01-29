@@ -8,6 +8,7 @@ use Illuminate\Console\Application;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Validation\ValidationException;
 use WendellAdriel\ValidatedDTO\Exceptions\InvalidJsonException;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\DummyBackedEnum;
@@ -25,6 +26,7 @@ use WendellAdriel\ValidatedDTO\Tests\Datasets\UserNestedCollectionDTO;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\UserNestedDTO;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\ValidatedDTOInstance;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\ValidatedEnumDTO;
+use WendellAdriel\ValidatedDTO\Tests\Datasets\ValidatedFileDTO;
 use WendellAdriel\ValidatedDTO\ValidatedDTO;
 
 beforeEach(function () {
@@ -449,3 +451,17 @@ it('maps nested data to flat data before export', function () {
         ->and($user->email)
         ->toBe('john.doe@example.com');
 });
+
+it('validates that ValidatedDTO can be instantiated with file validation rules', function () {
+    $uploadedFile = UploadedFile::fake()->image('avatar.jpg');
+    $validatedDTO = ValidatedFileDTO::fromArray(['file' => $uploadedFile]);
+
+    expect($validatedDTO->validator->passes())
+        ->toBeTrue();
+});
+
+it('validates that ValidateDTO cannot be instantiated with wrong mime type')
+->expect(function () {
+    $uploadedFile = UploadedFile::fake()->create('document.pdf');
+    ValidatedFileDTO::fromArray(['file' => $uploadedFile]);
+})->throws(ValidationException::class);
