@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\ValidationException;
 use ReflectionClass;
@@ -430,7 +431,7 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
             $value instanceof Collection ||
             $value instanceof ValidatedDTO ||
             $value instanceof Model ||
-            is_object($value);
+            (is_object($value) && ! ($value instanceof UploadedFile));
     }
 
     private function formatArrayableValue(mixed $value): array|int|string
