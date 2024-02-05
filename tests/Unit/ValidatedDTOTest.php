@@ -461,7 +461,7 @@ it('validates that ValidatedDTO can be instantiated with file validation rules',
 });
 
 it('validates that ValidateDTO cannot be instantiated with wrong mime type')
-->expect(function () {
-    $uploadedFile = UploadedFile::fake()->create('document.pdf');
-    ValidatedFileDTO::fromArray(['file' => $uploadedFile]);
-})->throws(ValidationException::class);
+    ->expect(function () {
+        $uploadedFile = UploadedFile::fake()->create('document.pdf');
+        ValidatedFileDTO::fromArray(['file' => $uploadedFile]);
+    })->throws(ValidationException::class);
