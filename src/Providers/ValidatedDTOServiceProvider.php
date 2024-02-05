@@ -6,6 +6,7 @@ namespace WendellAdriel\ValidatedDTO\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use WendellAdriel\ValidatedDTO\Console\Commands\MakeDTOCommand;
+use WendellAdriel\ValidatedDTO\Console\Commands\PublishStubsCommand;
 use WendellAdriel\ValidatedDTO\Contracts\BaseDTO;
 
 final class ValidatedDTOServiceProvider extends ServiceProvider
@@ -16,7 +17,10 @@ final class ValidatedDTOServiceProvider extends ServiceProvider
     public function boot()
     {
         if ($this->app->runningInConsole()) {
-            $this->commands(MakeDTOCommand::class);
+            $this->commands([
+                MakeDTOCommand::class,
+                PublishStubsCommand::class,
+            ]);
         }
 
         $this->publishes(
@@ -25,6 +29,12 @@ final class ValidatedDTOServiceProvider extends ServiceProvider
             ],
             'config'
         );
+
+        $this->publishes([
+            __DIR__ . '/../../src/Console/stubs/resource_dto.stub' => base_path('stubs/resource_dto.stub'),
+            __DIR__ . '/../../src/Console/stubs/simple_dto.stub' => base_path('stubs/simple_dto.stub'),
+            __DIR__ . '/../../src/Console/stubs/dto.stub' => base_path('stubs/dto.stub'),
+        ], 'validatedDTO-stubs');
     }
 
     /**

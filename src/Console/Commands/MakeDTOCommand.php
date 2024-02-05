@@ -56,11 +56,21 @@ final class MakeDTOCommand extends GeneratorCommand
 
     protected function getStub(): string
     {
-        return match (true) {
-            $this->option('resource') => __DIR__ . '/../stubs/resource_dto.stub',
-            $this->option('simple') => __DIR__ . '/../stubs/simple_dto.stub',
-            default => __DIR__ . '/../stubs/dto.stub',
-        };
+        return $this->resolveStubPath(match (true) {
+            $this->option('resource') => 'resource_dto.stub',
+            $this->option('simple') => 'simple_dto.stub',
+            default => 'dto.stub',
+        });
+    }
+
+    /**
+     * Resolve the fully-qualified path to the stub.
+     */
+    protected function resolveStubPath(string $stub): string
+    {
+        return file_exists($customPath = $this->laravel->basePath(trim($stub, '/')))
+            ? $customPath
+            : __DIR__ . '/../stubs/' . $stub;
     }
 
     protected function getOptions(): array
