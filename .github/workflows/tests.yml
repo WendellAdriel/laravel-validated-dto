@@ -7,14 +7,23 @@ jobs:
         runs-on: ubuntu-latest
         strategy:
             matrix:
-                php: [8.2, 8.1]
+                php: [8.1, 8.2, 8.3]
+                laravel: [9, 10, 11]
                 dependency-version: [prefer-lowest, prefer-stable]
+                include:
+                  - laravel: 10.*
+                    testbench: 8.*
+                  - laravel: 11.*
+                    testbench: 9.*
+                exclude:
+                  - laravel: 11.*
+                    php: 8.1
 
-        name: PHP ${{ matrix.php }} - ${{ matrix.dependency-version }} - ${{ matrix.os }}
+        name: PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }} - ${{ matrix.dependency-version }}
 
         steps:
             - name: Checkout code
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
 
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
@@ -24,6 +33,7 @@ jobs:
 
             - name: Install dependencies
               run: |
+                composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "nesbot/carbon:>=2.62.1" --no-interaction --no-update
                 composer update --${{ matrix.dependency-version }} --prefer-dist --no-interaction
 
             - name: Code Style 👨‍🏭

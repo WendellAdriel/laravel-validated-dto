@@ -31,15 +31,15 @@
     ],
     "require": {
         "php": "^8.1",
-        "illuminate/console": "^9.0|^10.0",
-        "illuminate/database": "^9.0|^10.0",
-        "illuminate/http": "^9.0|^10.0",
-        "illuminate/support": "^9.0|^10.0",
-        "illuminate/validation": "^9.0|^10.0"
+        "illuminate/console": "^9.0|^10.0|^11.0",
+        "illuminate/database": "^9.0|^10.0|^11.0",
+        "illuminate/http": "^9.0|^10.0|^11.0",
+        "illuminate/support": "^9.0|^10.0|^11.0",
+        "illuminate/validation": "^9.0|^10.0|^11.0"
     },
     "require-dev": {
-        "laravel/pint": "^1.11",
-        "orchestra/testbench": "^7.20|^8.10",
+        "laravel/pint": "^1.14",
+        "orchestra/testbench": "^7.20|^8.22|^9.0",
         "pestphp/pest": "v2.15",
         "pestphp/pest-plugin-faker": "^2.0"
     },
