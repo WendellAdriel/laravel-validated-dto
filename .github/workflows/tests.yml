@@ -4,17 +4,29 @@ on: [push, pull_request]
 
 jobs:
     test:
-        runs-on: ubuntu-latest
+        runs-on: ${{ matrix.os }}
         strategy:
             matrix:
-                php: [8.2, 8.1]
-                dependency-version: [prefer-lowest, prefer-stable]
+                os: [ubuntu-latest]
+                php: [8.3, 8.2, 8.1]
+                laravel: [9.*, 10.*, 11.*]
+                dependency-version: [prefer-stable]
+                include:
+                  - laravel: 9.*
+                    testbench: 7.*
+                  - laravel: 10.*
+                    testbench: 8.*
+                  - laravel: 11.*
+                    testbench: 9.*
+                exclude:
+                  - laravel: 11.*
+                    php: 8.1
 
-        name: PHP ${{ matrix.php }} - ${{ matrix.dependency-version }} - ${{ matrix.os }}
+        name: PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }} - ${{ matrix.dependency-version }}
 
         steps:
             - name: Checkout code
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
 
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
@@ -24,6 +36,7 @@ jobs:
 
             - name: Install dependencies
               run: |
+                composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "nesbot/carbon:>=2.62.1" --no-interaction --no-update
                 composer update --${{ matrix.dependency-version }} --prefer-dist --no-interaction
 
             - name: Code Style 👨‍🏭
