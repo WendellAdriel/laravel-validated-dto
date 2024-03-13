@@ -4,13 +4,16 @@ on: [push, pull_request]
 
 jobs:
     test:
-        runs-on: ubuntu-latest
+        runs-on: ${{ matrix.os }}
         strategy:
             matrix:
-                php: [8.1, 8.2, 8.3]
+                os: [ubuntu-latest]
+                php: [8.3, 8.2, 8.1]
                 laravel: [9.*, 10.*, 11.*]
-                dependency-version: [prefer-lowest, prefer-stable]
+                dependency-version: [prefer-stable]
                 include:
+                  - laravel: 9.*
+                    testbench: 7.*
                   - laravel: 10.*
                     testbench: 8.*
                   - laravel: 11.*
