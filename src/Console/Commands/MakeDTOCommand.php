@@ -68,7 +68,7 @@ final class MakeDTOCommand extends GeneratorCommand
      */
     protected function resolveStubPath(string $stub): string
     {
-        return file_exists($customPath = $this->laravel->basePath(trim($stub, '/')))
+        return file_exists($customPath = $this->laravel->basePath(trim("stubs/{$stub}", '/')))
             ? $customPath
             : __DIR__ . '/../stubs/' . $stub;
     }
