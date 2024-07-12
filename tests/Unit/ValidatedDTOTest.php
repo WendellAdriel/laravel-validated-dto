@@ -140,9 +140,7 @@ it('validates that a ValidatedDTO can be instantiated from Command arguments', f
             = 'test:command
             {name : The name of the user}';
 
-        public function __invoke()
-        {
-        }
+        public function __invoke() {}
     };
 
     Application::starting(function ($artisan) use ($command) {
@@ -166,9 +164,7 @@ it('validates that a ValidatedDTO can be instantiated from Command options', fun
             = 'test:command
             {--name= : The name of the user}';
 
-        public function __invoke()
-        {
-        }
+        public function __invoke() {}
     };
 
     Application::starting(function ($artisan) use ($command) {
@@ -193,9 +189,7 @@ it('validates that a ValidatedDTO can be instantiated from a Command', function 
             {name : The name of the user}
             {--age= : The age of the user}';
 
-        public function __invoke()
-        {
-        }
+        public function __invoke() {}
     };
 
     Application::starting(function ($artisan) use ($command) {

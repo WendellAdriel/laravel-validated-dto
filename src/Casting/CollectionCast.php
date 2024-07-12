@@ -8,9 +8,7 @@ use Illuminate\Support\Collection;
 
 final class CollectionCast implements Castable
 {
-    public function __construct(private ?Castable $type = null)
-    {
-    }
+    public function __construct(private ?Castable $type = null) {}
 
     public function cast(string $property, mixed $value): Collection
     {

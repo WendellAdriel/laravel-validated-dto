@@ -22,8 +22,7 @@ final class ResourceCollection implements Responsable
         private string $dtoClass,
         private int $status = 200,
         private array $headers = []
-    ) {
-    }
+    ) {}
 
     /**
      * @param  Request  $request

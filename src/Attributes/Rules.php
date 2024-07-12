@@ -18,6 +18,5 @@ final class Rules
          * @var array<string, string>
          */
         public array $messages = [],
-    ) {
-    }
+    ) {}
 }
