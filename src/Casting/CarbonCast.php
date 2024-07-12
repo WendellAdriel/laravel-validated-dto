@@ -13,8 +13,7 @@ final class CarbonCast implements Castable
     public function __construct(
         private ?string $timezone = null,
         private ?string $format = null
-    ) {
-    }
+    ) {}
 
     /**
      * @throws CastException

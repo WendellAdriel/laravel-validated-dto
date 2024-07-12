@@ -18,6 +18,5 @@ final class Cast
          * @var class-string
          */
         public ?string $param = null,
-    ) {
-    }
+    ) {}
 }

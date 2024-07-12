@@ -6,9 +6,7 @@ namespace WendellAdriel\ValidatedDTO\Casting;
 
 final class ArrayCast implements Castable
 {
-    public function __construct(private ?Castable $type = null)
-    {
-    }
+    public function __construct(private ?Castable $type = null) {}
 
     public function cast(string $property, mixed $value): array
     {

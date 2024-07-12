@@ -3,5 +3,6 @@
 /.idea
 /.vagrant
 /.phpstorm.*
+/.phpunit.cache
 composer.lock
 .phpunit.result.cache

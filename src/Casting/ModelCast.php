@@ -11,9 +11,7 @@ use WendellAdriel\ValidatedDTO\Exceptions\CastTargetException;
 
 final class ModelCast implements Castable
 {
-    public function __construct(private string $modelClass)
-    {
-    }
+    public function __construct(private string $modelClass) {}
 
     /**
      * @throws CastException|CastTargetException

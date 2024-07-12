@@ -12,9 +12,7 @@ use WendellAdriel\ValidatedDTO\SimpleDTO;
 
 final class DTOCast implements Castable
 {
-    public function __construct(private string $dtoClass)
-    {
-    }
+    public function __construct(private string $dtoClass) {}
 
     /**
      * @throws CastException|CastTargetException|ValidationException
