@@ -401,6 +401,10 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
                 ? $mapping[$key]
                 : $key;
 
+            if (isset($this->{$key}) && $value !== $this->{$key}) {
+                $value = $this->{$key};
+            }
+
             $mappedData[$property] = $this->isArrayable($value)
                 ? $this->formatArrayableValue($value)
                 : $value;
