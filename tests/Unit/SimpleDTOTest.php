@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use WendellAdriel\ValidatedDTO\Exceptions\InvalidJsonException;
 use WendellAdriel\ValidatedDTO\SimpleDTO;
+use WendellAdriel\ValidatedDTO\Tests\Datasets\AttributesDTO;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\CallableCastingDTOInstance;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\SimpleDTOInstance;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\SimpleMapBeforeExportDTO;
@@ -300,4 +301,16 @@ it('casts properties with castable classes and callables', function () {
         ->toBe('Doe')
         ->and($dto->age)
         ->toBe(30);
+});
+
+it('checks that update for property reflects while converting DTO', function () {
+    $dto = AttributesDTO::fromArray([
+        'age' => 18,
+        'doc' => 'test',
+    ]);
+
+    $dto->age = 20;
+
+    expect($dto->age)->toBe(20)
+        ->and($dto->toArray())->toBe(['age' => 20, 'doc' => 'test']);
 });
