@@ -288,6 +288,16 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
         ];
     }
 
+    protected function buildDataForExport(): array
+    {
+        $mapping = [
+            ...$this->mapToTransform(),
+            ...$this->dtoMapTransform,
+        ];
+
+        return $this->mapDTOData($mapping, $this->validatedData);
+    }
+
     private function buildAttributesData(): void
     {
         $publicProperties = $this->getPublicProperties();
@@ -370,16 +380,6 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
         ];
 
         return $this->mapDTOData($mapping, $data);
-    }
-
-    private function buildDataForExport(): array
-    {
-        $mapping = [
-            ...$this->mapToTransform(),
-            ...$this->dtoMapTransform,
-        ];
-
-        return $this->mapDTOData($mapping, $this->validatedData);
     }
 
     private function mapDTOData(array $mapping, array $data): array
