@@ -446,7 +446,7 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
             is_array($value) => $value,
             $value instanceof BackedEnum => $value->value,
             $value instanceof UnitEnum => $value->name,
-            $value instanceof Carbon || $value instanceof CarbonImmutable => $value->toISOString(),
+            $value instanceof Carbon || $value instanceof CarbonImmutable => $value->toISOString(true),
             $value instanceof Collection => $this->transformCollectionToArray($value),
             $value instanceof Model => $this->transformModelToArray($value),
             $value instanceof SimpleDTO => $this->transformDTOToArray($value),
