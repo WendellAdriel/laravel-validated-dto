@@ -351,8 +351,8 @@ it('validates that the ValidatedDTO with Enums and Carbon properties can be corr
         ->toBe([
             'unitEnum' => 'ONE',
             'backedEnum' => 'bar',
-            'carbon' => '2023-10-16T00:00:00.000000Z',
-            'carbonImmutable' => '2023-10-15T00:00:00.000000Z',
+            'carbon' => '2023-10-16T00:00:00.000000+00:00',
+            'carbonImmutable' => '2023-10-15T00:00:00.000000+00:00',
         ]);
 });
 
