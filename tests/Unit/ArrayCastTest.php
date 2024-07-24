@@ -6,6 +6,7 @@ use WendellAdriel\ValidatedDTO\Casting\ArrayCast;
 use WendellAdriel\ValidatedDTO\Casting\BooleanCast;
 use WendellAdriel\ValidatedDTO\Casting\DTOCast;
 use WendellAdriel\ValidatedDTO\Casting\IntegerCast;
+use WendellAdriel\ValidatedDTO\Tests\Datasets\ArrayableObjectDTO;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\ValidatedDTOInstance;
 
 it('properly casts from json string to array')
@@ -55,4 +56,16 @@ it('properly casts an DTOCast', function () {
 
     expect($result[0]->toArray())->toEqual($johnDto->toArray())
         ->and($result[1]->toArray())->toEqual($maryDto->toArray());
+});
+
+it('properly casts an Arrayable object to array', function () {
+    $dto = ArrayableObjectDTO::fromArray([
+        'object' => 'arrayable-object-key',
+    ]);
+
+    expect($dto->toArray())->toBe([
+        'object' => [
+            'key' => 'arrayable-object-key',
+        ],
+    ]);
 });
