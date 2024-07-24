@@ -8,6 +8,7 @@ use BackedEnum;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
@@ -434,6 +435,7 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
     private function isArrayable(mixed $value): bool
     {
         return is_array($value) ||
+            $value instanceof Arrayable ||
             $value instanceof Collection ||
             $value instanceof ValidatedDTO ||
             $value instanceof Model ||
@@ -450,6 +452,7 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
             $value instanceof Collection => $this->transformCollectionToArray($value),
             $value instanceof Model => $this->transformModelToArray($value),
             $value instanceof SimpleDTO => $this->transformDTOToArray($value),
+            $value instanceof Arrayable => $value->toArray(),
             is_object($value) => (array) $value,
             default => [],
         };
