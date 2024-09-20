@@ -26,7 +26,7 @@ interface BaseDTO
 
     public function toArray(): array;
 
-    public function toJson(): string;
+    public function toJson($options = 0): string;
 
     public function toPrettyJson(): string;
 

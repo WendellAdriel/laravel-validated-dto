@@ -13,9 +13,9 @@ trait DataTransformer
         return $this->buildDataForExport();
     }
 
-    public function toJson(): string
+    public function toJson($options = 0): string
     {
-        return json_encode($this->buildDataForExport());
+        return json_encode($this->buildDataForExport(), $options);
     }
 
     public function toPrettyJson(): string
