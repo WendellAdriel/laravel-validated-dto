@@ -33,25 +33,36 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
 {
     use DataResolver, DataTransformer;
 
+    public bool $lazyValidation = false;
+
     /** @internal */
     protected array $dtoData = [];
 
+    /** @internal */
     protected array $validatedData = [];
 
+    /** @internal */
     protected bool $requireCasting = false;
 
+    /** @internal */
     protected \Illuminate\Contracts\Validation\Validator|\Illuminate\Validation\Validator $validator;
 
+    /** @internal */
     protected array $dtoRules = [];
 
+    /** @internal */
     protected array $dtoMessages = [];
 
+    /** @internal */
     protected array $dtoDefaults = [];
 
+    /** @internal */
     protected array $dtoCasts = [];
 
+    /** @internal */
     protected array $dtoMapData = [];
 
+    /** @internal */
     protected array $dtoMapTransform = [];
 
     /**
@@ -154,9 +165,9 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
     /**
      * @throws MissingCastTypeException|CastTargetException
      */
-    protected function passedValidation(): void
+    protected function passedValidation(bool $forceCast = false): void
     {
-        $this->validatedData = $this->validatedData();
+        $this->validatedData = $this->validatedData($forceCast);
         /** @var array<Castable> $casts */
         $casts = $this->buildCasts();
 
@@ -187,7 +198,7 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
 
                 $formatted = $this->shouldReturnNull($key, $value)
                     ? null
-                    : $this->castValue($casts[$key], $key, $value);
+                    : $this->castValue($casts[$key], $key, $value, $forceCast);
 
                 $this->{$key} = $formatted;
                 $this->validatedData[$key] = $formatted;
@@ -212,7 +223,7 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
      *
      * @throws MissingCastTypeException|CastTargetException
      */
-    protected function validatedData(): array
+    protected function validatedData(bool $forceCast = false): array
     {
         $acceptedKeys = $this->getAcceptedProperties();
         $result = [];
@@ -233,7 +244,7 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
 
                 $result[$key] = $this->shouldReturnNull($key, $value)
                     ? null
-                    : $this->castValue($casts[$key], $key, $value);
+                    : $this->castValue($casts[$key], $key, $value, $forceCast);
             }
         }
 
@@ -249,8 +260,12 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
     /**
      * @throws CastTargetException
      */
-    protected function castValue(mixed $cast, string $key, mixed $value): mixed
+    protected function castValue(mixed $cast, string $key, mixed $value, bool $forceCast = false): mixed
     {
+        if ($this->lazyValidation && ! $forceCast) {
+            return $value;
+        }
+
         if ($cast instanceof Castable) {
             return $cast->cast($key, $value);
         }
@@ -298,6 +313,16 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
         ];
 
         return $this->mapDTOData($mapping, $this->validatedData);
+    }
+
+    protected function buildDataForValidation(array $data): array
+    {
+        $mapping = [
+            ...$this->mapData(),
+            ...$this->dtoMapData,
+        ];
+
+        return $this->mapDTOData($mapping, $data);
     }
 
     private function buildAttributesData(): void
@@ -372,16 +397,6 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
         }
 
         return $result;
-    }
-
-    private function buildDataForValidation(array $data): array
-    {
-        $mapping = [
-            ...$this->mapData(),
-            ...$this->dtoMapData,
-        ];
-
-        return $this->mapDTOData($mapping, $data);
     }
 
     private function mapDTOData(array $mapping, array $data): array
@@ -525,6 +540,7 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
             'dtoCasts',
             'dtoMapData',
             'dtoMapTransform',
+            'lazyValidation',
         ]);
     }
 }

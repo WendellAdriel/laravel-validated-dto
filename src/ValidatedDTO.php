@@ -33,6 +33,18 @@ abstract class ValidatedDTO extends SimpleDTO
         return [];
     }
 
+    /**
+     * @throws ValidationException|MissingCastTypeException|CastTargetException
+     */
+    public function validate(): void
+    {
+        $this->dtoData = $this->buildDataForValidation($this->toArray());
+
+        $this->validationPasses()
+            ? $this->passedValidation(true)
+            : $this->failedValidation();
+    }
+
     protected function after(\Illuminate\Validation\Validator $validator): void
     {
         // Do nothing
@@ -43,7 +55,7 @@ abstract class ValidatedDTO extends SimpleDTO
      *
      * @throws MissingCastTypeException|CastTargetException
      */
-    protected function validatedData(): array
+    protected function validatedData(bool $forceCast = false): array
     {
         $acceptedKeys = array_keys($this->rulesList());
         $result = [];
@@ -64,7 +76,7 @@ abstract class ValidatedDTO extends SimpleDTO
 
                 $result[$key] = $this->shouldReturnNull($key, $value)
                     ? null
-                    : $this->castValue($casts[$key], $key, $value);
+                    : $this->castValue($casts[$key], $key, $value, $forceCast);
             }
         }
 
@@ -82,16 +94,7 @@ abstract class ValidatedDTO extends SimpleDTO
 
     protected function isValidData(): bool
     {
-        $this->validator = Validator::make(
-            $this->dtoData,
-            $this->rulesList(),
-            $this->messagesList(),
-            $this->attributes()
-        );
-
-        $this->validator->after(fn (\Illuminate\Validation\Validator $validator) => $this->after($validator));
-
-        return $this->validator->passes();
+        return $this->lazyValidation || $this->validationPasses();
     }
 
     /**
@@ -105,6 +108,20 @@ abstract class ValidatedDTO extends SimpleDTO
     protected function shouldReturnNull(string $key, mixed $value): bool
     {
         return is_null($value) && $this->isOptionalProperty($key);
+    }
+
+    private function validationPasses(): bool
+    {
+        $this->validator = Validator::make(
+            $this->dtoData,
+            $this->rulesList(),
+            $this->messagesList(),
+            $this->attributes()
+        );
+
+        $this->validator->after(fn (\Illuminate\Validation\Validator $validator) => $this->after($validator));
+
+        return $this->validator->passes();
     }
 
     private function isOptionalProperty(string $property): bool
