@@ -312,7 +312,14 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
             ...$this->dtoMapTransform,
         ];
 
-        return $this->mapDTOData($mapping, $this->validatedData);
+        $data = $this->validatedData;
+        foreach ($this->getAcceptedProperties() as $property) {
+            if (! array_key_exists($property, $data) && isset($this->{$property})) {
+                $data[$property] = $this->{$property};
+            }
+        }
+
+        return $this->mapDTOData($mapping, $data);
     }
 
     protected function buildDataForValidation(array $data): array

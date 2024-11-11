@@ -215,6 +215,10 @@ it('validates that the ValidatedDTO can be converted into an array', function ()
 
     expect($validatedDTO)->toArray()
         ->toBe($dataStructure);
+
+    $validatedDTO->age = 20;
+    expect($validatedDTO)->toArray()
+        ->toBe([...$dataStructure, 'age' => 20]);
 });
 
 it('validates that the ValidatedDTO can be converted into a JSON string', function () {
@@ -223,6 +227,10 @@ it('validates that the ValidatedDTO can be converted into a JSON string', functi
 
     expect($validatedDTO)->toJson()
         ->toBe(json_encode($dataStructure));
+
+    $validatedDTO->age = 20;
+    expect($validatedDTO)->toJson()
+        ->toBe(json_encode([...$dataStructure, 'age' => 20]));
 });
 
 it('validates that the ValidatedDTO can be converted into a pretty JSON string', function () {
@@ -231,6 +239,10 @@ it('validates that the ValidatedDTO can be converted into a pretty JSON string',
 
     expect($validatedDTO)->toPrettyJson()
         ->toBe(json_encode($dataStructure, JSON_PRETTY_PRINT));
+
+    $validatedDTO->age = 20;
+    expect($validatedDTO)->toPrettyJson()
+        ->toBe(json_encode([...$dataStructure, 'age' => 20], JSON_PRETTY_PRINT));
 });
 
 it('validates that the ValidatedDTO with nested data can be converted into an array', function () {
@@ -361,15 +373,22 @@ it('validates that the ValidatedDTO can be converted into an Eloquent Model', fu
 
     $model = new class() extends Model
     {
-        protected $fillable = ['name'];
+        protected $fillable = ['name', 'age'];
     };
 
-    $model_instance = $validatedDTO->toModel($model::class);
+    $modelInstance = $validatedDTO->toModel($model::class);
 
-    expect($model_instance)
+    expect($modelInstance)
         ->toBeInstanceOf(Model::class)
         ->toArray()
         ->toBe(['name' => $this->subject_name]);
+
+    $validatedDTO->age = 20;
+    $modelInstance = $validatedDTO->toModel($model::class);
+    expect($modelInstance)
+        ->toBeInstanceOf(Model::class)
+        ->toArray()
+        ->toBe(['name' => $this->subject_name, 'age' => 20]);
 });
 
 it('maps data before validation', function () {
