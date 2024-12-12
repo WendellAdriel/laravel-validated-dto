@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\ValidationException;
+use JsonSerializable;
 use ReflectionClass;
 use ReflectionProperty;
 use UnitEnum;
@@ -29,7 +30,7 @@ use WendellAdriel\ValidatedDTO\Contracts\BaseDTO;
 use WendellAdriel\ValidatedDTO\Exceptions\CastTargetException;
 use WendellAdriel\ValidatedDTO\Exceptions\MissingCastTypeException;
 
-abstract class SimpleDTO implements BaseDTO, CastsAttributes
+abstract class SimpleDTO implements BaseDTO, CastsAttributes, JsonSerializable
 {
     use DataResolver, DataTransformer;
 
@@ -144,6 +145,14 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
         }
 
         return '';
+    }
+
+    /*
+     * JsonSerializable
+     */
+    public function jsonSerialize(): mixed
+    {
+        return $this->toArray();
     }
 
     /**
