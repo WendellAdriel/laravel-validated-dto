@@ -482,7 +482,6 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes, JsonSerializable
             $value instanceof UnitEnum => $value->name,
             $value instanceof Carbon || $value instanceof CarbonImmutable => $value->toISOString(true),
             $value instanceof Collection => $this->transformCollectionToArray($value),
-            $value instanceof Model => $this->transformModelToArray($value),
             $value instanceof SimpleDTO => $this->transformDTOToArray($value),
             $value instanceof Arrayable => $value->toArray(),
             is_object($value) => (array) $value,
@@ -497,18 +496,6 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes, JsonSerializable
                 ? $this->formatArrayableValue($item)
                 : $item;
         })->toArray();
-    }
-
-    private function transformModelToArray(Model $model): array
-    {
-        $result = [];
-        foreach ($model->getAttributes() as $key => $value) {
-            $result[$key] = $this->isArrayable($value)
-                ? $this->formatArrayableValue($value)
-                : $value;
-        }
-
-        return $result;
     }
 
     private function transformDTOToArray(SimpleDTO $dto): array
