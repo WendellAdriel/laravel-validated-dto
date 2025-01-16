@@ -491,11 +491,9 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes, JsonSerializable
 
     private function transformCollectionToArray(Collection $collection): array
     {
-        return $collection->map(function ($item) {
-            return $this->isArrayable($item)
+        return $collection->map(fn ($item) => $this->isArrayable($item)
                 ? $this->formatArrayableValue($item)
-                : $item;
-        })->toArray();
+                : $item)->toArray();
     }
 
     private function transformDTOToArray(SimpleDTO $dto): array
