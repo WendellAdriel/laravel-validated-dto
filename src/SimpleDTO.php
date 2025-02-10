@@ -559,4 +559,14 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes, JsonSerializable
             'lazyValidation',
         ]);
     }
+
+    public function __serialize(): array
+    {
+        return $this->jsonSerialize();
+    }
+
+    public function __unserialize(array $data): void
+    {
+        $this->__construct($data);
+    }
 }
