@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Spatie\TypeScriptTransformer\Structures\TransformedType;
 use Spatie\TypeScriptTransformer\TypeScriptTransformerConfig;
-use WendellAdriel\ValidatedDTO\Support\Typescript\ValidatedDtoTransformer;
+use WendellAdriel\ValidatedDTO\Support\TypeScriptTransformer;
 
 it('returns null when class does not extend ValidatedDTO', function () {
     $class = new class()
@@ -14,7 +14,7 @@ it('returns null when class does not extend ValidatedDTO', function () {
 
     $reflection = new ReflectionClass($class);
 
-    $transformer = new ValidatedDtoTransformer(TypeScriptTransformerConfig::create());
+    $transformer = new TypeScriptTransformer(TypeScriptTransformerConfig::create());
     $type = $transformer->transform($reflection, 'IrrelevantName');
 
     expect($type)->toBeNull();
@@ -40,7 +40,7 @@ it('transforms a ValidatedDTO with public properties into a TransformedType', fu
 
     $reflection = new ReflectionClass(\App\Data\TestTransformerDTO::class);
 
-    $transformer = new ValidatedDtoTransformer(TypeScriptTransformerConfig::create());
+    $transformer = new TypeScriptTransformer(TypeScriptTransformerConfig::create());
     $type = $transformer->transform($reflection, 'TransformedDTO');
 
     // Should only include public, non-static properties
@@ -70,7 +70,7 @@ it('excludes properties listed in excludedProperties', function () {
 
     $reflection = new ReflectionClass(\App\Data\ExcludedPropertyDTO::class);
 
-    $transformer = new ValidatedDtoTransformer(TypeScriptTransformerConfig::create());
+    $transformer = new TypeScriptTransformer(TypeScriptTransformerConfig::create());
     $type = $transformer->transform($reflection, 'ExcludedProps');
 
     expect($type->transformed)->not->toContain('lazyValidation:')
@@ -120,7 +120,7 @@ it('transforms a ValidatedDTO with nested DTO and enum property', function () {
     ');
 
     $reflection = new ReflectionClass(\App\Data\ParentDTO::class);
-    $transformer = new ValidatedDtoTransformer(TypeScriptTransformerConfig::create());
+    $transformer = new TypeScriptTransformer(TypeScriptTransformerConfig::create());
     $type = $transformer->transform($reflection, 'ComplexDTO');
 
     expect($type)->toBeInstanceOf(TransformedType::class)

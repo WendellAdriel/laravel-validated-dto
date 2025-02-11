@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace WendellAdriel\ValidatedDTO\Support\Typescript;
+namespace WendellAdriel\ValidatedDTO\Support;
 
 use ReflectionClass;
 use Spatie\TypeScriptTransformer\Collectors\DefaultCollector;
@@ -10,7 +10,7 @@ use Spatie\TypeScriptTransformer\Structures\TransformedType;
 use Spatie\TypeScriptTransformer\TypeReflectors\ClassTypeReflector;
 use WendellAdriel\ValidatedDTO\ValidatedDTO;
 
-class ValidatedDtoCollector extends DefaultCollector
+class TypeScriptCollector extends DefaultCollector
 {
     public function getTransformedType(ReflectionClass $class): ?TransformedType
     {
@@ -21,7 +21,7 @@ class ValidatedDtoCollector extends DefaultCollector
         $reflector = ClassTypeReflector::create($class);
 
         // Always use our ValidatedDtoTransformer
-        $transformer = $this->config->buildTransformer(ValidatedDtoTransformer::class);
+        $transformer = $this->config->buildTransformer(TypeScriptTransformer::class);
 
         return $transformer->transform(
             $reflector->getReflectionClass(),

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace WendellAdriel\ValidatedDTO\Support\Typescript;
+namespace WendellAdriel\ValidatedDTO\Support;
 
 use ReflectionClass;
 use ReflectionProperty;
@@ -14,7 +14,7 @@ use Spatie\TypeScriptTransformer\TypeProcessors\ReplaceDefaultsTypeProcessor;
 use Spatie\TypeScriptTransformer\TypeScriptTransformerConfig;
 use WendellAdriel\ValidatedDTO\ValidatedDTO;
 
-class ValidatedDtoTransformer implements Transformer
+class TypeScriptTransformer implements Transformer
 {
     use TransformsTypes;
 

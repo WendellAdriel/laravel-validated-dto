@@ -3,20 +3,20 @@
 declare(strict_types=1);
 
 use Spatie\TypeScriptTransformer\TypeScriptTransformerConfig;
-use WendellAdriel\ValidatedDTO\Support\Typescript\ValidatedDtoCollector;
+use WendellAdriel\ValidatedDTO\Support\TypeScriptCollector;
 
 it('returns null when class does not extend ValidatedDTO', function () {
     $class = new class() {};
 
     $reflection = new ReflectionClass($class);
-    $collector = new ValidatedDtoCollector(TypeScriptTransformerConfig::create());
+    $collector = new TypeScriptCollector(TypeScriptTransformerConfig::create());
 
     $type = $collector->getTransformedType($reflection);
 
     expect($type)->toBeNull();
 });
 
-it('uses the ValidatedDtoTransformer for an eligible class', function () {
+it('uses the TypeScriptTransformer for an eligible class', function () {
     eval('
         namespace App\Data {
             use WendellAdriel\ValidatedDTO\ValidatedDTO;
@@ -35,9 +35,9 @@ it('uses the ValidatedDtoTransformer for an eligible class', function () {
 
     // Provide a config with no other conflicting transformers
     $config = TypeScriptTransformerConfig::create()
-        ->transformers([\WendellAdriel\ValidatedDTO\Support\Typescript\ValidatedDtoTransformer::class]);
+        ->transformers([\WendellAdriel\ValidatedDTO\Support\TypeScriptTransformer::class]);
 
-    $collector = new ValidatedDtoCollector($config);
+    $collector = new TypeScriptCollector($config);
 
     $type = $collector->getTransformedType($reflection);
 
