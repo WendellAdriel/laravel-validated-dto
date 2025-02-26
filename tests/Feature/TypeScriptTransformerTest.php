@@ -6,7 +6,7 @@ use Spatie\TypeScriptTransformer\Structures\TransformedType;
 use Spatie\TypeScriptTransformer\TypeScriptTransformerConfig;
 use WendellAdriel\ValidatedDTO\Support\TypeScriptTransformer;
 
-it('returns null when class does not extend ValidatedDTO', function () {
+it('returns null when class does not extend SimpleDTO', function () {
     $class = new class()
     {
         public string $name;
@@ -20,14 +20,14 @@ it('returns null when class does not extend ValidatedDTO', function () {
     expect($type)->toBeNull();
 });
 
-it('transforms a ValidatedDTO with public properties into a TransformedType', function () {
+it('transforms a SimpleDTO with public properties into a TransformedType', function () {
     eval('
         namespace App\Data {
-            use WendellAdriel\ValidatedDTO\ValidatedDTO;
+            use WendellAdriel\ValidatedDTO\SimpleDTO;
             use WendellAdriel\ValidatedDTO\Concerns\EmptyRules;
             use WendellAdriel\ValidatedDTO\Concerns\EmptyCasts;
             use WendellAdriel\ValidatedDTO\Concerns\EmptyDefaults;
-            class TestTransformerDTO extends ValidatedDTO {
+            class TestTransformerDTO extends SimpleDTO {
                 use EmptyRules, EmptyCasts, EmptyDefaults;
 
                 public string $name;

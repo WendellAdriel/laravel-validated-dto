@@ -12,7 +12,7 @@ use Spatie\TypeScriptTransformer\Transformers\Transformer;
 use Spatie\TypeScriptTransformer\Transformers\TransformsTypes;
 use Spatie\TypeScriptTransformer\TypeProcessors\ReplaceDefaultsTypeProcessor;
 use Spatie\TypeScriptTransformer\TypeScriptTransformerConfig;
-use WendellAdriel\ValidatedDTO\ValidatedDTO;
+use WendellAdriel\ValidatedDTO\SimpleDTO;
 
 class TypeScriptTransformer implements Transformer
 {
@@ -51,7 +51,7 @@ class TypeScriptTransformer implements Transformer
 
     protected function canTransform(ReflectionClass $class): bool
     {
-        return $class->isSubclassOf(ValidatedDTO::class);
+        return $class->isSubclassOf(SimpleDTO::class);
     }
 
     protected function transformProperties(

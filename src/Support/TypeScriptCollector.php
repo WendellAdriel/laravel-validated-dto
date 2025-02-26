@@ -8,7 +8,7 @@ use ReflectionClass;
 use Spatie\TypeScriptTransformer\Collectors\DefaultCollector;
 use Spatie\TypeScriptTransformer\Structures\TransformedType;
 use Spatie\TypeScriptTransformer\TypeReflectors\ClassTypeReflector;
-use WendellAdriel\ValidatedDTO\ValidatedDTO;
+use WendellAdriel\ValidatedDTO\SimpleDTO;
 
 class TypeScriptCollector extends DefaultCollector
 {
@@ -32,7 +32,7 @@ class TypeScriptCollector extends DefaultCollector
     protected function shouldCollect(ReflectionClass $class): bool
     {
         // Only collect classes that extend ValidatedDTO
-        if (! $class->isSubclassOf(ValidatedDTO::class)) {
+        if (! $class->isSubclassOf(SimpleDTO::class)) {
             return false;
         }
 
