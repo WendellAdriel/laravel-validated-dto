@@ -102,6 +102,22 @@ it('validates that a SimpleDTO can be instantiated from an Eloquent Model', func
         ->toBe(['name' => $this->subject_name]);
 });
 
+it('validates that a SimpleDTO can be instantiated from an Eloquent Model and also get serialized', function () {
+    $model = new class() extends Model
+    {
+        protected $fillable = ['name'];
+    };
+
+    $model->fill(['name' => $this->subject_name]);
+
+    $simpleDTO = SimpleDTOInstance::fromModel($model);
+
+    $serialized = unserialize(serialize($simpleDTO));
+
+    expect($serialized->validatedData)
+        ->toBe(['name' => $this->subject_name]);
+});
+
 it('validates that a SimpleDTO can be instantiated from Command arguments', function () {
     $command = new class() extends Command
     {

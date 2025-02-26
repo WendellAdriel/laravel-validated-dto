@@ -95,6 +95,19 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes, JsonSerializable
         return $this->{$name} ?? null;
     }
 
+    public function __serialize(): array
+    {
+        return $this->jsonSerialize();
+    }
+
+    /**
+     * @throws ValidationException|MissingCastTypeException|CastTargetException
+     */
+    public function __unserialize(array $data): void
+    {
+        $this->__construct($data);
+    }
+
     /**
      * Defines the default values for the properties of the DTO.
      */
