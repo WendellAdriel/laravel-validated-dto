@@ -23,7 +23,7 @@ it('uses the TypeScriptTransformer for an eligible class', function () {
             use WendellAdriel\ValidatedDTO\Concerns\EmptyRules;
             use WendellAdriel\ValidatedDTO\Concerns\EmptyCasts;
             use WendellAdriel\ValidatedDTO\Concerns\EmptyDefaults;
-            class TransformerTestDTO extends SimpleDTO {
+            class TransformerTestDTO1 extends SimpleDTO {
                 use EmptyRules, EmptyCasts, EmptyDefaults;
 
                 public string $name;
@@ -31,7 +31,7 @@ it('uses the TypeScriptTransformer for an eligible class', function () {
         }
     ');
 
-    $reflection = new ReflectionClass(\App\Data\TransformerTestDTO::class);
+    $reflection = new ReflectionClass(\App\Data\TransformerTestDTO1::class);
 
     // Provide a config with no other conflicting transformers
     $config = TypeScriptTransformerConfig::create()
@@ -42,7 +42,7 @@ it('uses the TypeScriptTransformer for an eligible class', function () {
     $type = $collector->getTransformedType($reflection);
 
     expect($type)->not->toBeNull()
-        ->and($type->getTypeScriptName())->toBe('App.Data.TransformerTestDTO');
+        ->and($type->getTypeScriptName())->toBe('App.Data.TransformerTestDTO1');
 });
 
 
@@ -53,7 +53,7 @@ it('uses the TypeScriptTransformer for ResourceDTO', function () {
             use WendellAdriel\ValidatedDTO\Concerns\EmptyRules;
             use WendellAdriel\ValidatedDTO\Concerns\EmptyCasts;
             use WendellAdriel\ValidatedDTO\Concerns\EmptyDefaults;
-            class TransformerTestDTO extends ResourceDTO {
+            class TransformerTestDTO2 extends ResourceDTO {
                 use EmptyRules, EmptyCasts, EmptyDefaults;
 
                 public string $name;
@@ -61,7 +61,7 @@ it('uses the TypeScriptTransformer for ResourceDTO', function () {
         }
     ');
 
-    $reflection = new ReflectionClass(\App\Data\TransformerTestDTO::class);
+    $reflection = new ReflectionClass(\App\Data\TransformerTestDTO2::class);
 
     // Provide a config with no other conflicting transformers
     $config = TypeScriptTransformerConfig::create()
@@ -72,5 +72,5 @@ it('uses the TypeScriptTransformer for ResourceDTO', function () {
     $type = $collector->getTransformedType($reflection);
 
     expect($type)->not->toBeNull()
-        ->and($type->getTypeScriptName())->toBe('App.Data.TransformerTestDTO');
+        ->and($type->getTypeScriptName())->toBe('App.Data.TransformerTestDTO2');
 });
