@@ -41,7 +41,8 @@
         "laravel/pint": "^1.21",
         "orchestra/testbench": "^9.0|^10.0",
         "pestphp/pest": "^2.0|^3.0",
-        "pestphp/pest-plugin-faker": "^2.0|^3.0"
+        "pestphp/pest-plugin-faker": "^2.0|^3.0",
+        "spatie/typescript-transformer": "^2.4"
     },
     "scripts": {
         "lint": "pint",
