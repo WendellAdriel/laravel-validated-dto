@@ -38,10 +38,10 @@
         "illuminate/validation": "^9.0|^10.0|^11.0|^12.0"
     },
     "require-dev": {
-        "laravel/pint": "^1.14",
+        "laravel/pint": "^1.21",
         "orchestra/testbench": "^7.0|^8.0|^9.0|^10.0",
-        "pestphp/pest": "^1.20|^2.0",
-        "pestphp/pest-plugin-faker": "^1.0|^2.0"
+        "pestphp/pest": "^1.20|^2.0|^3.0",
+        "pestphp/pest-plugin-faker": "^1.0|^2.0|^3.0"
     },
     "scripts": {
         "lint": "pint",
