@@ -45,7 +45,6 @@ it('uses the TypeScriptTransformer for an eligible class', function () {
         ->and($type->getTypeScriptName())->toBe('App.Data.TransformerTestDTO1');
 });
 
-
 it('uses the TypeScriptTransformer for ResourceDTO', function () {
     eval('
         namespace App\Data {
