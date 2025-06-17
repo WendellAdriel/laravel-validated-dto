@@ -499,7 +499,7 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes, JsonSerializable
     private function transformDTOToArray(SimpleDTO $dto): array
     {
         $result = [];
-        foreach ($dto->validatedData as $key => $value) {
+        foreach ($dto->buildDataForExport() as $key => $value) {
             $result[$key] = $this->isArrayable($value)
                 ? $this->formatArrayableValue($value)
                 : $value;
