@@ -352,3 +352,19 @@ it('checks that update for nested DTO property reflects while converting DTO to 
     expect($dto->inner->name)->toBe('updated inner name')
         ->and($dto->toJson())->toBe(json_encode(['name' => 'name', 'inner' => ['name' => 'updated inner name', 'number' => 2]]));
 });
+
+it('validates that a SimpleDTO can be instantiated from an Eloquent Model and also get serialized', function () {
+    $model = new class() extends Model
+    {
+        protected $fillable = ['name'];
+    };
+
+    $model->fill(['name' => $this->subject_name]);
+
+    $simpleDTO = SimpleDTOInstance::fromModel($model);
+
+    $serialized = unserialize(serialize($simpleDTO));
+
+    expect($serialized->validatedData)
+        ->toBe(['name' => $this->subject_name]);
+});

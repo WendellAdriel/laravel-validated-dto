@@ -12,9 +12,6 @@ use WendellAdriel\ValidatedDTO\Casting\DTOCast;
 use WendellAdriel\ValidatedDTO\Exceptions\CastException;
 use WendellAdriel\ValidatedDTO\Exceptions\CastTargetException;
 
-/**
- * @internal
- */
 final class ResourceCollection implements Responsable
 {
     public function __construct(
