@@ -17,6 +17,7 @@ use WendellAdriel\ValidatedDTO\Tests\Datasets\SimpleMapDataDTO;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\SimpleMappedNameDTO;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\SimpleNameDTO;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\SimpleNullableDTO;
+use WendellAdriel\ValidatedDTO\Tests\Datasets\SimpleOuterDTO;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\SimpleUserDTO;
 use WendellAdriel\ValidatedDTO\Tests\Datasets\User;
 
@@ -313,4 +314,41 @@ it('checks that update for property reflects while converting DTO', function () 
 
     expect($dto->age)->toBe(20)
         ->and($dto->toArray())->toBe(['age' => 20, 'doc' => 'test']);
+});
+
+it('checks that update for nested DTO property reflects while converting DTO to array', function () {
+    $dto = SimpleOuterDTO::fromArray([
+        'name' => 'name',
+        'inner' => [
+            'name' => 'inner name',
+            'number' => 2,
+        ],
+    ]);
+
+    $dto->inner->name = 'updated inner name';
+
+    expect($dto->inner->name)->toBe('updated inner name')
+        ->and($dto->toArray())->toBe([
+            'name' => 'name',
+            'inner' => [
+                'name' => 'updated inner name',
+                'number' => 2,
+            ],
+        ]);
+});
+
+it('checks that update for nested DTO property reflects while converting DTO to json', function () {
+    $array = [
+        'name' => 'name',
+        'inner' => [
+            'name' => 'inner name',
+            'number' => 2,
+        ],
+    ];
+    $dto = SimpleOuterDTO::fromArray($array);
+
+    $dto->inner->name = 'updated inner name';
+
+    expect($dto->inner->name)->toBe('updated inner name')
+        ->and($dto->toJson())->toBe(json_encode(['name' => 'name', 'inner' => ['name' => 'updated inner name', 'number' => 2]]));
 });
