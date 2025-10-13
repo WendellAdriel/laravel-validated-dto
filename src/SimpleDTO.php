@@ -23,6 +23,7 @@ use WendellAdriel\ValidatedDTO\Attributes\Map;
 use WendellAdriel\ValidatedDTO\Attributes\Rules;
 use WendellAdriel\ValidatedDTO\Casting\ArrayCast;
 use WendellAdriel\ValidatedDTO\Casting\Castable;
+use WendellAdriel\ValidatedDTO\Casting\DTOCast;
 use WendellAdriel\ValidatedDTO\Casting\EnumCast;
 use WendellAdriel\ValidatedDTO\Concerns\DataResolver;
 use WendellAdriel\ValidatedDTO\Concerns\DataTransformer;
@@ -311,9 +312,10 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes, JsonSerializable
                 continue;
             }
 
-            $param = $cast->type === EnumCast::class
-                ? $cast->param
-                : new $cast->param();
+            $param = match (true) {
+                in_array($cast->type, [EnumCast::class, DTOCast::class]) => $cast->param,
+                default => new $cast->param(),
+            };
 
             $casts[$property] = new $cast->type($param);
         }
