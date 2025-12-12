@@ -14,12 +14,16 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\ValidationException;
 use JsonSerializable;
+use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionProperty;
 use UnitEnum;
 use WendellAdriel\ValidatedDTO\Attributes\Cast;
 use WendellAdriel\ValidatedDTO\Attributes\DefaultValue;
+use WendellAdriel\ValidatedDTO\Attributes\Lazy;
 use WendellAdriel\ValidatedDTO\Attributes\Map;
+use WendellAdriel\ValidatedDTO\Attributes\Provide;
+use WendellAdriel\ValidatedDTO\Attributes\Receive;
 use WendellAdriel\ValidatedDTO\Attributes\Rules;
 use WendellAdriel\ValidatedDTO\Casting\ArrayCast;
 use WendellAdriel\ValidatedDTO\Casting\Castable;
@@ -66,6 +70,9 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes, JsonSerializable
 
     /** @internal */
     protected array $dtoMapTransform = [];
+
+    /** @internal */
+    private static array $classReflections = [];
 
     /**
      * @throws ValidationException|MissingCastTypeException|CastTargetException
@@ -381,6 +388,49 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes, JsonSerializable
             $this->dtoCasts[$property] = $attributeInstance;
         }
 
+        $classReflection = $this->classReflection($this::class);
+        $classAttributes = collect($classReflection->getAttributes());
+        $lazyAttribute = $classAttributes->first(
+            fn (ReflectionAttribute $attribute) => $attribute->getName() === Lazy::class
+        );
+        /** @var ReflectionAttribute $receiveAttribute */
+        $receiveAttribute = $classAttributes->first(
+            fn (ReflectionAttribute $attribute) => $attribute->getName() === Receive::class
+        );
+        /** @var ReflectionAttribute $provideAttribute */
+        $provideAttribute = $classAttributes->first(
+            fn (ReflectionAttribute $attribute) => $attribute->getName() === Provide::class
+        );
+
+        if (! is_null($lazyAttribute)) {
+            $this->lazyValidation = true;
+        }
+
+        $receiveCase = null;
+        $provideCase = null;
+        if (! is_null($receiveAttribute)) {
+            /** @var Receive $receive */
+            $receive = $receiveAttribute->newInstance();
+            $receiveCase = $receive->propertyCase;
+        }
+
+        if (! is_null($provideAttribute)) {
+            /** @var Provide $provide */
+            $provide = $provideAttribute->newInstance();
+            $provideCase = $provide->propertyCase;
+        }
+
+        if (! is_null($receiveCase) || ! is_null($provideCase)) {
+            foreach (array_keys($publicProperties) as $property) {
+                if (! is_null($receiveCase)) {
+                    $this->dtoMapData[$receiveCase->format($property)] = $property;
+                }
+                if (! is_null($provideCase)) {
+                    $this->dtoMapTransform[$property] = $provideCase->format($property);
+                }
+            }
+        }
+
         $mapDataProperties = $this->getPropertiesForAttribute($publicProperties, Map::class);
         foreach ($mapDataProperties as $property => $attribute) {
             $attributeInstance = $attribute->newInstance();
@@ -397,7 +447,7 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes, JsonSerializable
 
     private function getPublicProperties(): array
     {
-        $reflectionClass = new ReflectionClass($this);
+        $reflectionClass = $this->classReflection($this::class);
         $dtoProperties = [];
 
         foreach ($reflectionClass->getProperties(ReflectionProperty::IS_PUBLIC) as $property) {
@@ -425,6 +475,15 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes, JsonSerializable
         }
 
         return $result;
+    }
+
+    private function classReflection(string $class): ReflectionClass
+    {
+        if (! isset(self::$classReflections[$class])) {
+            self::$classReflections[$class] = new ReflectionClass($class);
+        }
+
+        return self::$classReflections[$class];
     }
 
     private function mapDTOData(array $mapping, array $data): array
