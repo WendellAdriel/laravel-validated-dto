@@ -25,6 +25,7 @@ use WendellAdriel\ValidatedDTO\Attributes\Map;
 use WendellAdriel\ValidatedDTO\Attributes\Provide;
 use WendellAdriel\ValidatedDTO\Attributes\Receive;
 use WendellAdriel\ValidatedDTO\Attributes\Rules;
+use WendellAdriel\ValidatedDTO\Attributes\SkipOnTransform;
 use WendellAdriel\ValidatedDTO\Casting\ArrayCast;
 use WendellAdriel\ValidatedDTO\Casting\Castable;
 use WendellAdriel\ValidatedDTO\Casting\DTOCast;
@@ -70,6 +71,9 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes, JsonSerializable
 
     /** @internal */
     protected array $dtoMapTransform = [];
+
+    /** @internal */
+    protected array $dtoSkipOnTransform = [];
 
     /** @internal */
     private static array $classReflections = [];
@@ -345,6 +349,10 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes, JsonSerializable
             if (! array_key_exists($property, $data) && isset($this->{$property})) {
                 $data[$property] = $this->{$property};
             }
+
+            if (in_array($property, $this->dtoSkipOnTransform)) {
+                unset($data[$property]);
+            }
         }
 
         return $this->mapDTOData($mapping, $data);
@@ -387,6 +395,10 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes, JsonSerializable
             $attributeInstance = $attribute->newInstance();
             $this->dtoCasts[$property] = $attributeInstance;
         }
+
+        $this->dtoSkipOnTransform = array_keys(
+            $this->getPropertiesForAttribute($publicProperties, SkipOnTransform::class)
+        );
 
         $classReflection = $this->classReflection($this::class);
         $classAttributes = collect($classReflection->getAttributes());
@@ -612,6 +624,7 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes, JsonSerializable
             'dtoCasts',
             'dtoMapData',
             'dtoMapTransform',
+            'dtoSkipOnTransform',
             'lazyValidation',
         ]);
     }
