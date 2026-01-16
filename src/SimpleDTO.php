@@ -626,6 +626,7 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes, JsonSerializable
             'dtoMapTransform',
             'dtoSkipOnTransform',
             'lazyValidation',
+            'classReflections',
         ]);
     }
 }
