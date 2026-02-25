@@ -31,22 +31,22 @@
     ],
     "require": {
         "php": "^8.2",
-        "illuminate/console": "^11.0|^12.0",
-        "illuminate/database": "^11.0|^12.0",
-        "illuminate/http": "^11.0|^12.0",
-        "illuminate/support": "^11.0|^12.0",
-        "illuminate/validation": "^11.0|^12.0"
+        "illuminate/console": "^11.0|^12.0|^13.0",
+        "illuminate/database": "^11.0|^12.0|^13.0",
+        "illuminate/http": "^11.0|^12.0|^13.0",
+        "illuminate/support": "^11.0|^12.0|^13.0",
+        "illuminate/validation": "^11.0|^12.0|^13.0"
     },
     "require-dev": {
-        "laravel/pint": "^1.21",
-        "orchestra/testbench": "^9.0|^10.0",
-        "pestphp/pest": "^2.0|^3.0",
-        "pestphp/pest-plugin-faker": "^2.0|^3.0",
-        "spatie/typescript-transformer": "^2.4"
+        "laravel/pint": "^1.27",
+        "orchestra/testbench": "^9.0|^10.0|^11.0",
+        "pestphp/pest": "^2.0|^3.0|^4.0",
+        "pestphp/pest-plugin-faker": "^2.0|^3.0|^4.0",
+        "spatie/typescript-transformer": "^2.5"
     },
     "scripts": {
-        "lint": "pint",
-        "test:lint": "pint --test",
+        "lint": "pint --parallel",
+        "test:lint": "pint --test --parallel",
         "test:unit": "./vendor/bin/pest --order-by random",
         "test": [
             "@test:lint",
