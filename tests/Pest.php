@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+use WendellAdriel\ValidatedDTO\Tests\TestCase;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,7 +14,7 @@ declare(strict_types=1);
 |
 */
 
-uses(WendellAdriel\ValidatedDTO\Tests\TestCase::class)->in('Feature', 'Unit');
+uses(TestCase::class)->in('Feature', 'Unit');
 
 /*
 |--------------------------------------------------------------------------

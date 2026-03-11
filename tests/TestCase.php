@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace WendellAdriel\ValidatedDTO\Tests;
 
 use Orchestra\Testbench\TestCase as BaseTestCase;
+use WendellAdriel\ValidatedDTO\Providers\ValidatedDTOServiceProvider;
 
 class TestCase extends BaseTestCase
 {
@@ -16,7 +17,7 @@ class TestCase extends BaseTestCase
     protected function getPackageProviders($app)
     {
         return [
-            \WendellAdriel\ValidatedDTO\Providers\ValidatedDTOServiceProvider::class,
+            ValidatedDTOServiceProvider::class,
         ];
     }
 }

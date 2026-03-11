@@ -2,8 +2,11 @@
 
 declare(strict_types=1);
 
+use App\Data\TransformerTestDTO1;
+use App\Data\TransformerTestDTO2;
 use Spatie\TypeScriptTransformer\TypeScriptTransformerConfig;
 use WendellAdriel\ValidatedDTO\Support\TypeScriptCollector;
+use WendellAdriel\ValidatedDTO\Support\TypeScriptTransformer;
 
 it('returns null when class does not extend SimpleDTO', function () {
     $class = new class() {};
@@ -31,11 +34,11 @@ it('uses the TypeScriptTransformer for an eligible class', function () {
         }
     ');
 
-    $reflection = new ReflectionClass(\App\Data\TransformerTestDTO1::class);
+    $reflection = new ReflectionClass(TransformerTestDTO1::class);
 
     // Provide a config with no other conflicting transformers
     $config = TypeScriptTransformerConfig::create()
-        ->transformers([\WendellAdriel\ValidatedDTO\Support\TypeScriptTransformer::class]);
+        ->transformers([TypeScriptTransformer::class]);
 
     $collector = new TypeScriptCollector($config);
 
@@ -60,11 +63,11 @@ it('uses the TypeScriptTransformer for ResourceDTO', function () {
         }
     ');
 
-    $reflection = new ReflectionClass(\App\Data\TransformerTestDTO2::class);
+    $reflection = new ReflectionClass(TransformerTestDTO2::class);
 
     // Provide a config with no other conflicting transformers
     $config = TypeScriptTransformerConfig::create()
-        ->transformers([\WendellAdriel\ValidatedDTO\Support\TypeScriptTransformer::class]);
+        ->transformers([TypeScriptTransformer::class]);
 
     $collector = new TypeScriptCollector($config);
 
