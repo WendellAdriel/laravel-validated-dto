@@ -11,7 +11,7 @@
     <a href="https://packagist.org/packages/WendellAdriel/laravel-validated-dto"><img src="https://img.shields.io/packagist/dt/WendellAdriel/laravel-validated-dto.svg?style=flat-square" alt="Packagist Downloads"></a>
     <a href="https://packagist.org/packages/WendellAdriel/laravel-validated-dto"><img src="https://img.shields.io/packagist/php-v/WendellAdriel/laravel-validated-dto.svg?style=flat-square" alt="PHP from Packagist"></a>
     <a href="https://packagist.org/packages/WendellAdriel/laravel-validated-dto"><img src="https://img.shields.io/badge/Laravel-11.x,%2012.x,%2013.x-brightgreen.svg?style=flat-square" alt="Laravel Version"></a>
-    <a href="https://github.com/WendellAdriel/laravel-validated-dto/actions"><img alt="GitHub Workflow Status (main)" src="https://img.shields.io/github/actions/workflow/status/WendellAdriel/laravel-validated-dto/tests.yml?branch=main&label=Tests"> </a>
+    <a href="https://github.com/WendellAdriel/laravel-validated-dto/actions"><img alt="GitHub Workflow Status (main)" src="https://img.shields.io/github/actions/workflow/status/WendellAdriel/laravel-validated-dto/tests.yml?branch=main&label=Tests&style=flat-square"> </a>
 </p>
 
 **Data Transfer Objects (DTOs)** are objects that are used to transfer data between systems. **DTOs** are typically used in applications to provide a simple, consistent format for transferring data between different parts of the application, such as **between the user interface and the business logic**.
