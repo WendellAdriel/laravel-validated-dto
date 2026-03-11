@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Validator;
 use JsonSerializable;
 use ReflectionAttribute;
 use ReflectionClass;
@@ -52,7 +53,7 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes, JsonSerializable
     protected bool $requireCasting = false;
 
     /** @internal */
-    protected \Illuminate\Contracts\Validation\Validator|\Illuminate\Validation\Validator $validator;
+    protected \Illuminate\Contracts\Validation\Validator|Validator $validator;
 
     /** @internal */
     protected array $dtoRules = [];

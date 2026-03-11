@@ -2,6 +2,11 @@
 
 declare(strict_types=1);
 
+use App\Data\ChildDTO;
+use App\Data\ExcludedPropertyDTO;
+use App\Data\ParentDTO;
+use App\Data\TestTransformerDTO;
+use App\Enums\FakeStatusEnum;
 use Spatie\TypeScriptTransformer\Structures\TransformedType;
 use Spatie\TypeScriptTransformer\TypeScriptTransformerConfig;
 use WendellAdriel\ValidatedDTO\Support\TypeScriptTransformer;
@@ -38,7 +43,7 @@ it('transforms a SimpleDTO with public properties into a TransformedType', funct
         }
     ');
 
-    $reflection = new ReflectionClass(\App\Data\TestTransformerDTO::class);
+    $reflection = new ReflectionClass(TestTransformerDTO::class);
 
     $transformer = new TypeScriptTransformer(TypeScriptTransformerConfig::create());
     $type = $transformer->transform($reflection, 'TransformedDTO');
@@ -68,7 +73,7 @@ it('excludes properties listed in excludedProperties', function () {
         }
     ');
 
-    $reflection = new ReflectionClass(\App\Data\ExcludedPropertyDTO::class);
+    $reflection = new ReflectionClass(ExcludedPropertyDTO::class);
 
     $transformer = new TypeScriptTransformer(TypeScriptTransformerConfig::create());
     $type = $transformer->transform($reflection, 'ExcludedProps');
@@ -119,7 +124,7 @@ it('transforms a ValidatedDTO with nested DTO and enum property', function () {
         }
     ');
 
-    $reflection = new ReflectionClass(\App\Data\ParentDTO::class);
+    $reflection = new ReflectionClass(ParentDTO::class);
     $transformer = new TypeScriptTransformer(TypeScriptTransformerConfig::create());
     $type = $transformer->transform($reflection, 'ComplexDTO');
 
@@ -131,6 +136,6 @@ it('transforms a ValidatedDTO with nested DTO and enum property', function () {
         // Missing Symbols contain references to other types. Once all types are
         // transformed, the package will replace these references with their
         // TypeScript types. When no type is found the type will default to any.
-        ->toContain(\App\Enums\FakeStatusEnum::class)
-        ->and($type->missingSymbols->all())->toContain(\App\Data\ChildDTO::class);
+        ->toContain(FakeStatusEnum::class)
+        ->and($type->missingSymbols->all())->toContain(ChildDTO::class);
 });
