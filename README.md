@@ -11,6 +11,7 @@
     <a href="https://packagist.org/packages/wendelladriel/laravel-validated-dto"><img src="https://img.shields.io/packagist/php-v/wendelladriel/laravel-validated-dto.svg?style=flat-square" alt="PHP from Packagist"></a>
     <a href="https://packagist.org/packages/wendelladriel/laravel-validated-dto"><img src="https://badge.laravel.cloud/badge/wendelladriel/laravel-validated-dto?style=flat" alt="Laravel versions"></a>
     <a href="https://github.com/wendelladriel/laravel-validated-dto/actions"><img alt="GitHub Workflow Status (main)" src="https://img.shields.io/github/actions/workflow/status/wendelladriel/laravel-validated-dto/tests.yml?branch=main&label=Tests&style=flat-square"></a>
+    <a href="https://laravel-validated-dto.wendelladriel.com"><img src="https://img.shields.io/badge/docs-website-blue?logo=readthedocs&style=flat-square" alt="Documentation"></a>
     <a href="https://packagist.org/packages/wendelladriel/laravel-validated-dto"><img src="https://img.shields.io/packagist/dt/wendelladriel/laravel-validated-dto.svg?style=flat-square" alt="Total Downloads"></a>
 </p>
 
